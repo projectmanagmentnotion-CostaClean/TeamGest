@@ -75,3 +75,15 @@ Lock controls should be visually cautious, explain the effect clearly and surfac
 ## Audit trail UX
 
 Audit entries should be simple, chronological and easy to scan so operational changes can be traced without reading dense logs.
+
+## Settings control center UX
+
+Settings should behave like a local data control center rather than a developer dump. The page should separate overview, health, backup, import, audit and danger actions clearly.
+
+## Backup, import and reset UX
+
+Export actions should feel safe and immediate. Import and reset actions must feel cautious, require explicit confirmation and explain that only browser-local TeamGest data is affected.
+
+## Local-only warning patterns
+
+Any message related to persistence should remind the operator that the system is local-first and that JSON backup does not equal cloud or enterprise-grade storage.

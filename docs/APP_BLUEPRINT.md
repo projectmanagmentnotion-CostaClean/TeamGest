@@ -73,3 +73,14 @@ Block 5 combines Sprint 9 and Sprint 10 over local repository and localStorage s
 ## Payroll persistence note
 
 Payroll review, paid and locked states are internal operational markers stored in localStorage. They do not execute real payments and do not represent legal or fiscal closure.
+
+## Block 6 status
+
+Block 6 combines Sprint 11 and Sprint 12 over the existing local-first architecture.
+
+- Sprint 11 consolidates browser persistence with centralized storage keys, metadata, health checks, migrations, backup export, import and reset tools.
+- Sprint 12 adds app-level audit, safety checklist, storage risk reporting and protected destructive actions inside Settings.
+
+## Local data management note
+
+Services, payroll states, payroll audit, app audit and local settings are still browser-only data. There is still no backend, auth or real payment infrastructure.

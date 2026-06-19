@@ -1,0 +1,92 @@
+import { getStorageHealthReport } from '../../../infrastructure/storage/storageHealth'
+import { getStorageMetadata } from '../../../infrastructure/storage/storageMetadata'
+import { getStorageOverview } from './settingsStorage'
+
+export type DataSafetyChecklistItem = {
+  id: string
+  label: string
+  description: string
+  status: 'ok' | 'warning'
+}
+
+export function getBackupFreshnessStatus() {
+  const metadata = getStorageMetadata()
+  if (!metadata.lastBackupAt) {
+    return 'missing' as const
+  }
+
+  const elapsedMs = Date.now() - new Date(metadata.lastBackupAt).getTime()
+  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000
+  return elapsedMs <= sevenDaysMs ? 'fresh' as const : 'stale' as const
+}
+
+export function getLocalDataRiskLevel() {
+  const health = getStorageHealthReport()
+  const backupFreshness = getBackupFreshnessStatus()
+
+  if (!health.storageAvailable || health.corruptedKeys.length > 0) {
+    return 'high' as const
+  }
+
+  if (health.level === 'warning' || backupFreshness !== 'fresh') {
+    return 'medium' as const
+  }
+
+  return 'low' as const
+}
+
+export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
+  const health = getStorageHealthReport()
+  const overview = getStorageOverview()
+  const backupFreshness = getBackupFreshnessStatus()
+
+  return [
+    {
+      id: 'storage-available',
+      label: 'localStorage disponible',
+      description: health.storageAvailable
+        ? 'El navegador permite persistencia local.'
+        : 'No se puede garantizar persistencia local en este contexto.',
+      status: health.storageAvailable ? 'ok' : 'warning',
+    },
+    {
+      id: 'recent-backup',
+      label: 'Backup reciente',
+      description:
+        backupFreshness === 'fresh'
+          ? 'Existe una copia reciente del estado local.'
+          : 'Conviene exportar una copia antes de seguir operando.',
+      status: backupFreshness === 'fresh' ? 'ok' : 'warning',
+    },
+    {
+      id: 'corrupted-keys',
+      label: 'Sin claves corruptas',
+      description:
+        health.corruptedKeys.length === 0
+          ? 'No se detectó JSON roto en TeamGest.'
+          : `Se detectaron ${health.corruptedKeys.length} claves corruptas.`,
+      status: health.corruptedKeys.length === 0 ? 'ok' : 'warning',
+    },
+    {
+      id: 'locked-months',
+      label: 'Cierres bloqueados visibles',
+      description:
+        overview.lockedMonthsCount > 0
+          ? `Hay ${overview.lockedMonthsCount} meses bloqueados disponibles para consulta.`
+          : 'Todavía no hay cierres bloqueados en local.',
+      status: overview.lockedMonthsCount > 0 ? 'ok' : 'warning',
+    },
+    {
+      id: 'services-persisted',
+      label: 'Servicios locales contados',
+      description: `Se detectaron ${overview.localServicesCount} servicios creados localmente.`,
+      status: 'ok',
+    },
+    {
+      id: 'protected-actions',
+      label: 'Import y reset protegidos',
+      description: 'La importación y el reset requieren confirmación explícita en pantalla.',
+      status: 'ok',
+    },
+  ]
+}

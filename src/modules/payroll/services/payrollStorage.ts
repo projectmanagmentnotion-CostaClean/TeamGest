@@ -6,9 +6,6 @@ import type {
 import type { PayrollStatus } from '../../../domain/shared/status.types'
 import { createEntityId } from '../../../utils/ids'
 
-export const PAYROLL_MONTHS_KEY = 'teamgest:payroll:months'
-export const PAYROLL_AUDIT_KEY = 'teamgest:payroll:audit'
-
 export function createInitialPayrollMonthState(month: string): PayrollMonthState {
   return {
     month,

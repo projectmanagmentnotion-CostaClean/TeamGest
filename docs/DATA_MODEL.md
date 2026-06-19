@@ -57,3 +57,17 @@
 - Created services are stored in localStorage and merged with seed data at read time.
 - There is still no backend persistence.
 - Payroll month states, audit entries and lock snapshots are stored only in localStorage.
+
+## Local persistence models
+
+- StorageMetadata: schemaVersion, lastBackupAt, lastImportAt, lastResetAt and updatedAt.
+- TeamGestBackupPayload: appName, exportedAt, schemaVersion and recognized local namespaces only.
+- AppAuditEntry: local event log with action, message, optional entity reference and safe metadata.
+- StorageHealthReport: availability, corrupted keys, missing expected keys, storage size, schema version and derived level.
+
+## Local safety policy
+
+- Import accepts only validated TeamGest backup payloads and writes only recognized namespaces.
+- Reset actions affect local browser data only and require confirmation in UI.
+- Locked closures remain operational state, not fiscal or legal finalization.
+- Soft delete is not broadly implemented yet; reset is the only destructive local operation in this sprint.

@@ -231,6 +231,12 @@ a {
   transform: translateY(-1px);
 }
 
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .button--primary {
   background: var(--color-accent);
   color: white;
@@ -316,6 +322,11 @@ a {
 .field-input:focus {
   outline: 2px solid rgba(21, 101, 216, 0.18);
   border-color: rgba(21, 101, 216, 0.35);
+}
+
+.field-textarea {
+  min-height: 10rem;
+  resize: vertical;
 }
 
 .empty-state {
@@ -550,6 +561,13 @@ a {
 .timeline-item__content {
   display: grid;
   gap: var(--space-2);
+}
+
+.danger-zone {
+  border-color: rgba(197, 79, 67, 0.2);
+  background:
+    linear-gradient(135deg, rgba(197, 79, 67, 0.06), transparent 38%),
+    rgba(255, 255, 255, 0.94);
 }
 
 .focus-card {

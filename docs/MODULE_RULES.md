@@ -41,3 +41,10 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Payroll local state must persist only through the payroll repository and localStorage adapter.
 - UI components must not call localStorage directly.
 - Locked closure is operational only, not fiscal or legal.
+
+## Block 6 ownership
+
+- Storage infrastructure owns direct localStorage access, key namespaces, metadata, health checks, backups and migrations.
+- Settings owns backup, import, reset and local data safety UI flows.
+- App audit writes belong to the audit repository, not to UI components.
+- Destructive local actions require explicit confirmation.

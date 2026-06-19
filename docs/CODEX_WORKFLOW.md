@@ -35,3 +35,7 @@ Combined sprint block 4 should report services read-only work and StepFlow work 
 ## Block 5 reporting
 
 Combined sprint block 5 should report payroll calculation work and review-lock workflow work separately. Any persistence limitation must be stated explicitly.
+
+## Block 6 reporting
+
+Combined sprint block 6 should report storage management work and safety-audit work separately. Any localStorage limitation must be stated explicitly and honestly.

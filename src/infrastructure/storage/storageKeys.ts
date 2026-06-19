@@ -1,0 +1,19 @@
+export const TEAMGEST_STORAGE_PREFIX = 'teamgest'
+export const SERVICES_CREATED_KEY = `${TEAMGEST_STORAGE_PREFIX}:services:created`
+export const LEGACY_SERVICES_CREATED_KEY = 'costaflow.services.local'
+export const PAYROLL_MONTHS_KEY = `${TEAMGEST_STORAGE_PREFIX}:payroll:months`
+export const PAYROLL_AUDIT_KEY = `${TEAMGEST_STORAGE_PREFIX}:payroll:audit`
+export const APP_AUDIT_KEY = `${TEAMGEST_STORAGE_PREFIX}:app:audit`
+export const STORAGE_METADATA_KEY = `${TEAMGEST_STORAGE_PREFIX}:storage:metadata`
+export const SETTINGS_KEY = `${TEAMGEST_STORAGE_PREFIX}:settings`
+export const BACKUP_HISTORY_KEY = `${TEAMGEST_STORAGE_PREFIX}:backup:history`
+
+export const TEAMGEST_EXPECTED_STORAGE_KEYS = [
+  SERVICES_CREATED_KEY,
+  PAYROLL_MONTHS_KEY,
+  PAYROLL_AUDIT_KEY,
+  APP_AUDIT_KEY,
+  STORAGE_METADATA_KEY,
+  SETTINGS_KEY,
+  BACKUP_HISTORY_KEY,
+] as const
