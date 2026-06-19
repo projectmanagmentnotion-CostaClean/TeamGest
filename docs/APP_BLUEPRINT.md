@@ -29,4 +29,19 @@ The intended workflow starts with service planning, continues with worker assign
 
 ## Sprint 1 status
 
-Sprint 1 establishes the application shell, strict TypeScript routing, base UI kit, visual tokens and project documentation. It intentionally stops before domain modeling and business logic so later sprints can evolve on a clean foundation.
+Sprint 1 established the application shell, strict TypeScript routing, base UI kit, visual tokens and initial project documentation.
+
+## Block 2 status
+
+Block 2 combines Sprint 3 and Sprint 4 over a mock-only repository layer.
+
+- Sprint 3 turns the dashboard into an operational command center with KPIs, today services, activity feed, quick actions, operational focus and warning aggregation.
+- Sprint 4 delivers a complete read-only workers module with worker list summaries, filter states, worker profile detail, monthly summary, service history and worker-specific warnings.
+
+## Still intentionally excluded
+
+- CRUD actions and real create/edit/delete flows.
+- Real backend or database.
+- Authentication.
+- Payments.
+- Any mutation of mock data from the UI.

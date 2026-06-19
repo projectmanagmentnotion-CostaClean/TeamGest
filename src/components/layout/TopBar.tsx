@@ -11,15 +11,15 @@ export function TopBar() {
   return (
     <header className="topbar">
       <div>
-        <p className="eyebrow">Sprint 1</p>
+        <p className="eyebrow">CostaFlow Ops</p>
         <h2>Centro operativo</h2>
       </div>
 
       <div className="topbar-actions">
-        <Badge tone="info">Arquitectura base</Badge>
+        <Badge tone="success">Operación activa</Badge>
         <span className="topbar-date">{currentDate}</span>
         <Button size="sm" variant="secondary">
-          Nueva vista
+          Vista general
         </Button>
       </div>
     </header>

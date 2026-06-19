@@ -1,49 +1,72 @@
-import { Badge } from '../../../components/ui/Badge'
-import { Card } from '../../../components/ui/Card'
-import { StatCard } from '../../../components/ui/StatCard'
-import { Stepper } from '../../../components/ui/Stepper'
-import { WarningBanner } from '../../../components/ui/WarningBanner'
+import { Link } from 'react-router-dom'
+import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { ActivityFeed } from '../components/ActivityFeed'
+import { DashboardStats } from '../components/DashboardStats'
+import { DashboardWarnings } from '../components/DashboardWarnings'
+import { OperationalFocus } from '../components/OperationalFocus'
+import { QuickActions } from '../components/QuickActions'
+import { TodayServices } from '../components/TodayServices'
+import {
+  calculateDashboardStats,
+  getCurrentMonthKey,
+  getCurrentMonthLabel,
+  getDashboardWarnings,
+  getOperationalFocus,
+  getRecentActivity,
+  getTodayServices,
+} from '../services/dashboardCalculations'
 
 export function DashboardPage() {
+  const repositories = getRepositories()
+  const workers = repositories.workers.listWorkers()
+  const clients = repositories.clients.listClients()
+  const properties = repositories.properties.listProperties()
+  const services = repositories.services.listServices()
+  const month = getCurrentMonthKey()
+  const stats = calculateDashboardStats(workers, clients, properties, services, month)
+  const warnings = getDashboardWarnings(workers, clients, properties, services, month)
+  const focusItems = getOperationalFocus(workers, clients, properties, services, month)
+  const recentActivity = getRecentActivity(workers, clients, properties, services)
+  const todayServices = getTodayServices(services).filter(
+    (service) => service.status === 'scheduled' || service.status === 'completed',
+  )
+
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Inicio</p>
-          <h1>Dashboard operativo</h1>
-          <p className="page-description">
-            Vista central para resumir actividad diaria, servicios activos, incidencias y
-            cierres mensuales.
-          </p>
+      <section className="hero-panel">
+        <div className="hero-panel__content">
+          <div>
+            <p className="eyebrow">Dashboard</p>
+            <h1>Panel operativo</h1>
+            <p className="page-description">
+              Estado actual de la operación, focos críticos y actividad reciente para coordinar
+              servicios y cierres desde una sola vista.
+            </p>
+          </div>
+          <span className="hero-panel__month">{getCurrentMonthLabel()}</span>
         </div>
-        <Badge tone="info">Base lista para Sprint 2</Badge>
+        <div className="hero-panel__actions">
+          <Link className="button button--primary" to="/services/new">
+            Nuevo servicio
+          </Link>
+          <Link className="button button--secondary" to="/payroll">
+            Ver cierres
+          </Link>
+        </div>
       </section>
 
-      <section className="stats-grid">
-        <StatCard label="Servicios" value="0" hint="Programados, en curso y cerrados." />
-        <StatCard label="Trabajadores" value="0" hint="Disponibilidad y coste por hora." />
-        <StatCard label="Clientes" value="0" hint="Relaciones y propiedades vinculadas." />
+      <DashboardStats stats={stats} />
+      <OperationalFocus items={focusItems} />
+
+      <section className="dashboard-grid">
+        <TodayServices clients={clients} properties={properties} services={todayServices} />
+        <DashboardWarnings warnings={warnings} />
       </section>
 
-      <WarningBanner title="Arquitectura intencional" tone="info">
-        Sprint 1 se centra en navegación, consistencia visual y límites claros entre UI y
-        lógica futura.
-      </WarningBanner>
-
-      <Card
-        title="Próximo flujo operativo"
-        description="La experiencia StepFlow preparará los procesos de alta, asignación y cierre."
-      >
-        <Stepper
-          currentStep={1}
-          steps={[
-            'Definir servicio',
-            'Asignar trabajadores',
-            'Registrar costes',
-            'Revisar cierre mensual',
-          ]}
-        />
-      </Card>
+      <section className="dashboard-grid">
+        <ActivityFeed items={recentActivity} />
+        <QuickActions />
+      </section>
     </div>
   )
 }

@@ -1,0 +1,46 @@
+import type { Client } from '../../domain/clients/client.types'
+
+export const mockClients: Client[] = [
+  {
+    id: 'client-oceanic-stays',
+    name: 'Oceanic Stays',
+    phone: '+34 952 010 201',
+    email: 'ops@oceanicstays.local',
+    billingName: 'Oceanic Stays SL',
+    billingTaxId: 'B12345678',
+    billingAddress: 'Av. del Mar 12, Málaga',
+    status: 'active',
+    createdAt: '2026-01-01T08:00:00.000Z',
+    updatedAt: '2026-06-14T09:00:00.000Z',
+  },
+  {
+    id: 'client-fitness-coast',
+    name: 'Fitness Coast',
+    phone: '+34 952 010 202',
+    email: 'manager@fitnesscoast.local',
+    billingName: 'Fitness Coast Center SL',
+    billingAddress: 'Calle Arena 5, Marbella',
+    status: 'active',
+    createdAt: '2026-01-05T08:00:00.000Z',
+    updatedAt: '2026-06-12T09:00:00.000Z',
+  },
+  {
+    id: 'client-luma-offices',
+    name: 'Luma Offices',
+    phone: '+34 952 010 203',
+    email: 'facilities@luma.local',
+    status: 'active',
+    createdAt: '2026-02-01T08:00:00.000Z',
+    updatedAt: '2026-06-11T09:00:00.000Z',
+  },
+  {
+    id: 'client-costa-homes',
+    name: 'Costa Homes',
+    email: 'hola@costahomes.local',
+    billingName: 'Costa Homes Rentals SL',
+    status: 'inactive',
+    notes: 'Cliente a la espera de reactivación.',
+    createdAt: '2026-02-14T08:00:00.000Z',
+    updatedAt: '2026-06-03T09:00:00.000Z',
+  },
+]

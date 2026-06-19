@@ -15,3 +15,11 @@ Business logic must not live inside UI components. Future calculations, reposito
 ## Data policy for Sprint 1
 
 Real data must not be added in this sprint. No backend, no direct persistence and no production integrations should be introduced until a future sprint explicitly allows them.
+
+## Block 2 ownership
+
+- Dashboard owns its dashboard-specific calculations and presentation components.
+- Workers owns worker calculations, worker components and worker warnings.
+- Pages must not import mock data directly.
+- Calculations and warning helpers must remain outside UI components.
+- Detail pages should resolve route ids through repositories, not inline data lookups.

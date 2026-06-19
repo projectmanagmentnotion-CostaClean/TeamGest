@@ -1,6 +1,6 @@
 import type { HTMLAttributes, PropsWithChildren } from 'react'
 
-type BadgeTone = 'neutral' | 'info' | 'success' | 'warning'
+export type BadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'blocked'
 
 type BadgeProps = PropsWithChildren<
   HTMLAttributes<HTMLSpanElement> & {

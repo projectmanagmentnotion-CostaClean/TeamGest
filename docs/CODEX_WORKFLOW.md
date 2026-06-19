@@ -15,3 +15,11 @@ Always commit the completed sprint. Push when a remote exists. If no remote exis
 ## Editing discipline
 
 Do not make quick overrides or large mixed files. Keep modules focused, files small and responsibilities easy to trace.
+
+## Combined sprint blocks
+
+When a request includes multiple sprints in one block, the final report should separate what was completed for each sprint.
+
+## Closeout discipline
+
+Always include build, lint, git status, commit hash and push status in the final report. Avoid unrelated refactors while closing a sprint block.

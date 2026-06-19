@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 
-type WarningTone = 'info' | 'warning' | 'danger' | 'success'
+type WarningTone = 'info' | 'warning' | 'danger' | 'success' | 'blocked'
 
 type WarningBannerProps = PropsWithChildren<{
   title: string
