@@ -23,3 +23,7 @@ When a request includes multiple sprints in one block, the final report should s
 ## Closeout discipline
 
 Always include build, lint, git status, commit hash and push status in the final report. Avoid unrelated refactors while closing a sprint block.
+
+## Block 3 reporting
+
+Combined sprint block 3 should report clients work and properties work separately, even when both are delivered in one implementation pass.

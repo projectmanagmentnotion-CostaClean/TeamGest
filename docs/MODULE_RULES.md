@@ -23,3 +23,10 @@ Real data must not be added in this sprint. No backend, no direct persistence an
 - Pages must not import mock data directly.
 - Calculations and warning helpers must remain outside UI components.
 - Detail pages should resolve route ids through repositories, not inline data lookups.
+
+## Block 3 ownership
+
+- Clients owns client calculations, client components and client warnings.
+- Properties owns property calculations, property components and property warnings.
+- Clients and properties pages must resolve relations through repositories and helper services.
+- Cross-module navigation through links is allowed, but business logic should remain owned by the source module.

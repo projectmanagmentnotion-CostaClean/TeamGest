@@ -16,6 +16,8 @@
 - One service belongs to one client and one property.
 - One service can contain many assignments.
 - One worker can appear in many assignments across many services.
+- In the UI, client profiles aggregate their linked properties and linked services.
+- In the UI, property profiles aggregate their linked services and worker participation history.
 
 ## Calculation rules
 
@@ -24,6 +26,9 @@
 - Worker monthly and payroll totals count only services in status `completed`, `reviewed` or `closed`.
 - Monthly hours and monthly pay count only confirmed assignments.
 - Missing hourly rate resolves safely to `0` and should surface as a warning.
+- Client monthly cost is the sum of service labor cost for services linked to that client in the target month.
+- Property monthly cost is the sum of service labor cost for services linked to that property in the target month.
+- Property worker participation aggregates assignments by worker for the target month.
 
 ## Payroll logic
 

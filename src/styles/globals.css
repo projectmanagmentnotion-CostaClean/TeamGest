@@ -409,8 +409,10 @@ a {
 .hero-panel__actions,
 .filter-row,
 .quick-actions,
+.badge-row,
 .warning-item__header,
 .worker-card__footer,
+.entity-card__footer,
 .profile-header__layout,
 .row-card__main,
 .row-card__meta {
@@ -421,6 +423,7 @@ a {
 .hero-panel__content,
 .warning-item__header,
 .worker-card__footer,
+.entity-card__footer,
 .row-card__main,
 .row-card__meta {
   align-items: center;
@@ -526,10 +529,15 @@ a {
 }
 
 .worker-card__stats,
+.entity-card__stats,
 .detail-grid {
   display: grid;
   gap: var(--space-3);
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.badge-row {
+  flex-wrap: wrap;
 }
 
 .detail-grid--three {
@@ -630,6 +638,7 @@ a {
   .hero-panel__content,
   .warning-item__header,
   .worker-card__footer,
+  .entity-card__footer,
   .row-card__main,
   .row-card__meta,
   .profile-header__layout {

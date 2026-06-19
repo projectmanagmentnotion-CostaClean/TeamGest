@@ -45,3 +45,17 @@ Block 2 combines Sprint 3 and Sprint 4 over a mock-only repository layer.
 - Authentication.
 - Payments.
 - Any mutation of mock data from the UI.
+
+## Block 3 status
+
+Block 3 combines Sprint 5 and Sprint 6 on top of the same mock-only repository layer.
+
+- Sprint 5 delivers the complete read-only clients module with client list summaries, client detail, property relationships, service history and client warnings.
+- Sprint 6 delivers the complete read-only properties module with property list summaries, property detail, worker participation history, service history and property warnings.
+
+## Still mock and local only
+
+- No CRUD flows.
+- No backend or database.
+- No authentication.
+- No payments.

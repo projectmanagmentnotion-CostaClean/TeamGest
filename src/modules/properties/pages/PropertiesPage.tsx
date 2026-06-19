@@ -1,30 +1,125 @@
-import { Card } from '../../../components/ui/Card'
+import { useState } from 'react'
+import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { StatCard } from '../../../components/ui/StatCard'
+import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { formatMonthLabel, getMonthKey } from '../../../utils/dates'
+import { formatMoney } from '../../../utils/money'
+import { PropertyCard } from '../components/PropertyCard'
+import { getPropertiesSummary } from '../services/propertyCalculations'
+import { getPropertiesWithWarnings, getPropertyOperationalWarnings } from '../services/propertyWarnings'
 
 export function PropertiesPage() {
+  const [filter, setFilter] = useState<
+    'all' | 'active' | 'tourist_apartments' | 'gyms' | 'with_warnings'
+  >('all')
+  const repositories = getRepositories()
+  const properties = repositories.properties.listProperties()
+  const clients = repositories.clients.listClients()
+  const workers = repositories.workers.listWorkers()
+  const services = repositories.services.listServices()
+  const month = getMonthKey(new Date().toISOString())
+  const monthLabel = formatMonthLabel(month)
+  const summary = getPropertiesSummary(properties, clients, workers, services, month)
+  const propertiesWithWarnings = getPropertiesWithWarnings(properties, clients, workers, services)
+  const visibleProperties = summary.filter(({ property }) => {
+    if (filter === 'active') {
+      return property.status === 'active'
+    }
+    if (filter === 'tourist_apartments') {
+      return property.propertyType === 'tourist_apartment'
+    }
+    if (filter === 'gyms') {
+      return property.propertyType === 'gym'
+    }
+    if (filter === 'with_warnings') {
+      return getPropertyOperationalWarnings(property, clients, workers, services).length > 0
+    }
+    return true
+  })
+
   return (
     <div className="page-stack">
       <section className="page-hero">
         <div>
           <p className="eyebrow">Inmuebles</p>
-          <h1>Parque de propiedades</h1>
+          <h1>Inmuebles</h1>
           <p className="page-description">
-            El módulo agrupará inmuebles por cliente, tipo, ubicación y necesidades del
-            servicio.
+            Vista read-only del parque de propiedades, sus servicios y el coste laboral estimado
+            para {monthLabel}.
           </p>
         </div>
       </section>
 
-      <Card
-        title="Base preparada"
-        description="Las páginas están listas para conectar datos, filtros y detalle por propiedad."
-      >
-        <EmptyState
-          title="Sin inmuebles cargados"
-          description="Todavía no se incluyen datos, importaciones ni formularios reales."
-          actionLabel="Nuevo inmueble"
+      <section className="stats-grid">
+        <StatCard
+          hint="Inmuebles listos para operación."
+          label="Inmuebles activos"
+          tone="success"
+          value={properties.filter((property) => property.status === 'active').length.toString()}
         />
-      </Card>
+        <StatCard
+          hint={`Servicios registrados en ${monthLabel}.`}
+          label="Servicios este mes"
+          tone="info"
+          value={services.filter((service) => service.date.startsWith(month)).length.toString()}
+        />
+        <StatCard
+          hint="Coste laboral agregado del mes."
+          label="Coste laboral estimado del mes"
+          tone="info"
+          value={formatMoney(summary.reduce((sum, item) => sum + item.laborCostThisMonth, 0))}
+        />
+        <StatCard
+          hint="Inmuebles con incidencias operativas activas."
+          label="Inmuebles con incidencias"
+          tone="warning"
+          value={propertiesWithWarnings.length.toString()}
+        />
+      </section>
+
+      <section className="filter-row">
+        {[
+          ['all', 'Todos'],
+          ['active', 'Activos'],
+          ['tourist_apartments', 'Turísticos'],
+          ['gyms', 'Gimnasios'],
+          ['with_warnings', 'Con incidencias'],
+        ].map(([value, label]) => (
+          <Button
+            key={value}
+            size="sm"
+            variant={filter === value ? 'primary' : 'secondary'}
+            onClick={() =>
+              setFilter(
+                value as 'all' | 'active' | 'tourist_apartments' | 'gyms' | 'with_warnings',
+              )
+            }
+          >
+            {label}
+          </Button>
+        ))}
+      </section>
+
+      {visibleProperties.length === 0 ? (
+        <EmptyState
+          title="Sin resultados para este filtro"
+          description="Prueba con otro filtro para revisar el resto del parque."
+        />
+      ) : (
+        <section className="cards-grid">
+          {visibleProperties.map((item) => (
+            <PropertyCard
+              key={item.property.id}
+              client={item.client}
+              laborCostThisMonth={item.laborCostThisMonth}
+              property={item.property}
+              servicesThisMonth={item.servicesThisMonth}
+              warningCount={getPropertyOperationalWarnings(item.property, clients, workers, services).length}
+            />
+          ))}
+        </section>
+      )}
     </div>
   )
 }

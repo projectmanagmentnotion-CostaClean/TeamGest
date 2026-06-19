@@ -39,3 +39,19 @@ When a screen is informational only, the layout should make that obvious through
 ## Mobile scanability
 
 Lists and summaries should collapse cleanly into stacked cards. Dense tables should be avoided unless the data can remain readable on a narrow screen.
+
+## Client profile UX
+
+Client screens should clarify the commercial relationship quickly: who the client is, what properties depend on them, what services ran this month and where warnings require follow-up.
+
+## Property profile UX
+
+Property screens should combine place context, linked client, service history and worker participation into a compact operational profile that can be scanned without editing controls.
+
+## Cross-linked operational navigation
+
+Read-only profiles should be linked to their adjacent entities so the user can move naturally from client to property, from property to worker and back through the operational chain.
+
+## Read-only commercial and property screens
+
+Commercial and property modules should feel actionable through summaries, links and warnings even when no CRUD actions are available yet.
