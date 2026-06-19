@@ -30,10 +30,47 @@ export function StorageOverview({ overview }: StorageOverviewProps) {
       description="Panorama del estado persistido en este navegador."
     >
       <div className="stats-grid">
-        <StatCard label="Servicios locales" value={String(overview.localServicesCount)} hint="Creados fuera de las semillas." />
-        <StatCard label="Meses de nómina" value={String(overview.payrollMonthsCount)} hint="Estados mensuales persistidos." tone="info" />
-        <StatCard label="Auditoría app" value={String(overview.auditEntriesCount)} hint="Eventos críticos recientes." tone="warning" />
-        <StatCard label="Tamaño estimado" value={formatBytes(overview.estimatedStorageSize)} hint="Uso aproximado del namespace TeamGest." tone="success" />
+        <StatCard
+          label="Servicios locales"
+          value={String(overview.localServicesCount)}
+          hint="Creados fuera de las semillas."
+        />
+        <StatCard
+          label="Trabajadores locales"
+          value={String(overview.localWorkersCount)}
+          hint="Altas creadas en este navegador."
+          tone="info"
+        />
+        <StatCard
+          label="Clientes locales"
+          value={String(overview.localClientsCount)}
+          hint="Cartera agregada en modo local."
+          tone="info"
+        />
+        <StatCard
+          label="Inmuebles locales"
+          value={String(overview.localPropertiesCount)}
+          hint="Parque creado localmente."
+          tone="info"
+        />
+        <StatCard
+          label="Meses de nomina"
+          value={String(overview.payrollMonthsCount)}
+          hint="Estados mensuales persistidos."
+          tone="info"
+        />
+        <StatCard
+          label="Auditoria app"
+          value={String(overview.auditEntriesCount)}
+          hint="Eventos criticos recientes."
+          tone="warning"
+        />
+        <StatCard
+          label="Tamano estimado"
+          value={formatBytes(overview.estimatedStorageSize)}
+          hint="Uso aproximado del namespace TeamGest."
+          tone="success"
+        />
       </div>
 
       <div className="detail-grid detail-grid--three">
@@ -42,7 +79,7 @@ export function StorageOverview({ overview }: StorageOverviewProps) {
           <strong>{overview.storageMode}</strong>
         </div>
         <div>
-          <span className="muted-caption">Versión de esquema</span>
+          <span className="muted-caption">Version de esquema</span>
           <strong>{overview.schemaVersion}</strong>
         </div>
         <div>
@@ -50,15 +87,15 @@ export function StorageOverview({ overview }: StorageOverviewProps) {
           <strong>{overview.lockedMonthsCount}</strong>
         </div>
         <div>
-          <span className="muted-caption">Último backup</span>
+          <span className="muted-caption">Ultimo backup</span>
           <strong>{formatMetaDate(overview.lastBackupAt)}</strong>
         </div>
         <div>
-          <span className="muted-caption">Última importación</span>
+          <span className="muted-caption">Ultima importacion</span>
           <strong>{formatMetaDate(overview.lastImportAt)}</strong>
         </div>
         <div>
-          <span className="muted-caption">Último reset</span>
+          <span className="muted-caption">Ultimo reset</span>
           <strong>{formatMetaDate(overview.lastResetAt)}</strong>
         </div>
       </div>

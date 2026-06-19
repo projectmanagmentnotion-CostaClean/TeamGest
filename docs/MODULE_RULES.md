@@ -60,3 +60,11 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - QA hardening may fix low-risk bugs, but must not broaden runtime scope into new features.
 - Real-data planning files must stay isolated from active runtime imports.
 - Repository readiness types may be added for future work, but current repositories do not switch mode in this block.
+
+## Block 9 ownership
+
+- Workers, clients and properties own their local draft services and management form flows.
+- Services owns Quick Work Entry, service form flows and payroll-lock mutation guards.
+- UI forms stay generic; they must not embed entity-specific repository logic.
+- Pages and components must not call localStorage directly.
+- Real data must still not be added in this block.

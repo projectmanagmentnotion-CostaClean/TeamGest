@@ -4,11 +4,22 @@ import { markLastBackupAt } from './storageMetadata'
 import {
   APP_AUDIT_KEY,
   BACKUP_HISTORY_KEY,
+  CLIENTS_ARCHIVED_KEY,
+  CLIENTS_CREATED_KEY,
+  CLIENTS_OVERRIDES_KEY,
   PAYROLL_AUDIT_KEY,
   PAYROLL_MONTHS_KEY,
+  PROPERTIES_ARCHIVED_KEY,
+  PROPERTIES_CREATED_KEY,
+  PROPERTIES_OVERRIDES_KEY,
+  SERVICES_ARCHIVED_KEY,
   SERVICES_CREATED_KEY,
+  SERVICES_OVERRIDES_KEY,
   SETTINGS_KEY,
   STORAGE_METADATA_KEY,
+  WORKERS_ARCHIVED_KEY,
+  WORKERS_CREATED_KEY,
+  WORKERS_OVERRIDES_KEY,
 } from './storageKeys'
 
 export type TeamGestBackupPayload = {
@@ -17,6 +28,17 @@ export type TeamGestBackupPayload = {
   schemaVersion: number
   data: {
     createdServices: unknown[]
+    serviceOverrides: Record<string, unknown>
+    archivedServices: Record<string, unknown>
+    createdWorkers: unknown[]
+    workerOverrides: Record<string, unknown>
+    archivedWorkers: Record<string, unknown>
+    createdClients: unknown[]
+    clientOverrides: Record<string, unknown>
+    archivedClients: Record<string, unknown>
+    createdProperties: unknown[]
+    propertyOverrides: Record<string, unknown>
+    archivedProperties: Record<string, unknown>
     payrollMonths: Record<string, unknown>
     payrollAudit: Record<string, unknown>
     appAudit: unknown[]
@@ -53,6 +75,17 @@ export function buildTeamGestBackup(): TeamGestBackupPayload {
     schemaVersion,
     data: {
       createdServices: readJson<unknown[]>(SERVICES_CREATED_KEY, []),
+      serviceOverrides: readJson<Record<string, unknown>>(SERVICES_OVERRIDES_KEY, {}),
+      archivedServices: readJson<Record<string, unknown>>(SERVICES_ARCHIVED_KEY, {}),
+      createdWorkers: readJson<unknown[]>(WORKERS_CREATED_KEY, []),
+      workerOverrides: readJson<Record<string, unknown>>(WORKERS_OVERRIDES_KEY, {}),
+      archivedWorkers: readJson<Record<string, unknown>>(WORKERS_ARCHIVED_KEY, {}),
+      createdClients: readJson<unknown[]>(CLIENTS_CREATED_KEY, []),
+      clientOverrides: readJson<Record<string, unknown>>(CLIENTS_OVERRIDES_KEY, {}),
+      archivedClients: readJson<Record<string, unknown>>(CLIENTS_ARCHIVED_KEY, {}),
+      createdProperties: readJson<unknown[]>(PROPERTIES_CREATED_KEY, []),
+      propertyOverrides: readJson<Record<string, unknown>>(PROPERTIES_OVERRIDES_KEY, {}),
+      archivedProperties: readJson<Record<string, unknown>>(PROPERTIES_ARCHIVED_KEY, {}),
       payrollMonths: readJson<Record<string, unknown>>(PAYROLL_MONTHS_KEY, {}),
       payrollAudit: readJson<Record<string, unknown>>(PAYROLL_AUDIT_KEY, {}),
       appAudit: readJson<unknown[]>(APP_AUDIT_KEY, []),
@@ -74,6 +107,17 @@ export function validateTeamGestBackup(payload: unknown): payload is TeamGestBac
     typeof candidate.schemaVersion === 'number' &&
     isPlainRecord(candidate.data) &&
     Array.isArray(candidate.data.createdServices) &&
+    isPlainRecord(candidate.data.serviceOverrides) &&
+    isPlainRecord(candidate.data.archivedServices) &&
+    Array.isArray(candidate.data.createdWorkers) &&
+    isPlainRecord(candidate.data.workerOverrides) &&
+    isPlainRecord(candidate.data.archivedWorkers) &&
+    Array.isArray(candidate.data.createdClients) &&
+    isPlainRecord(candidate.data.clientOverrides) &&
+    isPlainRecord(candidate.data.archivedClients) &&
+    Array.isArray(candidate.data.createdProperties) &&
+    isPlainRecord(candidate.data.propertyOverrides) &&
+    isPlainRecord(candidate.data.archivedProperties) &&
     isPlainRecord(candidate.data.payrollMonths) &&
     isPlainRecord(candidate.data.payrollAudit) &&
     Array.isArray(candidate.data.appAudit) &&
@@ -88,6 +132,9 @@ export function getBackupSummary(payload: TeamGestBackupPayload) {
     exportedAt: payload.exportedAt,
     schemaVersion: payload.schemaVersion,
     createdServicesCount: payload.data.createdServices.length,
+    createdWorkersCount: payload.data.createdWorkers.length,
+    createdClientsCount: payload.data.createdClients.length,
+    createdPropertiesCount: payload.data.createdProperties.length,
     payrollMonthsCount: Object.keys(payload.data.payrollMonths).length,
     payrollAuditCount: Object.keys(payload.data.payrollAudit).length,
     appAuditCount: payload.data.appAudit.length,
@@ -101,7 +148,7 @@ export async function parseTeamGestBackup(input: string | File) {
   try {
     parsed = JSON.parse(rawText) as unknown
   } catch {
-    throw new Error('El contenido no es un JSON válido de TeamGest.')
+    throw new Error('El contenido no es un JSON valido de TeamGest.')
   }
 
   if (!validateTeamGestBackup(parsed)) {
@@ -131,7 +178,7 @@ export function downloadTeamGestBackup(payload = buildTeamGestBackup()) {
   writeBackupHistory([{ exportedAt, schemaVersion: payload.schemaVersion }, ...history].slice(0, 10))
   recordAuditEvent({
     action: 'backup.exported',
-    message: 'Se exportó una copia local de TeamGest en formato JSON.',
+    message: 'Se exporto una copia local de TeamGest en formato JSON.',
     metadata: {
       exportedAt,
       fileName,
@@ -143,10 +190,21 @@ export function downloadTeamGestBackup(payload = buildTeamGestBackup()) {
 
 export function restoreTeamGestBackup(payload: TeamGestBackupPayload) {
   if (!validateTeamGestBackup(payload)) {
-    throw new Error('La copia no superó la validación antes de restaurarse.')
+    throw new Error('La copia no supero la validacion antes de restaurarse.')
   }
 
   writeJson(SERVICES_CREATED_KEY, payload.data.createdServices)
+  writeJson(SERVICES_OVERRIDES_KEY, payload.data.serviceOverrides)
+  writeJson(SERVICES_ARCHIVED_KEY, payload.data.archivedServices)
+  writeJson(WORKERS_CREATED_KEY, payload.data.createdWorkers)
+  writeJson(WORKERS_OVERRIDES_KEY, payload.data.workerOverrides)
+  writeJson(WORKERS_ARCHIVED_KEY, payload.data.archivedWorkers)
+  writeJson(CLIENTS_CREATED_KEY, payload.data.createdClients)
+  writeJson(CLIENTS_OVERRIDES_KEY, payload.data.clientOverrides)
+  writeJson(CLIENTS_ARCHIVED_KEY, payload.data.archivedClients)
+  writeJson(PROPERTIES_CREATED_KEY, payload.data.createdProperties)
+  writeJson(PROPERTIES_OVERRIDES_KEY, payload.data.propertyOverrides)
+  writeJson(PROPERTIES_ARCHIVED_KEY, payload.data.archivedProperties)
   writeJson(PAYROLL_MONTHS_KEY, payload.data.payrollMonths)
   writeJson(PAYROLL_AUDIT_KEY, payload.data.payrollAudit)
   writeJson(APP_AUDIT_KEY, payload.data.appAudit)

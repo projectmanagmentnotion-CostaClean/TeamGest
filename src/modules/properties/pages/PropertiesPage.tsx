@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
@@ -13,9 +14,7 @@ import { getPropertiesSummary } from '../services/propertyCalculations'
 import { getPropertiesWithWarnings, getPropertyOperationalWarnings } from '../services/propertyWarnings'
 
 export function PropertiesPage() {
-  const [filter, setFilter] = useState<
-    'all' | 'active' | 'tourist_apartments' | 'gyms' | 'with_warnings'
-  >('all')
+  const [filter, setFilter] = useState<'all' | 'active' | 'tourist_apartments' | 'gyms' | 'with_warnings'>('all')
   const repositories = getRepositories()
   const properties = repositories.properties.listProperties()
   const clients = repositories.clients.listClients()
@@ -46,34 +45,19 @@ export function PropertiesPage() {
       <PageHeader
         eyebrow="Inmuebles"
         title="Parque operativo"
-        description={`Vista read-only del parque de propiedades, sus servicios y el coste laboral estimado para ${monthLabel}.`}
+        description={`Vista del parque de propiedades con gestion local y coste estimado para ${monthLabel}.`}
+        primaryAction={
+          <Link className="button button--primary" to="/properties/new">
+            Nuevo inmueble
+          </Link>
+        }
       />
 
       <MetricGrid>
-        <StatCard
-          hint="Inmuebles listos para operacion."
-          label="Inmuebles activos"
-          tone="success"
-          value={properties.filter((property) => property.status === 'active').length.toString()}
-        />
-        <StatCard
-          hint={`Servicios registrados en ${monthLabel}.`}
-          label="Servicios este mes"
-          tone="info"
-          value={services.filter((service) => service.date.startsWith(month)).length.toString()}
-        />
-        <StatCard
-          hint="Coste laboral agregado del mes."
-          label="Coste laboral estimado del mes"
-          tone="info"
-          value={formatMoney(summary.reduce((sum, item) => sum + item.laborCostThisMonth, 0))}
-        />
-        <StatCard
-          hint="Inmuebles con incidencias operativas activas."
-          label="Inmuebles con incidencias"
-          tone="warning"
-          value={propertiesWithWarnings.length.toString()}
-        />
+        <StatCard hint="Inmuebles listos para operacion." label="Inmuebles activos" tone="success" value={properties.filter((property) => property.status === 'active').length.toString()} />
+        <StatCard hint={`Servicios registrados en ${monthLabel}.`} label="Servicios este mes" tone="info" value={services.filter((service) => service.date.startsWith(month)).length.toString()} />
+        <StatCard hint="Coste laboral agregado del mes." label="Coste laboral estimado del mes" tone="info" value={formatMoney(summary.reduce((sum, item) => sum + item.laborCostThisMonth, 0))} />
+        <StatCard hint="Inmuebles con incidencias operativas activas." label="Inmuebles con incidencias" tone="warning" value={propertiesWithWarnings.length.toString()} />
       </MetricGrid>
 
       <ActionBar aside={<span className="muted-caption">{visibleProperties.length} visibles</span>}>
@@ -88,11 +72,7 @@ export function PropertiesPage() {
             key={value}
             size="sm"
             variant={filter === value ? 'primary' : 'secondary'}
-            onClick={() =>
-              setFilter(
-                value as 'all' | 'active' | 'tourist_apartments' | 'gyms' | 'with_warnings',
-              )
-            }
+            onClick={() => setFilter(value as 'all' | 'active' | 'tourist_apartments' | 'gyms' | 'with_warnings')}
           >
             {label}
           </Button>
@@ -104,6 +84,11 @@ export function PropertiesPage() {
           title="Sin resultados para este filtro"
           description="Prueba con otro filtro para revisar el resto del parque."
           icon="P"
+          action={
+            <Link className="button button--secondary button--sm" to="/properties/new">
+              Crear inmueble
+            </Link>
+          }
         />
       ) : (
         <section className="cards-grid">

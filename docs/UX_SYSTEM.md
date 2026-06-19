@@ -103,3 +103,11 @@ Dense summary areas should use reusable grids that collapse predictably rather t
 ## Danger and action hierarchy
 
 Destructive controls should be visually separated from routine actions through dedicated surfaces and cautious copy.
+
+## Management flow UX
+
+Worker, client, property and service maintenance now use compact form flows with a draft summary, inline validation and a single local save action.
+
+## Quick Work Entry UX
+
+Quick Work Entry is the primary operational path for registering hours. It should minimize decision load, prefer one confirmed assignment and keep labor context visible while saving.

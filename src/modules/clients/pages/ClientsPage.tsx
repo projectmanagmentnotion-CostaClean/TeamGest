@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
@@ -39,34 +40,19 @@ export function ClientsPage() {
       <PageHeader
         eyebrow="Clientes"
         title="Cartera de clientes"
-        description={`Vista comercial read-only con inmuebles asociados, servicios del mes y coste laboral estimado para ${monthLabel}.`}
+        description={`Vista comercial con gestion local de cartera, inmuebles y servicios para ${monthLabel}.`}
+        primaryAction={
+          <Link className="button button--primary" to="/clients/new">
+            Nuevo cliente
+          </Link>
+        }
       />
 
       <MetricGrid>
-        <StatCard
-          hint="Clientes actualmente operativos."
-          label="Clientes activos"
-          tone="success"
-          value={clients.filter((client) => client.status === 'active').length.toString()}
-        />
-        <StatCard
-          hint="Inventario vinculado a la cartera comercial."
-          label="Total inmuebles asociados"
-          tone="info"
-          value={properties.length.toString()}
-        />
-        <StatCard
-          hint={`Servicios registrados en ${monthLabel}.`}
-          label="Servicios este mes"
-          tone="info"
-          value={services.filter((service) => service.date.startsWith(month)).length.toString()}
-        />
-        <StatCard
-          hint="Clientes con alertas comerciales u operativas."
-          label="Clientes con incidencias"
-          tone="warning"
-          value={clientsWithWarnings.length.toString()}
-        />
+        <StatCard hint="Clientes actualmente operativos." label="Clientes activos" tone="success" value={clients.filter((client) => client.status === 'active').length.toString()} />
+        <StatCard hint="Inventario vinculado a la cartera comercial." label="Total inmuebles asociados" tone="info" value={properties.length.toString()} />
+        <StatCard hint={`Servicios registrados en ${monthLabel}.`} label="Servicios este mes" tone="info" value={services.filter((service) => service.date.startsWith(month)).length.toString()} />
+        <StatCard hint="Clientes con alertas comerciales u operativas." label="Clientes con incidencias" tone="warning" value={clientsWithWarnings.length.toString()} />
       </MetricGrid>
 
       <ActionBar aside={<span className="muted-caption">{visibleClients.length} visibles</span>}>
@@ -92,6 +78,11 @@ export function ClientsPage() {
           title="Sin resultados para este filtro"
           description="Prueba con otro filtro para revisar el resto de la cartera."
           icon="C"
+          action={
+            <Link className="button button--secondary button--sm" to="/clients/new">
+              Crear cliente
+            </Link>
+          }
         />
       ) : (
         <section className="cards-grid">

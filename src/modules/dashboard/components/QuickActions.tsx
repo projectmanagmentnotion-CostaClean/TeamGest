@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Card } from '../../../components/ui/Card'
 
 const actions = [
+  { label: 'Registrar horas', to: '/quick-entry' },
   { label: 'Crear servicio', to: '/services/new' },
   { label: 'Ver trabajadores', to: '/workers' },
   { label: 'Ver inmuebles', to: '/properties' },
@@ -10,7 +11,7 @@ const actions = [
 
 export function QuickActions() {
   return (
-    <Card title="Acciones rápidas" description="Accesos directos para moverse por la operación sin fricción.">
+    <Card title="Acciones rapidas" description="Accesos directos para operar sin friccion.">
       <div className="quick-actions">
         {actions.map((action) => (
           <Link key={action.to} className="button button--secondary" to={action.to}>

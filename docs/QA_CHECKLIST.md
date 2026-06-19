@@ -2,20 +2,28 @@
 
 ## Scope
 
-Block 8 QA was a code-level hardening pass over the current local-first runtime.
+Block 9 QA was a code-level validation pass over the current local-first runtime.
 
 Verified by code review plus `npm run lint` and `npm run build`:
 
 - `/dashboard`
 - `/workers`
+- `/workers/new`
 - `/workers/:id`
+- `/workers/:id/edit`
 - `/clients`
+- `/clients/new`
 - `/clients/:id`
+- `/clients/:id/edit`
 - `/properties`
+- `/properties/new`
 - `/properties/:id`
+- `/properties/:id/edit`
 - `/services`
 - `/services/:id`
 - `/services/new`
+- `/services/:id/edit`
+- `/quick-entry`
 - `/payroll`
 - `/payroll/:month`
 - `/settings`
@@ -34,38 +42,40 @@ Browser visual QA was not performed in this block.
 ### Dashboard
 
 - Stats and warnings still resolve through repositories.
-- Quick actions still route to services and payroll.
+- Quick actions still route to quick entry, services and payroll.
 - Local services remain part of repository-driven reads.
 
 ### Workers
 
 - List filters are state-based and compile cleanly.
 - Worker monthly hours/pay still count only payroll-eligible services with confirmed assignments.
+- Worker create and edit routes resolve through repository-backed form flows.
 - Invalid worker id still renders safe empty state.
 
 ### Clients
 
 - Client detail still resolves linked properties and service history through repository-backed relations.
+- Client create and edit routes resolve through repository-backed form flows.
 - Empty state remains safe for invalid ids.
 
 ### Properties
 
 - Property detail still resolves linked client, worker participation and service history safely.
+- Property create and edit routes resolve through repository-backed form flows.
 - Empty state remains safe for invalid ids.
 
 ### Services
 
 - Service detail still resolves client/property/worker links safely.
 - LocalStorage-created services remain readable through repository list/detail lookups.
-- Fixed persistence normalization so created assignment rows now store the real `serviceJobId` instead of preview placeholder data.
+- Service edit route resolves through repository-backed form flow.
+- Service mutation guards now block editing or deletion when the payroll month is locked.
 
-### New Service StepFlow
+### Quick Work Entry and service management
 
-- Client change still resets property selection.
-- Property step still reads only properties for the selected client.
-- Validation still blocks invalid next/confirm transitions.
-- Assignment hours and hourly rate validation still block invalid confirmation.
-- Persisted service still routes to `/services` and `/services/:id`.
+- Quick Work Entry creates one local service with one confirmed assignment.
+- Manual service form keeps entity selections, assignments and notes in a local draft.
+- Service delete remains limited to local-created services.
 
 ### Payroll
 
@@ -99,26 +109,18 @@ Browser visual QA was not performed in this block.
 - Breakdown now matches confirmed-assignment policy.
 - Locked snapshot flow remains compile-safe.
 
-## StepFlow checklist
+## FormFlow checklist
 
-- Draft resets property when client changes.
-- Worker selection still rebuilds assignment rows from selected workers.
-- Confirm button remains gated by review validation.
-- Success state still offers route back to services and created service detail.
+- Draft validation blocks empty or structurally invalid local saves.
+- Shared form components stay generic and do not import module business logic.
+- UI layers still avoid direct `localStorage` access.
 
-## Bugs fixed in Block 8
+## Behavior added in Block 9
 
-1. Invalid top-level URLs had no explicit fallback route.
-   Fix: added wildcard redirect back to `/dashboard`.
-
-2. Persisted services could keep assignment `serviceJobId: "preview"` after StepFlow save.
-   Fix: repository now normalizes persisted assignments to the real service id before storage.
-
-3. Payroll worker breakdown could show unconfirmed assignments even though payroll totals exclude them.
-   Fix: breakdown now filters to confirmed assignments only.
-
-4. Backup validation accepted overly loose payload shapes.
-   Fix: import validation now checks recognized arrays/records explicitly and wraps JSON parse failures with safe user-facing errors.
+1. Local CRUD now exists for workers, clients and properties through repository-backed form flows and guarded destructive actions.
+2. Quick Work Entry now exists as a primary route for fast hour registration.
+3. Service edit, cancel, restore and guarded delete now exist in local-first mode.
+4. Backup, import and reset now account for local entity CRUD namespaces.
 
 ## Known limitations
 

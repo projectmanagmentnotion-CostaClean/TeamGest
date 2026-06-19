@@ -47,3 +47,7 @@ Combined sprint block 7 should report visual polish work and mobile-first work s
 ## Block 8 reporting
 
 Combined sprint block 8 should report QA-hardening work and data-real-readiness work separately. Any lack of automated tests or browser visual QA should be stated explicitly and honestly.
+
+## Block 9 reporting
+
+Combined sprint block 9 should report entity CRUD work and Quick Work Entry work separately. Any local-only persistence or payroll-lock limitation must be stated explicitly.

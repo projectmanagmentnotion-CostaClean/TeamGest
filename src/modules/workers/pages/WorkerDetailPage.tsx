@@ -1,6 +1,13 @@
-import { Link, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { EntityArchiveDialog } from '../../../components/forms/EntityArchiveDialog'
+import { EntityDeleteDialog } from '../../../components/forms/EntityDeleteDialog'
+import { ActionBar } from '../../../components/ui/ActionBar'
+import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { PageHeader } from '../../../components/ui/PageHeader'
+import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { formatMonthLabel, getMonthKey } from '../../../utils/dates'
 import { formatMoney } from '../../../utils/money'
@@ -21,18 +28,20 @@ import { getWorkerOperationalWarnings } from '../services/workerWarnings'
 
 export function WorkerDetailPage() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const repositories = getRepositories()
   const worker = repositories.workers.getWorkerById(id ?? '')
   const services = repositories.services.listServices()
   const clients = repositories.clients.listClients()
   const properties = repositories.properties.listProperties()
+  const [message, setMessage] = useState<string | null>(null)
 
   if (!worker) {
     return (
       <div className="page-stack">
         <EmptyState
           title="Trabajador no encontrado"
-          description="La ficha solicitada no existe en los datos actuales o la ruta no es válida."
+          description="La ficha solicitada no existe en los datos actuales o la ruta no es valida."
           action={
             <Link className="button button--secondary button--sm" to="/workers">
               Volver a trabajadores
@@ -43,6 +52,7 @@ export function WorkerDetailPage() {
     )
   }
 
+  const deletePolicy = repositories.workers.canDeleteWorker(worker.id)
   const month = getMonthKey(new Date().toISOString())
   const monthLabel = formatMonthLabel(month)
   const workerServices = getWorkerServices(worker.id, services)
@@ -58,23 +68,38 @@ export function WorkerDetailPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Trabajador</p>
-          <h1>Ficha operativa</h1>
-          <p className="page-description">
-            Perfil, resumen mensual, historial de servicios asignados y señales de seguimiento.
-          </p>
-        </div>
-        <Link className="button button--secondary button--sm" to="/workers">
-          Volver
-        </Link>
-      </section>
+      <PageHeader
+        eyebrow="Trabajador"
+        title="Ficha operativa"
+        description="Perfil, resumen mensual, historial de servicios asignados y acciones locales de mantenimiento."
+        primaryAction={
+          <Link className="button button--primary" to={`/workers/${worker.id}/edit`}>
+            Editar
+          </Link>
+        }
+        secondaryAction={
+          <Link className="button button--secondary button--sm" to={`/quick-entry?workerId=${worker.id}`}>
+            Registrar horas
+          </Link>
+        }
+      />
+
+      {message ? (
+        <WarningBanner title="Operacion local" tone="info">
+          {message}
+        </WarningBanner>
+      ) : null}
 
       <WorkerProfileHeader
         summary={`${workerServices.length} servicios asociados y ${warnings.length} incidencias detectadas con datos actuales.`}
         worker={worker}
       />
+
+      <ActionBar>
+        <Button variant="secondary" onClick={() => navigate('/workers')}>
+          Volver
+        </Button>
+      </ActionBar>
 
       <section className="dashboard-grid">
         <WorkerMonthlySummary
@@ -86,7 +111,7 @@ export function WorkerDetailPage() {
           totalHours={monthlyHours}
           totalServices={monthlyServices}
         />
-        <Card title="Estimación de payroll" description={`Lectura rápida de ${monthLabel}.`}>
+        <Card title="Estimacion de payroll" description={`Lectura rapida de ${monthLabel}.`}>
           <div className="detail-grid">
             <div>
               <span className="muted-caption">Pago estimado</span>
@@ -109,11 +134,8 @@ export function WorkerDetailPage() {
 
       <section className="dashboard-grid">
         <WorkerWarningsPanel warnings={warnings} />
-        <Card title="Notas operativas" description="Contexto útil para coordinación diaria.">
-          <p className="page-description">
-            {worker.notes ??
-              'Sin notas adicionales. Esta sección queda preparada para futuras observaciones operativas read-only.'}
-          </p>
+        <Card title="Notas operativas" description="Contexto util para coordinacion diaria.">
+          <p className="page-description">{worker.notes ?? 'Sin notas adicionales.'}</p>
           <p className="muted-caption">Referencia interna: {worker.id}</p>
         </Card>
       </section>
@@ -123,6 +145,28 @@ export function WorkerDetailPage() {
         propertyById={propertyById}
         services={workerServices}
         workerId={worker.id}
+      />
+
+      <EntityArchiveDialog
+        title="Archivar trabajador"
+        description="Oculta este trabajador de los listados activos sin perder auditoria local."
+        onToggle={() => {
+          repositories.workers.archiveWorker(worker.id)
+          navigate('/workers')
+        }}
+      />
+
+      <EntityDeleteDialog
+        title="Eliminar trabajador local"
+        description="Solo se permite borrar altas locales sin dependencias historicas."
+        blockedReason={deletePolicy.reason}
+        onConfirm={() => {
+          if (repositories.workers.deleteWorker(worker.id)) {
+            navigate('/workers')
+          } else {
+            setMessage('No fue posible eliminar este trabajador con las reglas locales actuales.')
+          }
+        }}
       />
     </div>
   )

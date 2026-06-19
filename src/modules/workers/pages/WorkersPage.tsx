@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
@@ -44,34 +45,19 @@ export function WorkersPage() {
       <PageHeader
         eyebrow="Trabajadores"
         title="Equipo operativo"
-        description={`Lectura operativa del equipo, sus horas confirmadas, pago estimado y senales de seguimiento para ${monthLabel}.`}
+        description={`Lectura operativa del equipo, sus horas confirmadas y gestion local para ${monthLabel}.`}
+        primaryAction={
+          <Link className="button button--primary" to="/workers/new">
+            Nuevo trabajador
+          </Link>
+        }
       />
 
       <MetricGrid>
-        <StatCard
-          hint="Disponibles para planificacion actual."
-          label="Trabajadores activos"
-          tone="success"
-          value={workers.filter((worker) => worker.status === 'active').length.toString()}
-        />
-        <StatCard
-          hint="Horas confirmadas en servicios cerrables."
-          label="Total horas del mes"
-          tone="info"
-          value={`${totalHours.toFixed(1)} h`}
-        />
-        <StatCard
-          hint="Estimacion agregada con datos actuales."
-          label="Nomina estimada del mes"
-          tone="info"
-          value={formatMoney(totalPay)}
-        />
-        <StatCard
-          hint="Trabajadores con senales operativas activas."
-          label="Trabajadores con incidencias"
-          tone="warning"
-          value={workersWithWarnings.length.toString()}
-        />
+        <StatCard hint="Disponibles para planificacion actual." label="Trabajadores activos" tone="success" value={workers.filter((worker) => worker.status === 'active').length.toString()} />
+        <StatCard hint="Horas confirmadas en servicios cerrables." label="Total horas del mes" tone="info" value={`${totalHours.toFixed(1)} h`} />
+        <StatCard hint="Estimacion agregada con datos actuales." label="Nomina estimada del mes" tone="info" value={formatMoney(totalPay)} />
+        <StatCard hint="Trabajadores con senales operativas activas." label="Trabajadores con incidencias" tone="warning" value={workersWithWarnings.length.toString()} />
       </MetricGrid>
 
       <ActionBar aside={<span className="muted-caption">{visibleWorkers.length} visibles</span>}>
@@ -97,6 +83,11 @@ export function WorkersPage() {
           title="Sin resultados para este filtro"
           description="Prueba con otro estado para revisar el resto del equipo."
           icon="W"
+          action={
+            <Link className="button button--secondary button--sm" to="/workers/new">
+              Crear trabajador
+            </Link>
+          }
         />
       ) : (
         <section className="cards-grid">

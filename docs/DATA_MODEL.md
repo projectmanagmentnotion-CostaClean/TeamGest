@@ -11,6 +11,7 @@
 - NewServiceDraft: transient model used by the StepFlow before preview or local persistence.
 - PayrollMonthState: persisted local state for month status, worker statuses and lock metadata.
 - PayrollAuditEntry: persisted local audit record for payroll workflow actions.
+- QuickEntryDraft: transient model used by the fast hours flow before local service creation.
 
 ## Relationships
 
@@ -23,6 +24,7 @@
 - In the UI, property profiles aggregate their linked services and worker participation history.
 - Services follow a visible lifecycle from draft to closure.
 - Payroll rows are derived from payable service assignments.
+- Worker, client and property records can now have local created state, local overrides and archived state.
 
 ## Calculation rules
 
@@ -57,6 +59,7 @@
 - Created services are stored in localStorage and merged with seed data at read time.
 - There is still no backend persistence.
 - Payroll month states, audit entries and lock snapshots are stored only in localStorage.
+- Worker, client, property and service local CRUD state is stored only in localStorage through repositories and storage helpers.
 
 ## Local persistence models
 
@@ -71,6 +74,7 @@
 - Reset actions affect local browser data only and require confirmation in UI.
 - Locked closures remain operational state, not fiscal or legal finalization.
 - Soft delete is not broadly implemented yet; reset is the only destructive local operation in this sprint.
+- Local entity delete is guarded and limited to local-only records without blocked dependencies.
 
 ## Block 8 readiness note
 

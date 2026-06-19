@@ -1,6 +1,10 @@
-import { Link, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { EntityDeleteDialog } from '../../../components/forms/EntityDeleteDialog'
 import { Card } from '../../../components/ui/Card'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { PageHeader } from '../../../components/ui/PageHeader'
+import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { ServiceAssignmentsList } from '../components/ServiceAssignmentsList'
 import { ServiceCostSummary } from '../components/ServiceCostSummary'
@@ -25,18 +29,20 @@ import { getServiceWarnings } from '../services/serviceWarnings'
 
 export function ServiceDetailPage() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const repositories = getRepositories()
   const service = repositories.services.getServiceById(id ?? '')
   const workers = repositories.workers.listWorkers()
   const properties = repositories.properties.listProperties()
   const clients = repositories.clients.listClients()
+  const [message, setMessage] = useState<string | null>(null)
 
   if (!service) {
     return (
       <div className="page-stack">
         <EmptyState
           title="Servicio no encontrado"
-          description="La ficha solicitada no existe en los datos actuales o la ruta no es válida."
+          description="La ficha solicitada no existe en los datos actuales o la ruta no es valida."
           action={
             <Link className="button button--secondary button--sm" to="/services">
               Volver a servicios
@@ -47,6 +53,8 @@ export function ServiceDetailPage() {
     )
   }
 
+  const editPolicy = repositories.services.canEditService(service.id)
+  const deletePolicy = repositories.services.canDeleteService(service.id)
   const client = getServiceClient(service, clients)
   const property = getServiceProperty(service, properties)
   const warnings = getServiceWarnings(service, workers, properties, clients)
@@ -57,18 +65,33 @@ export function ServiceDetailPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Servicio</p>
-          <h1>Ficha operativa del servicio</h1>
-          <p className="page-description">
-            Contexto del servicio, asignaciones, coste laboral, estado y relaciones operativas.
-          </p>
-        </div>
-        <Link className="button button--secondary button--sm" to="/services">
-          Volver
-        </Link>
-      </section>
+      <PageHeader
+        eyebrow="Servicio"
+        title="Ficha operativa del servicio"
+        description="Contexto del servicio, asignaciones, coste laboral, estado y acciones locales."
+        primaryAction={
+          <Link className={`button button--primary${!editPolicy.allowed ? ' is-disabled' : ''}`} to={editPolicy.allowed ? `/services/${service.id}/edit` : `/services/${service.id}`}>
+            Editar
+          </Link>
+        }
+        secondaryAction={
+          <Link className="button button--secondary button--sm" to="/services">
+            Volver
+          </Link>
+        }
+      />
+
+      {message ? (
+        <WarningBanner title="Operacion local" tone="info">
+          {message}
+        </WarningBanner>
+      ) : null}
+
+      {!editPolicy.allowed ? (
+        <WarningBanner title="Edicion bloqueada" tone="warning">
+          {editPolicy.reason ?? 'No se permite editar este servicio.'}
+        </WarningBanner>
+      ) : null}
 
       <ServiceProfileHeader
         client={client}
@@ -110,12 +133,60 @@ export function ServiceDetailPage() {
       </section>
 
       <Card title="Notas operativas" description="Contexto adicional para seguimiento interno.">
-        <p className="page-description">
-          {service.notes ??
-            'Sin notas adicionales. Esta sección queda preparada para observaciones operativas read-only.'}
-        </p>
+        <p className="page-description">{service.notes ?? 'Sin notas adicionales.'}</p>
         <p className="muted-caption">Referencia interna: {service.id}</p>
       </Card>
+
+      <Card title="Acciones del servicio" description="Cancelacion o restauracion local del servicio.">
+        <div className="quick-actions">
+          {service.status !== 'cancelled' ? (
+            <button
+              className="button button--secondary"
+              type="button"
+              disabled={!editPolicy.allowed}
+              onClick={() => {
+                const result = repositories.services.archiveService(service.id)
+                if (result.success) {
+                  navigate('/services')
+                } else {
+                  setMessage(result.error ?? 'No se pudo cancelar el servicio.')
+                }
+              }}
+            >
+              Cancelar servicio
+            </button>
+          ) : (
+            <button
+              className="button button--secondary"
+              type="button"
+              onClick={() => {
+                const result = repositories.services.restoreService(service.id)
+                if (result.success) {
+                  setMessage('El servicio fue restaurado a estado operativo.')
+                } else {
+                  setMessage(result.error ?? 'No se pudo restaurar el servicio.')
+                }
+              }}
+            >
+              Restaurar servicio
+            </button>
+          )}
+        </div>
+      </Card>
+
+      <EntityDeleteDialog
+        title="Eliminar servicio local"
+        description="Solo se permite borrar servicios creados localmente y fuera de meses bloqueados."
+        blockedReason={deletePolicy.reason}
+        onConfirm={() => {
+          const result = repositories.services.deleteService(service.id)
+          if (result.success) {
+            navigate('/services')
+          } else {
+            setMessage(result.error ?? 'No se pudo eliminar el servicio.')
+          }
+        }}
+      />
     </div>
   )
 }
