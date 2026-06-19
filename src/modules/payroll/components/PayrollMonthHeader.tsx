@@ -1,4 +1,5 @@
 import { Card } from '../../../components/ui/Card'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import type { PayrollMonthState } from '../../../domain/payroll/payroll.types'
 import { getPayrollMonthLabel } from '../services/payrollCalculations'
 import { PayrollStatusBadge } from './PayrollStatusBadge'
@@ -17,7 +18,10 @@ export function PayrollMonthHeader({ month, state }: PayrollMonthHeaderProps) {
             Los importes son estimaciones operativas basadas en horas confirmadas. No ejecutan pagos reales.
           </p>
         </div>
-        <PayrollStatusBadge status={state.status} />
+        <div className="badge-row">
+          <StatusPill tone="info">Seguimiento interno</StatusPill>
+          <PayrollStatusBadge status={state.status} />
+        </div>
       </div>
     </Card>
   )

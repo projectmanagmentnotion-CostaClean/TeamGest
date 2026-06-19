@@ -2,6 +2,7 @@
   --color-bg: #f4f8fc;
   --color-surface: #ffffff;
   --color-surface-muted: #eef4fb;
+  --color-surface-strong: #f9fcff;
   --color-line: #d7e3f1;
   --color-text: #16324f;
   --color-text-muted: #5d7188;
@@ -21,12 +22,15 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --space-7: 3rem;
+  --space-8: 4rem;
   --radius-sm: 0.75rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
-  --shadow-sm: 0 10px 30px rgba(21, 53, 93, 0.06);
+  --radius-xl: 2rem;
+  --shadow-sm: 0 10px 24px rgba(21, 53, 93, 0.06);
   --shadow-md: 0 18px 40px rgba(21, 53, 93, 0.1);
+  --shadow-lg: 0 24px 60px rgba(21, 53, 93, 0.14);
   --font-sans: Inter, "Segoe UI", sans-serif;
   --font-display: "Segoe UI", Inter, sans-serif;
-  --max-content-width: 78rem;
+  --max-content-width: 82rem;
 }

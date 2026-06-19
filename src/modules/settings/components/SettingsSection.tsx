@@ -1,5 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react'
 import { Card } from '../../../components/ui/Card'
+import { SectionHeader } from '../../../components/ui/SectionHeader'
 
 type SettingsSectionProps = PropsWithChildren<{
   title: string
@@ -16,7 +17,8 @@ export function SettingsSection({
   title,
 }: SettingsSectionProps) {
   return (
-    <Card action={action} className={className} description={description} title={title}>
+    <Card className={className}>
+      <SectionHeader action={action} description={description} title={title} />
       {children}
     </Card>
   )

@@ -1,8 +1,17 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { PageHeader } from '../../../components/ui/PageHeader'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
-import { createPayrollAuditEntry } from '../services/payrollStorage'
+import { PayrollActions } from '../components/PayrollActions'
+import { PayrollAuditTrail } from '../components/PayrollAuditTrail'
+import { PayrollLockPanel } from '../components/PayrollLockPanel'
+import { PayrollMonthHeader } from '../components/PayrollMonthHeader'
+import { PayrollMonthSelector } from '../components/PayrollMonthSelector'
+import { PayrollSummaryCard } from '../components/PayrollSummaryCard'
+import { PayrollWarningsPanel } from '../components/PayrollWarningsPanel'
+import { PayrollWorkerDetail } from '../components/PayrollWorkerDetail'
 import {
   buildPayrollMonthSnapshot,
   calculatePayrollMonthSummary,
@@ -12,19 +21,12 @@ import {
   getPayrollWorkerServiceBreakdown,
   isValidPayrollMonth,
 } from '../services/payrollCalculations'
+import { createPayrollAuditEntry } from '../services/payrollStorage'
 import {
   getPayrollMonthBlockingWarnings,
   getPayrollWarnings,
   getPayrollWorkerWarnings,
 } from '../services/payrollWarnings'
-import { PayrollActions } from '../components/PayrollActions'
-import { PayrollAuditTrail } from '../components/PayrollAuditTrail'
-import { PayrollLockPanel } from '../components/PayrollLockPanel'
-import { PayrollMonthHeader } from '../components/PayrollMonthHeader'
-import { PayrollMonthSelector } from '../components/PayrollMonthSelector'
-import { PayrollSummaryCard } from '../components/PayrollSummaryCard'
-import { PayrollWarningsPanel } from '../components/PayrollWarningsPanel'
-import { PayrollWorkerDetail } from '../components/PayrollWorkerDetail'
 
 export function PayrollMonthDetailPage() {
   const { month: routeMonth } = useParams()
@@ -52,7 +54,7 @@ export function PayrollMonthDetailPage() {
           level: 'warning' as const,
           title: 'Servicios nuevos tras el bloqueo',
           message:
-            'Hay servicios pagables en el mes actual que no estaban incluidos cuando se bloqueó el cierre.',
+            'Hay servicios pagables en el mes actual que no estaban incluidos cuando se bloqueo el cierre.',
           entityLabel: month,
         }
       : null
@@ -67,7 +69,7 @@ export function PayrollMonthDetailPage() {
 
   const handleMarkReviewed = () => {
     repositories.payroll.updatePayrollMonthStatus(month, 'reviewed')
-    addAudit('Mes revisado', `El cierre de ${getPayrollMonthLabel(month)} se marcó como revisado.`)
+    addAudit('Mes revisado', `El cierre de ${getPayrollMonthLabel(month)} se marco como revisado.`)
     setRefreshKey((value) => value + 1)
   }
 
@@ -76,24 +78,31 @@ export function PayrollMonthDetailPage() {
     payrollRows.forEach((row) => {
       repositories.payroll.updatePayrollWorkerStatus(month, row.workerId, 'paid')
     })
-    addAudit('Mes pagado', `El cierre de ${getPayrollMonthLabel(month)} se marcó como pagado internamente.`)
+    addAudit('Mes pagado', `El cierre de ${getPayrollMonthLabel(month)} se marco como pagado internamente.`)
     setRefreshKey((value) => value + 1)
   }
 
   const handleLock = () => {
     const snapshot = buildPayrollMonthSnapshot(payrollRows, warnings, month)
     repositories.payroll.lockPayrollMonth(month, snapshot)
-    addAudit('Cierre bloqueado', `El cierre de ${getPayrollMonthLabel(month)} quedó bloqueado en localStorage.`)
+    addAudit('Cierre bloqueado', `El cierre de ${getPayrollMonthLabel(month)} quedo bloqueado en localStorage.`)
     setRefreshKey((value) => value + 1)
   }
 
   return (
     <div className="page-stack">
       {!isValidPayrollMonth(routeMonth) ? (
-        <WarningBanner title="Mes ajustado" tone="warning">
-          El parámetro recibido no era válido. Se ha cargado {getPayrollMonthLabel(month)}.
+        <WarningBanner title="Mes ajustado" compact tone="warning">
+          El parametro recibido no era valido. Se ha cargado {getPayrollMonthLabel(month)}.
         </WarningBanner>
       ) : null}
+
+      <PageHeader
+        eyebrow="Cierres"
+        title={getPayrollMonthLabel(month)}
+        description="Resumen mensual de seguimiento interno, estado de revision y control de bloqueo operativo."
+        meta={<StatusPill tone="info">Seguimiento interno</StatusPill>}
+      />
 
       <PayrollMonthHeader month={month} state={monthState} />
       <PayrollMonthSelector selectedMonth={month} />

@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { PageHeader } from '../../../components/ui/PageHeader'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { ActivityFeed } from '../components/ActivityFeed'
 import { DashboardStats } from '../components/DashboardStats'
@@ -33,27 +35,22 @@ export function DashboardPage() {
 
   return (
     <div className="page-stack">
-      <section className="hero-panel">
-        <div className="hero-panel__content">
-          <div>
-            <p className="eyebrow">Dashboard</p>
-            <h1>Panel operativo</h1>
-            <p className="page-description">
-              Estado actual de la operación, focos críticos y actividad reciente para coordinar
-              servicios y cierres desde una sola vista.
-            </p>
-          </div>
-          <span className="hero-panel__month">{getCurrentMonthLabel()}</span>
-        </div>
-        <div className="hero-panel__actions">
+      <PageHeader
+        eyebrow="Dashboard"
+        title="Panel operativo"
+        description="Estado actual de la operacion, focos criticos y actividad reciente para coordinar servicios y cierres desde una sola vista."
+        meta={<StatusPill tone="info">{getCurrentMonthLabel()}</StatusPill>}
+        primaryAction={
           <Link className="button button--primary" to="/services/new">
             Nuevo servicio
           </Link>
+        }
+        secondaryAction={
           <Link className="button button--secondary" to="/payroll">
             Ver cierres
           </Link>
-        </div>
-      </section>
+        }
+      />
 
       <DashboardStats stats={stats} />
       <OperationalFocus items={focusItems} />

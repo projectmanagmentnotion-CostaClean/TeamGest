@@ -84,3 +84,14 @@ Block 6 combines Sprint 11 and Sprint 12 over the existing local-first architect
 ## Local data management note
 
 Services, payroll states, payroll audit, app audit and local settings are still browser-only data. There is still no backend, auth or real payment infrastructure.
+
+## Block 7 status
+
+Block 7 combines Sprint 13 and Sprint 14 over the existing local-first product.
+
+- Sprint 13 improves visual hierarchy, shared UI primitives, calmer cards, status consistency and premium operational polish.
+- Sprint 14 improves mobile-first behavior, responsive grids, tap targets, StepFlow readability and small-screen usability.
+
+## Product quality note
+
+This block adds no backend, auth, payments or new database capabilities. It focuses on presentation quality and responsive operational use.

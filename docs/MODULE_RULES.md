@@ -48,3 +48,9 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Settings owns backup, import, reset and local data safety UI flows.
 - App audit writes belong to the audit repository, not to UI components.
 - Destructive local actions require explicit confirmation.
+
+## Block 7 ownership
+
+- Shared UI primitives are allowed only when they stay generic and reusable across modules.
+- Module-specific business logic must stay inside the owning module even during polish work.
+- Visual polish must not introduce business rules into UI primitives.

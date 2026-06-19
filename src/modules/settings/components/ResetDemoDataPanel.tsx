@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../../../components/ui/Button'
+import { ConfirmDangerBox } from '../../../components/ui/ConfirmDangerBox'
 import { Input } from '../../../components/ui/Input'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import {
@@ -7,7 +8,6 @@ import {
   resetLocalServices,
   resetPayrollLocalState,
 } from '../services/dataReset'
-import { SettingsSection } from './SettingsSection'
 
 type ResetDemoDataPanelProps = {
   onDataChanged: () => void
@@ -24,8 +24,7 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
   }
 
   return (
-    <SettingsSection
-      className="danger-zone"
+    <ConfirmDangerBox
       title="Reset de datos locales"
       description="Elimina solo datos TeamGest del navegador. No afecta semillas ni almacenamiento ajeno."
     >
@@ -34,7 +33,7 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
           <div className="row-card__main">
             <div>
               <h4>Reset servicios locales</h4>
-              <p>Elimina únicamente los servicios creados en este navegador.</p>
+              <p>Elimina unicamente los servicios creados en este navegador.</p>
             </div>
             <Button variant="secondary" onClick={() => runAction(resetLocalServices, 'Servicios locales reiniciados.')}>
               Reset servicios
@@ -45,8 +44,8 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
         <div className="row-card">
           <div className="row-card__main">
             <div>
-              <h4>Reset estado de nómina</h4>
-              <p>Elimina estados, bloqueos y auditoría mensual de payroll.</p>
+              <h4>Reset estado de nomina</h4>
+              <p>Elimina estados, bloqueos y auditoria mensual de payroll.</p>
             </div>
             <Button variant="secondary" onClick={() => runAction(resetPayrollLocalState, 'Estado local de cierres reiniciado.')}>
               Reset payroll
@@ -58,7 +57,7 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
           <div className="row-card__main">
             <div>
               <h4>Reset completo del namespace TeamGest</h4>
-              <p>Elimina servicios locales, cierres, auditoría, historial de backup y ajustes locales.</p>
+              <p>Elimina servicios locales, cierres, auditoria, historial de backup y ajustes locales.</p>
             </div>
             <Button
               onClick={() => runAction(resetAllTeamGestLocalData, 'Todo el espacio local TeamGest fue reiniciado.')}
@@ -68,7 +67,7 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
             </Button>
           </div>
           <Input
-            label="Confirmación obligatoria"
+            label="Confirmacion obligatoria"
             hint="Escribe RESET para habilitar el borrado completo."
             value={confirmation}
             onChange={(event) => setConfirmation(event.target.value)}
@@ -77,10 +76,10 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
       </div>
 
       {message ? (
-        <WarningBanner title="Acción ejecutada" tone="warning">
+        <WarningBanner title="Accion ejecutada" tone="warning">
           {message}
         </WarningBanner>
       ) : null}
-    </SettingsSection>
+    </ConfirmDangerBox>
   )
 }

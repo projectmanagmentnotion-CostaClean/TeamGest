@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { MetricGrid } from '../../../components/ui/MetricGrid'
+import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatCard } from '../../../components/ui/StatCard'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { formatMonthLabel, getMonthKey } from '../../../utils/dates'
@@ -40,20 +43,15 @@ export function PropertiesPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Inmuebles</p>
-          <h1>Inmuebles</h1>
-          <p className="page-description">
-            Vista read-only del parque de propiedades, sus servicios y el coste laboral estimado
-            para {monthLabel}.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Inmuebles"
+        title="Parque operativo"
+        description={`Vista read-only del parque de propiedades, sus servicios y el coste laboral estimado para ${monthLabel}.`}
+      />
 
-      <section className="stats-grid">
+      <MetricGrid>
         <StatCard
-          hint="Inmuebles listos para operación."
+          hint="Inmuebles listos para operacion."
           label="Inmuebles activos"
           tone="success"
           value={properties.filter((property) => property.status === 'active').length.toString()}
@@ -76,13 +74,13 @@ export function PropertiesPage() {
           tone="warning"
           value={propertiesWithWarnings.length.toString()}
         />
-      </section>
+      </MetricGrid>
 
-      <section className="filter-row">
+      <ActionBar aside={<span className="muted-caption">{visibleProperties.length} visibles</span>}>
         {[
           ['all', 'Todos'],
           ['active', 'Activos'],
-          ['tourist_apartments', 'Turísticos'],
+          ['tourist_apartments', 'Turisticos'],
           ['gyms', 'Gimnasios'],
           ['with_warnings', 'Con incidencias'],
         ].map(([value, label]) => (
@@ -99,12 +97,13 @@ export function PropertiesPage() {
             {label}
           </Button>
         ))}
-      </section>
+      </ActionBar>
 
       {visibleProperties.length === 0 ? (
         <EmptyState
           title="Sin resultados para este filtro"
           description="Prueba con otro filtro para revisar el resto del parque."
+          icon="P"
         />
       ) : (
         <section className="cards-grid">

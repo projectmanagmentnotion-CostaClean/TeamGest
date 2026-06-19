@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
+import { DetailGrid } from '../../../components/ui/DetailGrid'
+import { PageHeader } from '../../../components/ui/PageHeader'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { formatMoney } from '../../../utils/money'
@@ -58,15 +61,11 @@ export function NewServicePage() {
   if (savedService) {
     return (
       <div className="page-stack">
-        <section className="page-hero">
-          <div>
-            <p className="eyebrow">Servicios</p>
-            <h1>Nuevo servicio</h1>
-            <p className="page-description">
-              Flujo guiado completado. Puedes volver a revisar el servicio o continuar operando.
-            </p>
-          </div>
-        </section>
+        <PageHeader
+          eyebrow="Servicios"
+          title="Nuevo servicio"
+          description="Flujo guiado completado. Puedes volver a revisar el servicio o continuar operando."
+        />
         <NewServiceSuccess persisted={persisted} service={savedService} />
       </div>
     )
@@ -94,18 +93,16 @@ export function NewServicePage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Servicios</p>
-          <h1>Nuevo servicio</h1>
-          <p className="page-description">
-            StepFlow guiado para preparar un servicio con cliente, inmueble, equipo, horas y coste.
-          </p>
-        </div>
-        <Link className="button button--secondary button--sm" to="/services">
-          Cancelar
-        </Link>
-      </section>
+      <PageHeader
+        eyebrow="Servicios"
+        title="Nuevo servicio"
+        description="StepFlow guiado para preparar un servicio con cliente, inmueble, equipo, horas y coste."
+        secondaryAction={
+          <Link className="button button--secondary button--sm" to="/services">
+            Cancelar
+          </Link>
+        }
+      />
 
       <Card title="Progreso del flujo" description="Avanza paso a paso sin perder el contexto.">
         <NewServiceStepper currentStep={currentStep} />
@@ -113,6 +110,7 @@ export function NewServicePage() {
 
       {stepWarnings.length > 0 ? (
         <WarningBanner
+          compact
           title="Revision del paso"
           tone={stepWarnings.some((warning) => warning.level === 'danger') ? 'danger' : 'warning'}
         >
@@ -209,7 +207,7 @@ export function NewServicePage() {
         ) : null}
       </Card>
 
-      <section className="filter-row">
+      <ActionBar>
         <Button variant="secondary" onClick={goBack} disabled={currentStep === 0}>
           Atras
         </Button>
@@ -222,11 +220,11 @@ export function NewServicePage() {
             Confirmar servicio
           </Button>
         )}
-      </section>
+      </ActionBar>
 
       {selectedClient ? (
         <Card title="Contexto actual" description="Resumen del borrador mientras avanzas.">
-          <div className="detail-grid">
+          <DetailGrid>
             <div>
               <span className="muted-caption">Cliente</span>
               <strong>{selectedClient.name}</strong>
@@ -246,7 +244,7 @@ export function NewServicePage() {
               <span className="muted-caption">Coste laboral</span>
               <strong>{formatMoney(totalLaborCost)}</strong>
             </div>
-          </div>
+          </DetailGrid>
         </Card>
       ) : null}
     </div>

@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom'
+import { MetricGrid } from '../../../components/ui/MetricGrid'
+import { PageHeader } from '../../../components/ui/PageHeader'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import { StatCard } from '../../../components/ui/StatCard'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
@@ -32,27 +35,24 @@ export function PayrollPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Cierres</p>
-          <h1>Cierres</h1>
-          <p className="page-description">
-            Control mensual operativo de payroll basado en horas confirmadas y estados internos de revisión.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Cierres"
+        title="Seguimiento mensual"
+        description="Control mensual operativo de payroll basado en horas confirmadas y estados internos de revision."
+        meta={<StatusPill tone="info">Seguimiento interno</StatusPill>}
+      />
 
       <PayrollMonthSelector selectedMonth={month} />
 
-      <section className="stats-grid">
-        <StatCard label="Total a pagar" value={new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totals.totalPay)} hint="Estimación operativa del mes." tone="info" />
+      <MetricGrid columns={5}>
+        <StatCard label="Total a pagar" value={new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totals.totalPay)} hint="Estimacion operativa del mes." tone="info" />
         <StatCard label="Total horas" value={`${totals.totalHours.toFixed(1)} h`} hint="Horas confirmadas incluidas en payroll." tone="info" />
         <StatCard label="Trabajadores con pago" value={totals.workersCount.toString()} hint="Trabajadores con actividad pagable." tone="success" />
         <StatCard label="Servicios incluidos" value={includedServices.length.toString()} hint="Servicios completados, revisados o cerrados." tone="info" />
-        <StatCard label="Incidencias abiertas" value={getPayrollWarningsCount(warnings).toString()} hint="Alertas que requieren revisión antes del cierre." tone="warning" />
-      </section>
+        <StatCard label="Incidencias abiertas" value={getPayrollWarningsCount(warnings).toString()} hint="Alertas que requieren revision antes del cierre." tone="warning" />
+      </MetricGrid>
 
-      <WarningBanner title="Cálculo operativo" tone="info">
+      <WarningBanner title="Calculo operativo" tone="info">
         Los importes son estimaciones operativas basadas en horas confirmadas. No ejecutan pagos reales.
       </WarningBanner>
 

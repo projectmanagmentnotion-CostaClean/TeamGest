@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { MetricGrid } from '../../../components/ui/MetricGrid'
+import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatCard } from '../../../components/ui/StatCard'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { formatMonthLabel, getMonthKey } from '../../../utils/dates'
@@ -38,20 +41,15 @@ export function WorkersPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Trabajadores</p>
-          <h1>Trabajadores</h1>
-          <p className="page-description">
-            Lectura operativa del equipo, sus horas confirmadas, pago estimado y señales de
-            seguimiento para {monthLabel}.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Trabajadores"
+        title="Equipo operativo"
+        description={`Lectura operativa del equipo, sus horas confirmadas, pago estimado y senales de seguimiento para ${monthLabel}.`}
+      />
 
-      <section className="stats-grid">
+      <MetricGrid>
         <StatCard
-          hint="Disponibles para planificación actual."
+          hint="Disponibles para planificacion actual."
           label="Trabajadores activos"
           tone="success"
           value={workers.filter((worker) => worker.status === 'active').length.toString()}
@@ -63,20 +61,20 @@ export function WorkersPage() {
           value={`${totalHours.toFixed(1)} h`}
         />
         <StatCard
-          hint="Estimación agregada con datos actuales."
-          label="Nómina estimada del mes"
+          hint="Estimacion agregada con datos actuales."
+          label="Nomina estimada del mes"
           tone="info"
           value={formatMoney(totalPay)}
         />
         <StatCard
-          hint="Trabajadores con señales operativas activas."
+          hint="Trabajadores con senales operativas activas."
           label="Trabajadores con incidencias"
           tone="warning"
           value={workersWithWarnings.length.toString()}
         />
-      </section>
+      </MetricGrid>
 
-      <section className="filter-row">
+      <ActionBar aside={<span className="muted-caption">{visibleWorkers.length} visibles</span>}>
         {[
           ['all', 'Todos'],
           ['active', 'Activos'],
@@ -92,12 +90,13 @@ export function WorkersPage() {
             {label}
           </Button>
         ))}
-      </section>
+      </ActionBar>
 
       {visibleWorkers.length === 0 ? (
         <EmptyState
           title="Sin resultados para este filtro"
           description="Prueba con otro estado para revisar el resto del equipo."
+          icon="W"
         />
       ) : (
         <section className="cards-grid">

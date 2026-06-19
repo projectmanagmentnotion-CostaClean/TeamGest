@@ -1,4 +1,5 @@
 import { Card } from '../../../components/ui/Card'
+import { DetailGrid } from '../../../components/ui/DetailGrid'
 import { formatMoney } from '../../../utils/money'
 
 type PayrollSummaryCardProps = {
@@ -23,8 +24,8 @@ export function PayrollSummaryCard(props: PayrollSummaryCardProps) {
   } = props
 
   return (
-    <Card title="Resumen mensual" description="Estimación operativa basada en horas confirmadas.">
-      <div className="detail-grid detail-grid--three">
+    <Card title="Resumen mensual" description="Estimacion operativa basada en horas confirmadas.">
+      <DetailGrid columns={3}>
         <div>
           <span className="muted-caption">Total a pagar</span>
           <strong>{formatMoney(totalPay)}</strong>
@@ -49,7 +50,7 @@ export function PayrollSummaryCard(props: PayrollSummaryCardProps) {
           <span className="muted-caption">Trabajadores / incidencias</span>
           <strong>{`${workersCount} / ${warningsCount}`}</strong>
         </div>
-      </div>
+      </DetailGrid>
     </Card>
   )
 }

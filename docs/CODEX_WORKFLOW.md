@@ -39,3 +39,7 @@ Combined sprint block 5 should report payroll calculation work and review-lock w
 ## Block 6 reporting
 
 Combined sprint block 6 should report storage management work and safety-audit work separately. Any localStorage limitation must be stated explicitly and honestly.
+
+## Block 7 reporting
+
+Combined sprint block 7 should report visual polish work and mobile-first work separately. Any lack of browser visual QA should be stated explicitly and honestly.

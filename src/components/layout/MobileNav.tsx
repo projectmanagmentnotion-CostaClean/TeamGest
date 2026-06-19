@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 const mobileItems = [
   { label: 'Inicio', to: '/dashboard' },
   { label: 'Servicios', to: '/services' },
-  { label: 'Clientes', to: '/clients' },
+  { label: 'Equipo', to: '/workers' },
   { label: 'Cierres', to: '/payroll' },
   { label: 'Ajustes', to: '/settings' },
 ]

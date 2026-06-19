@@ -87,3 +87,19 @@ Export actions should feel safe and immediate. Import and reset actions must fee
 ## Local-only warning patterns
 
 Any message related to persistence should remind the operator that the system is local-first and that JSON backup does not equal cloud or enterprise-grade storage.
+
+## Professional visual system
+
+Shared page headers, section headers, metric grids, entity cards and detail grids should create a calmer and more premium product rhythm across modules.
+
+## Mobile-first operational patterns
+
+Small screens should prioritize stacked cards, clear action rows, readable navigation and enough bottom spacing so fixed navigation never hides primary actions.
+
+## Responsive grids
+
+Dense summary areas should use reusable grids that collapse predictably rather than one-off per-page layouts.
+
+## Danger and action hierarchy
+
+Destructive controls should be visually separated from routine actions through dedicated surfaces and cautious copy.

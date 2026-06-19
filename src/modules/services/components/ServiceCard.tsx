@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Badge } from '../../../components/ui/Badge'
-import { Card } from '../../../components/ui/Card'
+import { EntityCard } from '../../../components/ui/EntityCard'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import type { Client } from '../../../domain/clients/client.types'
 import type { Property } from '../../../domain/properties/property.types'
 import type { ServiceJob } from '../../../domain/services/service.types'
@@ -37,50 +37,28 @@ export function ServiceCard({
         : 'Sin franja horaria'
 
   return (
-    <Card
-      className="entity-card"
-      title={formatServiceTypeLabel(service.serviceType)}
-      description={`${formatDate(service.date)} · ${timeRange}`}
-      action={
-        <Badge tone={getServiceStatusTone(service.status)}>
+    <EntityCard
+      badges={
+        <StatusPill tone={getServiceStatusTone(service.status)}>
           {formatServiceStatusLabel(service.status)}
-        </Badge>
+        </StatusPill>
       }
-    >
-      <div className="entity-card__stats">
-        <div>
-          <span className="muted-caption">Cliente</span>
-          <strong>{client?.name ?? 'Cliente no disponible'}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Inmueble</span>
-          <strong>{property?.name ?? 'Inmueble no disponible'}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Ciudad</span>
-          <strong>{property?.city || 'Ciudad pendiente'}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Asignaciones</span>
-          <strong>{service.assignments.length}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Horas confirmadas</span>
-          <strong>{totalHours.toFixed(1)} h</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Coste laboral</span>
-          <strong>{formatMoney(laborCost)}</strong>
-        </div>
-      </div>
-      <div className="entity-card__footer">
-        <span className={warningCount > 0 ? 'warning-text' : 'muted-caption'}>
-          {warningCount} incidencias
-        </span>
+      footer={
         <Link className="section-link" to={`/services/${service.id}`}>
           Ver detalle
         </Link>
-      </div>
-    </Card>
+      }
+      meta={[
+        { label: 'Cliente', value: client?.name ?? 'Cliente no disponible' },
+        { label: 'Inmueble', value: property?.name ?? 'Inmueble no disponible' },
+        { label: 'Ciudad', value: property?.city || 'Ciudad pendiente' },
+        { label: 'Asignaciones', value: String(service.assignments.length) },
+        { label: 'Horas confirmadas', value: `${totalHours.toFixed(1)} h` },
+        { label: 'Coste laboral', value: formatMoney(laborCost) },
+      ]}
+      subtitle={`${formatDate(service.date)} · ${timeRange}`}
+      title={formatServiceTypeLabel(service.serviceType)}
+      warningCount={warningCount}
+    />
   )
 }

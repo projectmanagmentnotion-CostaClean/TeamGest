@@ -1,4 +1,5 @@
 import { startTransition, useState } from 'react'
+import { PageHeader } from '../../../components/ui/PageHeader'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { listAuditEntries } from '../../../infrastructure/audit/auditRepository'
 import { getStorageTools } from '../../../infrastructure/repositoryFactory'
@@ -30,16 +31,11 @@ export function SettingsPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Ajustes</p>
-          <h1>Control local del sistema</h1>
-          <p className="page-description">
-            Centro de control para revisar el estado local, exportar copias, recuperar datos
-            compatibles y proteger el prototipo local-first.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Ajustes"
+        title="Control local del sistema"
+        description="Centro de control para revisar el estado local, exportar copias, recuperar datos compatibles y proteger el prototipo local-first."
+      />
 
       <LocalDataWarning />
 

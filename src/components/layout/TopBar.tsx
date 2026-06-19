@@ -1,5 +1,4 @@
-import { Badge } from '../ui/Badge'
-import { Button } from '../ui/Button'
+import { StatusPill } from '../ui/StatusPill'
 
 export function TopBar() {
   const currentDate = new Intl.DateTimeFormat('es-ES', {
@@ -16,11 +15,9 @@ export function TopBar() {
       </div>
 
       <div className="topbar-actions">
-        <Badge tone="success">Operación activa</Badge>
+        <StatusPill tone="success">Operacion activa</StatusPill>
+        <StatusPill tone="info">Modo local</StatusPill>
         <span className="topbar-date">{currentDate}</span>
-        <Button size="sm" variant="secondary">
-          Vista general
-        </Button>
       </div>
     </header>
   )

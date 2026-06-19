@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { MetricGrid } from '../../../components/ui/MetricGrid'
+import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatCard } from '../../../components/ui/StatCard'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { formatMonthLabel, getMonthKey } from '../../../utils/dates'
@@ -33,18 +36,13 @@ export function ClientsPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Clientes</p>
-          <h1>Clientes</h1>
-          <p className="page-description">
-            Vista comercial read-only con inmuebles asociados, servicios del mes y coste laboral
-            estimado para {monthLabel}.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Clientes"
+        title="Cartera de clientes"
+        description={`Vista comercial read-only con inmuebles asociados, servicios del mes y coste laboral estimado para ${monthLabel}.`}
+      />
 
-      <section className="stats-grid">
+      <MetricGrid>
         <StatCard
           hint="Clientes actualmente operativos."
           label="Clientes activos"
@@ -69,9 +67,9 @@ export function ClientsPage() {
           tone="warning"
           value={clientsWithWarnings.length.toString()}
         />
-      </section>
+      </MetricGrid>
 
-      <section className="filter-row">
+      <ActionBar aside={<span className="muted-caption">{visibleClients.length} visibles</span>}>
         {[
           ['all', 'Todos'],
           ['active', 'Activos'],
@@ -87,12 +85,13 @@ export function ClientsPage() {
             {label}
           </Button>
         ))}
-      </section>
+      </ActionBar>
 
       {visibleClients.length === 0 ? (
         <EmptyState
           title="Sin resultados para este filtro"
           description="Prueba con otro filtro para revisar el resto de la cartera."
+          icon="C"
         />
       ) : (
         <section className="cards-grid">

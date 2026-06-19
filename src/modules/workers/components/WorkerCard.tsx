@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Badge } from '../../../components/ui/Badge'
-import { Card } from '../../../components/ui/Card'
+import { EntityCard } from '../../../components/ui/EntityCard'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import type { Worker } from '../../../domain/workers/worker.types'
 import {
   formatEntityStatusLabel,
@@ -25,42 +25,38 @@ export function WorkerCard({
   worker,
 }: WorkerCardProps) {
   return (
-    <Card
-      className="worker-card"
-      title={worker.name}
-      description={formatWorkerRoleLabel(worker.role)}
-      action={
-        <Badge tone={getEntityStatusTone(worker.status)}>
+    <EntityCard
+      badges={
+        <StatusPill tone={getEntityStatusTone(worker.status)}>
           {formatEntityStatusLabel(worker.status)}
-        </Badge>
+        </StatusPill>
       }
-    >
-      <div className="worker-card__stats">
-        <div>
-          <span className="muted-caption">Tarifa</span>
-          <strong>{worker.defaultHourlyRate ? formatMoney(worker.defaultHourlyRate) : 'Pendiente'}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Horas mes</span>
-          <strong>{monthlyHours.toFixed(1)} h</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Pago estimado</span>
-          <strong>{formatMoney(monthlyPay)}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Servicios mes</span>
-          <strong>{monthlyServices}</strong>
-        </div>
-      </div>
-      <div className="worker-card__footer">
-        <span className={warningCount > 0 ? 'warning-text' : 'muted-caption'}>
-          {warningCount} incidencias
-        </span>
+      footer={
         <Link className="section-link" to={`/workers/${worker.id}`}>
           Ver detalle
         </Link>
-      </div>
-    </Card>
+      }
+      meta={[
+        {
+          label: 'Tarifa',
+          value: worker.defaultHourlyRate ? formatMoney(worker.defaultHourlyRate) : 'Pendiente',
+        },
+        {
+          label: 'Horas mes',
+          value: `${monthlyHours.toFixed(1)} h`,
+        },
+        {
+          label: 'Pago estimado',
+          value: formatMoney(monthlyPay),
+        },
+        {
+          label: 'Servicios mes',
+          value: String(monthlyServices),
+        },
+      ]}
+      subtitle={formatWorkerRoleLabel(worker.role)}
+      title={worker.name}
+      warningCount={warningCount}
+    />
   )
 }

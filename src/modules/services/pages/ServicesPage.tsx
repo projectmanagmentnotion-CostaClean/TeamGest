@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ActionBar } from '../../../components/ui/ActionBar'
 import { Button } from '../../../components/ui/Button'
 import { EmptyState } from '../../../components/ui/EmptyState'
+import { MetricGrid } from '../../../components/ui/MetricGrid'
+import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatCard } from '../../../components/ui/StatCard'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { formatMonthLabel, getMonthKey } from '../../../utils/dates'
@@ -38,20 +41,18 @@ export function ServicesPage() {
 
   return (
     <div className="page-stack">
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Servicios</p>
-          <h1>Servicios</h1>
-          <p className="page-description">
-            Centro operativo del ciclo de servicio con asignaciones, coste laboral y estado para {monthLabel}.
-          </p>
-        </div>
-        <Link className="button button--primary" to="/services/new">
-          Nuevo servicio
-        </Link>
-      </section>
+      <PageHeader
+        eyebrow="Servicios"
+        title="Centro de servicios"
+        description={`Centro operativo del ciclo de servicio con asignaciones, coste laboral y estado para ${monthLabel}.`}
+        primaryAction={
+          <Link className="button button--primary" to="/services/new">
+            Nuevo servicio
+          </Link>
+        }
+      />
 
-      <section className="stats-grid">
+      <MetricGrid>
         <StatCard
           hint={`Servicios registrados en ${monthLabel}.`}
           label="Servicios este mes"
@@ -76,9 +77,9 @@ export function ServicesPage() {
           tone="warning"
           value={servicesWithWarnings.length.toString()}
         />
-      </section>
+      </MetricGrid>
 
-      <section className="filter-row">
+      <ActionBar aside={<span className="muted-caption">{visibleServices.length} visibles</span>}>
         {[
           ['all', 'Todos'],
           ['draft', 'Borrador'],
@@ -101,12 +102,13 @@ export function ServicesPage() {
             {label}
           </Button>
         ))}
-      </section>
+      </ActionBar>
 
       {visibleServices.length === 0 ? (
         <EmptyState
           title="Sin resultados para este filtro"
           description="Prueba con otro filtro para revisar el resto de servicios."
+          icon="S"
           action={
             <Link className="button button--secondary button--sm" to="/services/new">
               Nuevo servicio

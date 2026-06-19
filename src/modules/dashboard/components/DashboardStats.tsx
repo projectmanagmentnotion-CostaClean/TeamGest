@@ -1,3 +1,4 @@
+import { MetricGrid } from '../../../components/ui/MetricGrid'
 import { StatCard } from '../../../components/ui/StatCard'
 
 type DashboardStatsProps = {
@@ -11,7 +12,7 @@ type DashboardStatsProps = {
 
 export function DashboardStats({ stats }: DashboardStatsProps) {
   return (
-    <section className="stats-grid">
+    <MetricGrid>
       {stats.map((stat) => (
         <StatCard
           key={stat.label}
@@ -21,6 +22,6 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
           value={stat.value}
         />
       ))}
-    </section>
+    </MetricGrid>
   )
 }

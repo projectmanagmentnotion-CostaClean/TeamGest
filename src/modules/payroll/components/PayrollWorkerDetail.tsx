@@ -1,4 +1,5 @@
 import { Card } from '../../../components/ui/Card'
+import { DetailGrid } from '../../../components/ui/DetailGrid'
 import type { PayrollSummary } from '../../../domain/payroll/payroll.types'
 import type { Worker } from '../../../domain/workers/worker.types'
 import { formatWorkerRoleLabel } from '../../../utils/labels'
@@ -18,7 +19,7 @@ export function PayrollWorkerDetail({ breakdown, row, warnings, worker }: Payrol
       title={worker?.name ?? 'Trabajador no disponible'}
       description={worker ? formatWorkerRoleLabel(worker.role) : 'Sin rol disponible'}
     >
-      <div className="detail-grid">
+      <DetailGrid>
         <div>
           <span className="muted-caption">Horas del mes</span>
           <strong>{row.totalHours.toFixed(1)} h</strong>
@@ -36,7 +37,7 @@ export function PayrollWorkerDetail({ breakdown, row, warnings, worker }: Payrol
             {warnings.length} incidencias
           </span>
         </div>
-      </div>
+      </DetailGrid>
       {warnings.length > 0 ? (
         <div className="stack-list">
           {warnings.map((warning, index) => (

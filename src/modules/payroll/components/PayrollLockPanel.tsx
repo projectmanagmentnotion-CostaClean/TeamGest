@@ -1,5 +1,7 @@
 import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
+import { DetailGrid } from '../../../components/ui/DetailGrid'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import type { PayrollLockedSnapshot, PayrollMonthState } from '../../../domain/payroll/payroll.types'
 import { formatDate } from '../../../utils/dates'
 import { formatMoney } from '../../../utils/money'
@@ -24,23 +26,26 @@ export function PayrollLockPanel({
     <Card title="Bloqueo del cierre" description="Controla el cierre operativo del mes en localStorage.">
       <div className="stack-list">
         <p className="page-description">
-          Bloquear el cierre evita cambios operativos accidentales en este resumen. No sustituye revisión fiscal o pago bancario.
+          Bloquear el cierre evita cambios operativos accidentales en este resumen. No sustituye revision fiscal o pago bancario.
         </p>
         {locked && snapshot ? (
-          <div className="detail-grid">
-            <div>
-              <span className="muted-caption">Bloqueado el</span>
-              <strong>{formatDate(state.lockedAt ?? snapshot.createdAt)}</strong>
-            </div>
-            <div>
-              <span className="muted-caption">Total bloqueado</span>
-              <strong>{formatMoney(snapshot.totalPay)}</strong>
-            </div>
-            <div>
-              <span className="muted-caption">Horas bloqueadas</span>
-              <strong>{snapshot.totalHours.toFixed(1)} h</strong>
-            </div>
-          </div>
+          <>
+            <StatusPill tone="blocked">Mes bloqueado</StatusPill>
+            <DetailGrid>
+              <div>
+                <span className="muted-caption">Bloqueado el</span>
+                <strong>{formatDate(state.lockedAt ?? snapshot.createdAt)}</strong>
+              </div>
+              <div>
+                <span className="muted-caption">Total bloqueado</span>
+                <strong>{formatMoney(snapshot.totalPay)}</strong>
+              </div>
+              <div>
+                <span className="muted-caption">Horas bloqueadas</span>
+                <strong>{snapshot.totalHours.toFixed(1)} h</strong>
+              </div>
+            </DetailGrid>
+          </>
         ) : (
           <Button
             variant="primary"

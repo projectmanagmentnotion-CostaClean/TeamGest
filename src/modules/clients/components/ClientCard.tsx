@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Badge } from '../../../components/ui/Badge'
-import { Card } from '../../../components/ui/Card'
+import { EntityCard } from '../../../components/ui/EntityCard'
+import { StatusPill } from '../../../components/ui/StatusPill'
 import type { Client } from '../../../domain/clients/client.types'
 import { formatEntityStatusLabel, getEntityStatusTone } from '../../../utils/labels'
 import { formatMoney } from '../../../utils/money'
@@ -21,42 +21,26 @@ export function ClientCard({
   warningCount,
 }: ClientCardProps) {
   return (
-    <Card
-      className="entity-card"
-      title={client.name}
-      description={client.phone ?? client.email ?? 'Contacto pendiente'}
-      action={
-        <Badge tone={getEntityStatusTone(client.status)}>
+    <EntityCard
+      badges={
+        <StatusPill tone={getEntityStatusTone(client.status)}>
           {formatEntityStatusLabel(client.status)}
-        </Badge>
+        </StatusPill>
       }
-    >
-      <div className="entity-card__stats">
-        <div>
-          <span className="muted-caption">Correo</span>
-          <strong>{client.email ?? 'No disponible'}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Inmuebles</span>
-          <strong>{propertyCount}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Servicios mes</span>
-          <strong>{servicesThisMonth}</strong>
-        </div>
-        <div>
-          <span className="muted-caption">Coste laboral mes</span>
-          <strong>{formatMoney(laborCostThisMonth)}</strong>
-        </div>
-      </div>
-      <div className="entity-card__footer">
-        <span className={warningCount > 0 ? 'warning-text' : 'muted-caption'}>
-          {warningCount} incidencias
-        </span>
+      footer={
         <Link className="section-link" to={`/clients/${client.id}`}>
           Ver detalle
         </Link>
-      </div>
-    </Card>
+      }
+      meta={[
+        { label: 'Correo', value: client.email ?? 'No disponible' },
+        { label: 'Inmuebles', value: String(propertyCount) },
+        { label: 'Servicios mes', value: String(servicesThisMonth) },
+        { label: 'Coste laboral mes', value: formatMoney(laborCostThisMonth) },
+      ]}
+      subtitle={client.phone ?? client.email ?? 'Contacto pendiente'}
+      title={client.name}
+      warningCount={warningCount}
+    />
   )
 }
