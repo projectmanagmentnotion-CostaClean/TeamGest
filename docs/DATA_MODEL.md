@@ -9,6 +9,8 @@
 - ServiceAssignment: worker participation with hours, hourly rate, extras, deductions and confirmation state.
 - PayrollSummary: monthly worker aggregation generated from confirmed assignments.
 - NewServiceDraft: transient model used by the StepFlow before preview or local persistence.
+- PayrollMonthState: persisted local state for month status, worker statuses and lock metadata.
+- PayrollAuditEntry: persisted local audit record for payroll workflow actions.
 
 ## Relationships
 
@@ -20,6 +22,7 @@
 - In the UI, client profiles aggregate their linked properties and linked services.
 - In the UI, property profiles aggregate their linked services and worker participation history.
 - Services follow a visible lifecycle from draft to closure.
+- Payroll rows are derived from payable service assignments.
 
 ## Calculation rules
 
@@ -32,6 +35,7 @@
 - Property monthly cost is the sum of service labor cost for services linked to that property in the target month.
 - Property worker participation aggregates assignments by worker for the target month.
 - New service draft assignments reuse the same assignment pay formula before persistence.
+- Worker payroll status can diverge from month status in local state when needed.
 
 ## Payroll logic
 
@@ -52,3 +56,4 @@
 - Newly created services can be appended only through the service repository.
 - Created services are stored in localStorage and merged with seed data at read time.
 - There is still no backend persistence.
+- Payroll month states, audit entries and lock snapshots are stored only in localStorage.

@@ -62,3 +62,14 @@ New services can be stored only in browser localStorage through the repository a
 - No authentication.
 - No payments.
 - Any persistence remains local to the browser.
+
+## Block 5 status
+
+Block 5 combines Sprint 9 and Sprint 10 over local repository and localStorage state.
+
+- Sprint 9 delivers the monthly payroll module with month summary, worker rows, warnings and service breakdown.
+- Sprint 10 delivers review, paid and locked closure tracking with localStorage-only state, lock snapshot and audit trail.
+
+## Payroll persistence note
+
+Payroll review, paid and locked states are internal operational markers stored in localStorage. They do not execute real payments and do not represent legal or fiscal closure.

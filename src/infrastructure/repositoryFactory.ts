@@ -17,10 +17,10 @@ function createRepositories() {
     clients: clientRepository,
     properties: propertyRepository,
     services: serviceRepository,
-    payroll: createPayrollRepository(
-      workerRepository.listWorkers(),
-      serviceRepository.listServices(),
-    ),
+    payroll: createPayrollRepository({
+      listWorkers: workerRepository.listWorkers,
+      listServices: serviceRepository.listServices,
+    }),
   }
 }
 

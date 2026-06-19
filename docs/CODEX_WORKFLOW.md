@@ -31,3 +31,7 @@ Combined sprint block 3 should report clients work and properties work separatel
 ## Block 4 reporting
 
 Combined sprint block 4 should report services read-only work and StepFlow work separately. Any persistence limitation must be stated explicitly.
+
+## Block 5 reporting
+
+Combined sprint block 5 should report payroll calculation work and review-lock workflow work separately. Any persistence limitation must be stated explicitly.

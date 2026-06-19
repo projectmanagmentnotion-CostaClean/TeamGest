@@ -59,3 +59,19 @@ When a screen is informational only, the layout should make that obvious through
 ## Mobile scanability
 
 Lists and summaries should collapse cleanly into stacked cards. Dense tables should be avoided unless the data can remain readable on a narrow screen.
+
+## Payroll financial-operational UX
+
+Payroll screens should feel serious and clear, but still operational rather than accounting-heavy. The user should understand totals, risks and status at a glance.
+
+## Review, paid and locked status UX
+
+Status progression should read as internal workflow tracking. The interface must clarify that paid is a local operational mark, not a bank transfer.
+
+## Lock panel UX
+
+Lock controls should be visually cautious, explain the effect clearly and surface blocking warnings before allowing the month to be locked.
+
+## Audit trail UX
+
+Audit entries should be simple, chronological and easy to scan so operational changes can be traced without reading dense logs.

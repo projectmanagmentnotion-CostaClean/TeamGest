@@ -34,3 +34,10 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - New service may persist only through repository abstraction and the localStorage adapter.
 - Seed mock data must never be mutated.
 - Detail pages should resolve route ids through repositories, not inline data lookups.
+
+## Block 5 ownership
+
+- Payroll owns payroll calculations, payroll components, payroll warnings, payroll status flow and payroll storage helpers.
+- Payroll local state must persist only through the payroll repository and localStorage adapter.
+- UI components must not call localStorage directly.
+- Locked closure is operational only, not fiscal or legal.
