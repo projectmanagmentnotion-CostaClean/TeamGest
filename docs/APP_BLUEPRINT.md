@@ -25,7 +25,6 @@ The intended workflow starts with service planning, continues with worker assign
 - Authentication and role management.
 - Payments or invoicing logic.
 - Real forms, CRUD flows or persistence.
-- Calculations, warnings or mock business datasets.
 
 ## Sprint 1 status
 
@@ -38,14 +37,6 @@ Block 2 combines Sprint 3 and Sprint 4 over a mock-only repository layer.
 - Sprint 3 turns the dashboard into an operational command center with KPIs, today services, activity feed, quick actions, operational focus and warning aggregation.
 - Sprint 4 delivers a complete read-only workers module with worker list summaries, filter states, worker profile detail, monthly summary, service history and worker-specific warnings.
 
-## Still intentionally excluded
-
-- CRUD actions and real create/edit/delete flows.
-- Real backend or database.
-- Authentication.
-- Payments.
-- Any mutation of mock data from the UI.
-
 ## Block 3 status
 
 Block 3 combines Sprint 5 and Sprint 6 on top of the same mock-only repository layer.
@@ -53,9 +44,21 @@ Block 3 combines Sprint 5 and Sprint 6 on top of the same mock-only repository l
 - Sprint 5 delivers the complete read-only clients module with client list summaries, client detail, property relationships, service history and client warnings.
 - Sprint 6 delivers the complete read-only properties module with property list summaries, property detail, worker participation history, service history and property warnings.
 
+## Block 4 status
+
+Block 4 combines Sprint 7 and Sprint 8 over the existing repository layer.
+
+- Sprint 7 delivers the complete read-only services module with list, detail, warnings, lifecycle, assignments and labor cost summaries.
+- Sprint 8 delivers the guided New Service StepFlow with draft validation and local repository persistence for newly created services.
+
+## Persistence note
+
+New services can be stored only in browser localStorage through the repository abstraction. There is still no backend persistence, auth or payments.
+
 ## Still mock and local only
 
-- No CRUD flows.
+- No production CRUD flows.
 - No backend or database.
 - No authentication.
 - No payments.
+- Any persistence remains local to the browser.

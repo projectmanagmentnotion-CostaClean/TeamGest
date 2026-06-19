@@ -10,7 +10,7 @@ Always run the build before closing a sprint. Run lint whenever the project expo
 
 ## Git discipline
 
-Always commit the completed sprint. Push when a remote exists. If no remote exists, leave the repository clean after the local commit and provide the exact commands required to publish it.
+Always commit the completed sprint. Push when a remote exists.
 
 ## Editing discipline
 
@@ -27,3 +27,7 @@ Always include build, lint, git status, commit hash and push status in the final
 ## Block 3 reporting
 
 Combined sprint block 3 should report clients work and properties work separately, even when both are delivered in one implementation pass.
+
+## Block 4 reporting
+
+Combined sprint block 4 should report services read-only work and StepFlow work separately. Any persistence limitation must be stated explicitly.

@@ -8,6 +8,7 @@
 - ServiceJob: operational service with status, date and worker assignments.
 - ServiceAssignment: worker participation with hours, hourly rate, extras, deductions and confirmation state.
 - PayrollSummary: monthly worker aggregation generated from confirmed assignments.
+- NewServiceDraft: transient model used by the StepFlow before preview or local persistence.
 
 ## Relationships
 
@@ -18,6 +19,7 @@
 - One worker can appear in many assignments across many services.
 - In the UI, client profiles aggregate their linked properties and linked services.
 - In the UI, property profiles aggregate their linked services and worker participation history.
+- Services follow a visible lifecycle from draft to closure.
 
 ## Calculation rules
 
@@ -29,6 +31,7 @@
 - Client monthly cost is the sum of service labor cost for services linked to that client in the target month.
 - Property monthly cost is the sum of service labor cost for services linked to that property in the target month.
 - Property worker participation aggregates assignments by worker for the target month.
+- New service draft assignments reuse the same assignment pay formula before persistence.
 
 ## Payroll logic
 
@@ -42,3 +45,10 @@
 - Worker warnings combine profile-level checks and operational assignment checks.
 - Property warnings validate client linkage and inactive states.
 - Dashboard warnings aggregate service, worker, property and payroll warnings into a prioritized list.
+
+## Local service storage policy
+
+- Seed mock services remain immutable.
+- Newly created services can be appended only through the service repository.
+- Created services are stored in localStorage and merged with seed data at read time.
+- There is still no backend persistence.

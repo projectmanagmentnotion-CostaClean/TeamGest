@@ -10,11 +10,11 @@ Cards are the default surface for summaries, placeholders, forms and warnings. T
 
 ## StepFlow future
 
-Complex create and review flows will evolve into a step-based experience. Sprint 1 includes the visual language for step progression without activating form logic yet.
+Complex create and review flows evolve into a step-based experience. The current StepFlow keeps the user focused on one decision at a time while preserving a stable draft.
 
-## Warning system future
+## Warning system
 
-The warning banner component establishes a shared tone system for informational, warning, danger and success states. Later sprints can connect repository and calculation outputs to this pattern.
+Warning banners and warning cards establish a shared tone system for informational, warning, danger, blocked and success states. Later sprints can keep wiring repository and calculation outputs into this pattern.
 
 ## Mobile-first principles
 
@@ -28,18 +28,6 @@ The dashboard should behave like a command center: strong hero hierarchy, compac
 
 Worker detail screens are read-only operational profiles. They should explain who the worker is, what they worked on this month, what they are expected to earn and what needs review.
 
-## Card hierarchy
-
-Primary cards should carry the most actionable summaries first. Secondary cards should provide progressive detail, not compete visually with the top summary areas.
-
-## Read-only operational screens
-
-When a screen is informational only, the layout should make that obvious through clear summaries, labels and warning states rather than empty form controls.
-
-## Mobile scanability
-
-Lists and summaries should collapse cleanly into stacked cards. Dense tables should be avoided unless the data can remain readable on a narrow screen.
-
 ## Client profile UX
 
 Client screens should clarify the commercial relationship quickly: who the client is, what properties depend on them, what services ran this month and where warnings require follow-up.
@@ -48,10 +36,26 @@ Client screens should clarify the commercial relationship quickly: who the clien
 
 Property screens should combine place context, linked client, service history and worker participation into a compact operational profile that can be scanned without editing controls.
 
+## Services operational profile UX
+
+Service screens should expose operational state immediately: what service it is, where it happens, who is assigned, what it costs and which warnings block clean execution.
+
+## StepFlow creation UX
+
+The creation flow should reduce decision load by revealing only one step at a time while keeping a visible sense of progress and a stable local draft.
+
+## Guided validation and warnings
+
+Warnings should appear close to the active step, be readable at a glance and block forward movement only when the service draft is not yet viable.
+
 ## Cross-linked operational navigation
 
-Read-only profiles should be linked to their adjacent entities so the user can move naturally from client to property, from property to worker and back through the operational chain.
+Read-only profiles should be linked to adjacent entities so the user can move naturally across the operational chain.
 
-## Read-only commercial and property screens
+## Read-only operational screens
 
-Commercial and property modules should feel actionable through summaries, links and warnings even when no CRUD actions are available yet.
+When a screen is informational only, the layout should make that obvious through clear summaries, labels and warning states rather than empty form controls.
+
+## Mobile scanability
+
+Lists and summaries should collapse cleanly into stacked cards. Dense tables should be avoided unless the data can remain readable on a narrow screen.
