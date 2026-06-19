@@ -41,8 +41,9 @@ function createStorageTools() {
 
 export function getRepositories() {
   if (!repositories) {
-    // Future sprints can swap this factory to localStorage or a real backend
-    // without changing page-level consumers.
+    // Runtime remains local-first on purpose.
+    // Real adapters and backend activation stay disabled until
+    // auth, security, and migration strategy are explicitly approved.
     repositories = createRepositories()
   }
 

@@ -71,3 +71,9 @@
 - Reset actions affect local browser data only and require confirmation in UI.
 - Locked closures remain operational state, not fiscal or legal finalization.
 - Soft delete is not broadly implemented yet; reset is the only destructive local operation in this sprint.
+
+## Block 8 readiness note
+
+- Repository result envelopes and health models are planned for future real adapters but are not yet enforced across runtime repositories.
+- Data-real mapping plans exist as documentation and planning constants only.
+- Supabase and auth are still not active runtime dependencies.

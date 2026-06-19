@@ -54,3 +54,9 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Shared UI primitives are allowed only when they stay generic and reusable across modules.
 - Module-specific business logic must stay inside the owning module even during polish work.
 - Visual polish must not introduce business rules into UI primitives.
+
+## Block 8 ownership
+
+- QA hardening may fix low-risk bugs, but must not broaden runtime scope into new features.
+- Real-data planning files must stay isolated from active runtime imports.
+- Repository readiness types may be added for future work, but current repositories do not switch mode in this block.

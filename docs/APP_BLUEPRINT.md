@@ -95,3 +95,14 @@ Block 7 combines Sprint 13 and Sprint 14 over the existing local-first product.
 ## Product quality note
 
 This block adds no backend, auth, payments or new database capabilities. It focuses on presentation quality and responsive operational use.
+
+## Block 8 status
+
+Block 8 combines Sprint 15 and Sprint 16 on top of the same local-first runtime.
+
+- Sprint 15 performs QA hardening, route verification, bug fixes, and checklist documentation.
+- Sprint 16 adds data-real readiness contracts and planning documents without activating Supabase or auth.
+
+## Runtime note
+
+Local-first runtime remains active. Supabase, auth, and real backend execution are still intentionally disabled.

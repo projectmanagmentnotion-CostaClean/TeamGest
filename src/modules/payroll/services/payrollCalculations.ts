@@ -122,7 +122,7 @@ export function getPayrollWorkerServiceBreakdown(
   return getPayableServicesByMonth(services, month)
     .flatMap((service) =>
       service.assignments
-        .filter((assignment) => assignment.workerId === workerId)
+        .filter((assignment) => assignment.workerId === workerId && assignment.confirmed)
         .map((assignment) => ({
           service,
           assignment,

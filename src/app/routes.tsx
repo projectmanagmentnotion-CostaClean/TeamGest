@@ -34,6 +34,7 @@ export function AppRoutes() {
         { path: 'payroll', element: <PayrollPage /> },
         { path: 'payroll/:month', element: <PayrollMonthDetailPage /> },
         { path: 'settings', element: <SettingsPage /> },
+        { path: '*', element: <Navigate to="/dashboard" replace /> },
       ],
     },
   ])

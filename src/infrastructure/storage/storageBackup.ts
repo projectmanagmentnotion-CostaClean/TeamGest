@@ -30,6 +30,10 @@ type BackupHistoryEntry = {
   schemaVersion: number
 }
 
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 function readBackupHistory() {
   return readJson<BackupHistoryEntry[]>(BACKUP_HISTORY_KEY, [])
 }
@@ -40,8 +44,7 @@ function writeBackupHistory(entries: BackupHistoryEntry[]) {
 
 export function buildTeamGestBackup(): TeamGestBackupPayload {
   const metadata = readJson<Record<string, unknown>>(STORAGE_METADATA_KEY, {})
-  const schemaVersion =
-    typeof metadata.schemaVersion === 'number' ? metadata.schemaVersion : 1
+  const schemaVersion = typeof metadata.schemaVersion === 'number' ? metadata.schemaVersion : 1
   const exportedAt = new Date().toISOString()
 
   return {
@@ -60,7 +63,7 @@ export function buildTeamGestBackup(): TeamGestBackupPayload {
 }
 
 export function validateTeamGestBackup(payload: unknown): payload is TeamGestBackupPayload {
-  if (typeof payload !== 'object' || payload === null) {
+  if (!isPlainRecord(payload)) {
     return false
   }
 
@@ -69,8 +72,13 @@ export function validateTeamGestBackup(payload: unknown): payload is TeamGestBac
     candidate.appName === 'TeamGest' &&
     typeof candidate.exportedAt === 'string' &&
     typeof candidate.schemaVersion === 'number' &&
-    typeof candidate.data === 'object' &&
-    candidate.data !== null
+    isPlainRecord(candidate.data) &&
+    Array.isArray(candidate.data.createdServices) &&
+    isPlainRecord(candidate.data.payrollMonths) &&
+    isPlainRecord(candidate.data.payrollAudit) &&
+    Array.isArray(candidate.data.appAudit) &&
+    isPlainRecord(candidate.data.settings) &&
+    isPlainRecord(candidate.data.metadata)
   )
 }
 
@@ -88,7 +96,13 @@ export function getBackupSummary(payload: TeamGestBackupPayload) {
 
 export async function parseTeamGestBackup(input: string | File) {
   const rawText = typeof input === 'string' ? input : await input.text()
-  const parsed = JSON.parse(rawText) as unknown
+  let parsed: unknown
+
+  try {
+    parsed = JSON.parse(rawText) as unknown
+  } catch {
+    throw new Error('El contenido no es un JSON válido de TeamGest.')
+  }
 
   if (!validateTeamGestBackup(parsed)) {
     throw new Error('El archivo no coincide con el formato de copia de TeamGest.')
@@ -128,6 +142,10 @@ export function downloadTeamGestBackup(payload = buildTeamGestBackup()) {
 }
 
 export function restoreTeamGestBackup(payload: TeamGestBackupPayload) {
+  if (!validateTeamGestBackup(payload)) {
+    throw new Error('La copia no superó la validación antes de restaurarse.')
+  }
+
   writeJson(SERVICES_CREATED_KEY, payload.data.createdServices)
   writeJson(PAYROLL_MONTHS_KEY, payload.data.payrollMonths)
   writeJson(PAYROLL_AUDIT_KEY, payload.data.payrollAudit)

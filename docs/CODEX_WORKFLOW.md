@@ -43,3 +43,7 @@ Combined sprint block 6 should report storage management work and safety-audit w
 ## Block 7 reporting
 
 Combined sprint block 7 should report visual polish work and mobile-first work separately. Any lack of browser visual QA should be stated explicitly and honestly.
+
+## Block 8 reporting
+
+Combined sprint block 8 should report QA-hardening work and data-real-readiness work separately. Any lack of automated tests or browser visual QA should be stated explicitly and honestly.

@@ -17,6 +17,20 @@ function writeLocalServices(services: ServiceJob[]) {
   writeJson(SERVICES_CREATED_KEY, services)
 }
 
+function normalizeServiceForStorage(service: ServiceJob) {
+  const timestamp = new Date().toISOString()
+
+  return {
+    ...service,
+    updatedAt: timestamp,
+    assignments: service.assignments.map((assignment) => ({
+      ...assignment,
+      serviceJobId: service.id,
+      updatedAt: timestamp,
+    })),
+  }
+}
+
 function listAllServices() {
   const localServices = readLocalServices()
   const knownIds = new Set(mockServices.map((service) => service.id))
@@ -30,19 +44,23 @@ export function createServiceRepository() {
     listServices: () => listAllServices(),
     getServiceById: (id: string) => listAllServices().find((service) => service.id === id),
     createService: (service: ServiceJob) => {
+      const normalizedService = normalizeServiceForStorage(service)
       const localServices = readLocalServices()
-      writeLocalServices([service, ...localServices.filter((item) => item.id !== service.id)])
+      writeLocalServices([
+        normalizedService,
+        ...localServices.filter((item) => item.id !== normalizedService.id),
+      ])
       recordAuditEvent({
         action: 'service.created',
         entityType: 'service',
-        entityId: service.id,
-        message: `Se guardó el servicio ${service.id} en almacenamiento local.`,
+        entityId: normalizedService.id,
+        message: `Se guardó el servicio ${normalizedService.id} en almacenamiento local.`,
         metadata: {
-          status: service.status,
-          date: service.date,
+          status: normalizedService.status,
+          date: normalizedService.date,
         },
       })
-      return service
+      return normalizedService
     },
   }
 }
