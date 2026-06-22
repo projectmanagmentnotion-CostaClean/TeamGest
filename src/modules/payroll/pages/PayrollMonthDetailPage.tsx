@@ -100,7 +100,10 @@ export function PayrollMonthDetailPage() {
   const handleLock = () => {
     const snapshot = buildPayrollMonthSnapshot(payrollRows, warnings, month)
     repositories.payroll.lockPayrollMonth(month, snapshot)
-    addAudit('Cierre bloqueado', `El cierre de ${getPayrollMonthLabel(month)} quedo bloqueado en localStorage.`)
+    addAudit(
+      'Cierre bloqueado',
+      `El cierre de ${getPayrollMonthLabel(month)} quedo bloqueado en el almacenamiento local del navegador.`,
+    )
     setRefreshKey((value) => value + 1)
   }
 
@@ -130,7 +133,8 @@ export function PayrollMonthDetailPage() {
 
       {appSettings.hourReviewSettings.requireReviewBeforePayrollClose && reviewEntries.length > 0 ? (
         <WarningBanner title="Entradas pendientes para este cierre" tone="warning">
-          Hay {reviewEntries.length} entradas que siguen pendientes, con incidencia o excluidas. Conviene resolverlas en /hours/review antes de marcar este mes como pagado o bloquearlo.
+          Hay {reviewEntries.length} entradas que siguen pendientes, con incidencia o excluidas.
+          Conviene resolverlas en /hours/review antes de marcar este mes como pagado o bloquearlo.
         </WarningBanner>
       ) : null}
 

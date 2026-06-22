@@ -23,10 +23,14 @@ export function PayrollLockPanel({
   const locked = isPayrollLocked(state.status)
 
   return (
-    <Card title="Bloqueo del cierre" description="Controla el cierre operativo del mes en localStorage.">
+    <Card
+      title="Bloqueo del cierre"
+      description="Controla el cierre operativo del mes en el almacenamiento local del navegador."
+    >
       <div className="stack-list">
         <p className="page-description">
-          Bloquear el cierre evita cambios operativos accidentales en este resumen. No sustituye revision fiscal o pago bancario.
+          Bloquear el cierre evita cambios operativos accidentales en este resumen. No sustituye
+          revision fiscal o pago bancario.
         </p>
         {locked && snapshot ? (
           <>

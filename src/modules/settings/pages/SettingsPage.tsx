@@ -1,8 +1,8 @@
 import { startTransition, useState } from 'react'
 import { PageHeader } from '../../../components/ui/PageHeader'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
-import { listAuditEntries } from '../../../infrastructure/audit/auditRepository'
 import type { AppSettingsSectionId } from '../../../domain/settings/appSettings.types'
+import { listAuditEntries } from '../../../infrastructure/audit/auditRepository'
 import { getStorageTools } from '../../../infrastructure/repositoryFactory'
 import { AuditLogPanel } from '../components/AuditLogPanel'
 import { AuditSettingsPanel } from '../components/AuditSettingsPanel'
@@ -23,9 +23,18 @@ import { SettingsSectionNav } from '../components/SettingsSectionNav'
 import { StorageHealthPanel } from '../components/StorageHealthPanel'
 import { StorageOverview } from '../components/StorageOverview'
 import { SystemSettingsPanel } from '../components/SystemSettingsPanel'
-import { getAppSettingsSnapshot, getSettingsSectionWarnings, resetAppSettings, updateAppSettings } from '../services/appSettingsService'
+import {
+  getAppSettingsSnapshot,
+  getSettingsSectionWarnings,
+  resetAppSettings,
+  updateAppSettings,
+} from '../services/appSettingsService'
 import { getDataSafetyChecklist, getLocalDataRiskLevel } from '../services/dataSafety'
-import { getLocalSettingsState, getStorageOverview, saveLocalSettingsState } from '../services/settingsStorage'
+import {
+  getLocalSettingsState,
+  getStorageOverview,
+  saveLocalSettingsState,
+} from '../services/settingsStorage'
 
 export function SettingsPage() {
   const [, setRefreshKey] = useState(0)
@@ -95,7 +104,16 @@ export function SettingsPage() {
       ) : null}
 
       <SettingsHealthPanel
+        backupCoverageLabel={
+          overview.lastBackupAt
+            ? draft.dataSafetySettings.backupReminderEnabled
+              ? 'Backup local activo'
+              : 'Backup disponible sin recordatorio'
+            : 'Sin backup reciente'
+        }
+        runtimeLabel="Inactivo / planificacion"
         settingsVersion={appSettingsSnapshot.health.settingsVersion}
+        storageModeLabel={overview.storageMode}
         customizedSections={appSettingsSnapshot.health.customizedSections}
         warnings={appSettingsSnapshot.health.warnings}
       />

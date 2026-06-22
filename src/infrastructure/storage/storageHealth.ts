@@ -61,16 +61,18 @@ export function getStorageHealthReport(): StorageHealthReport {
   const storageAvailable = detectStorageAvailability()
   const schemaVersion = storageAvailable ? getStorageMetadata().schemaVersion : null
   const corruptedKeys = storageAvailable ? detectCorruptedStorageKeys() : []
-  const missingExpectedKeys = storageAvailable ? detectMissingExpectedKeys() : [...TEAMGEST_EXPECTED_STORAGE_KEYS]
+  const missingExpectedKeys = storageAvailable
+    ? detectMissingExpectedKeys()
+    : [...TEAMGEST_EXPECTED_STORAGE_KEYS]
   const sizeEstimate = storageAvailable ? detectStorageSize() : 0
   const warnings: string[] = []
 
   if (!storageAvailable) {
-    warnings.push('localStorage no está disponible en este navegador o contexto.')
+    warnings.push('El almacenamiento local del navegador no esta disponible en este contexto.')
   }
 
   if (schemaVersion === null || schemaVersion < CURRENT_STORAGE_SCHEMA_VERSION) {
-    warnings.push('La versión del esquema local no está inicializada o requiere migración.')
+    warnings.push('La version del esquema local no esta inicializada o requiere migracion.')
   }
 
   if (corruptedKeys.length > 0) {
@@ -78,11 +80,11 @@ export function getStorageHealthReport(): StorageHealthReport {
   }
 
   if (missingExpectedKeys.length > 0) {
-    warnings.push('Faltan claves esperadas del espacio local de TeamGest. Se crearán al usar cada módulo.')
+    warnings.push('Faltan claves esperadas del espacio local de TeamGest. Se crearan al usar cada modulo.')
   }
 
   if (sizeEstimate > 4_000_000) {
-    warnings.push('El tamaño estimado del almacenamiento local se acerca al límite habitual del navegador.')
+    warnings.push('El tamano estimado del almacenamiento local se acerca al limite habitual del navegador.')
   }
 
   return {

@@ -2,6 +2,7 @@ import { FormField } from '../../../components/forms/FormField'
 import { Button } from '../../../components/ui/Button'
 import type { DataSafetySettings } from '../../../domain/settings/appSettings.types'
 import { SettingsSection } from './SettingsSection'
+import { SettingsToggleField } from './SettingsToggleField'
 
 type DataSafetySettingsPanelProps = {
   value: DataSafetySettings
@@ -21,46 +22,43 @@ export function DataSafetySettingsPanel({
   return (
     <SettingsSection
       title="Datos y seguridad"
-      description="Preferencias locales de recordatorio, visibilidad del danger zone y restauracion de ajustes."
+      description="Separa recordatorios, exportacion local, restauracion de ajustes y controles de acciones destructivas."
     >
       <div className="form-grid">
         <FormField
           control="select"
           label="Cadencia del recordatorio de backup"
+          hint="Marca cada cuanto conviene exportar una copia local del sistema."
           value={value.backupReminderFrequency}
           options={[
             { label: 'Semanal', value: 'weekly' },
             { label: 'Cada dos semanas', value: 'biweekly' },
             { label: 'Mensual', value: 'monthly' },
           ]}
-          onChange={(next) => onChange({ backupReminderFrequency: next as DataSafetySettings['backupReminderFrequency'] })}
+          onChange={(next) =>
+            onChange({ backupReminderFrequency: next as DataSafetySettings['backupReminderFrequency'] })
+          }
         />
       </div>
       <div className="settings-boolean-list">
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={value.backupReminderEnabled}
-            onChange={(event) => onChange({ backupReminderEnabled: event.target.checked })}
-          />
-          <span>Activar control de antiguedad del backup</span>
-        </label>
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={value.showDangerZone}
-            onChange={(event) => onChange({ showDangerZone: event.target.checked })}
-          />
-          <span>Mostrar la zona de acciones destructivas en ajustes</span>
-        </label>
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={value.requireTypedConfirmation}
-            onChange={(event) => onChange({ requireTypedConfirmation: event.target.checked })}
-          />
-          <span>Exigir confirmacion escrita en acciones de reset total</span>
-        </label>
+        <SettingsToggleField
+          checked={value.backupReminderEnabled}
+          label="Activar recordatorio de backup"
+          hint="Ayuda a no operar mucho tiempo sin una exportacion reciente."
+          onChange={(checked) => onChange({ backupReminderEnabled: checked })}
+        />
+        <SettingsToggleField
+          checked={value.showDangerZone}
+          label="Mostrar zona de reinicio total"
+          hint="Separa el reset destructivo del resto de herramientas de seguridad."
+          onChange={(checked) => onChange({ showDangerZone: checked })}
+        />
+        <SettingsToggleField
+          checked={value.requireTypedConfirmation}
+          label="Exigir confirmacion escrita"
+          hint="Mantiene confirmacion tipada antes del borrado completo local."
+          onChange={(checked) => onChange({ requireTypedConfirmation: checked })}
+        />
       </div>
       {warning ? <p className="warning-text">{warning}</p> : null}
       <div className="quick-actions">

@@ -29,7 +29,7 @@ Pages must not import mock data directly. Read access must go through `getReposi
 
 ## Block 4 ownership
 
-- Services owns service calculations, service components, service warnings, service lifecycle and new service draft validation.
+- Services owns service calculations, service components, service warnings, service lifecycle and current service form draft helpers.
 - StepFlow draft logic must stay outside UI components.
 - New service may persist only through repository abstraction and the localStorage adapter.
 - Seed mock data must never be mutated.
@@ -64,7 +64,7 @@ Pages must not import mock data directly. Read access must go through `getReposi
 ## Block 9 ownership
 
 - Workers, clients and properties own their local draft services and management form flows.
-- Services owns Quick Work Entry, service form flows and payroll-lock mutation guards.
+- Services owns Quick Entry, service form flows and payroll-lock mutation guards.
 - UI forms stay generic; they must not embed entity-specific repository logic.
 - Pages and components must not call localStorage directly.
 - Real data must still not be added in this block.
@@ -98,3 +98,9 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Settings UI may read and write only through settings services or repositories, never through direct browser storage calls.
 - Backup, import, reset and audit remain settings-module responsibilities, but they must preserve recognized namespaces only.
 - Cross-module settings usage should stay low-risk and limited to current runtime behavior, not speculative future systems.
+
+## Block 14 ownership
+
+- Safe cleanup may remove only files proven unused by import search and code review.
+- Legacy service-step files must not return unless they are wired to a live route again.
+- Settings polish may improve copy, helper text and local runtime clarity, but must not add fake backend toggles or speculative controls.

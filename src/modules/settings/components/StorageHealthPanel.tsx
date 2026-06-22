@@ -1,6 +1,9 @@
 import { Badge } from '../../../components/ui/Badge'
 import { EmptyState } from '../../../components/ui/EmptyState'
-import { type StorageHealthReport, mapStorageHealthToWarningLevel } from '../../../infrastructure/storage/storageHealth'
+import {
+  type StorageHealthReport,
+  mapStorageHealthToWarningLevel,
+} from '../../../infrastructure/storage/storageHealth'
 import { getWarningLevelTone } from '../../../utils/labels'
 import { SettingsSection } from './SettingsSection'
 
@@ -14,12 +17,12 @@ export function StorageHealthPanel({ report }: StorageHealthPanelProps) {
   return (
     <SettingsSection
       title="Salud del almacenamiento"
-      description="Disponibilidad, claves corruptas y señales de riesgo del espacio local."
+      description="Disponibilidad, claves corruptas y senales de riesgo del almacenamiento local del navegador."
       action={<Badge tone={getWarningLevelTone(warningLevel)}>{report.level}</Badge>}
     >
       <div className="detail-grid">
         <div>
-          <span className="muted-caption">localStorage</span>
+          <span className="muted-caption">Almacenamiento local</span>
           <strong>{report.storageAvailable ? 'Disponible' : 'No disponible'}</strong>
         </div>
         <div>
@@ -46,7 +49,7 @@ export function StorageHealthPanel({ report }: StorageHealthPanelProps) {
           {report.warnings.map((warning) => (
             <div key={warning} className="warning-item">
               <div className="warning-item__header">
-                <h4>Acción recomendada</h4>
+                <h4>Accion recomendada</h4>
                 <Badge tone={getWarningLevelTone(warningLevel)}>{report.level}</Badge>
               </div>
               <p>{warning}</p>

@@ -52,7 +52,7 @@ export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
   return [
     {
       id: 'storage-available',
-      label: 'localStorage disponible',
+      label: 'Almacenamiento local disponible',
       description: health.storageAvailable
         ? 'El navegador permite persistencia local.'
         : 'No se puede garantizar persistencia local en este contexto.',
@@ -65,8 +65,8 @@ export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
         !settings.dataSafetySettings.backupReminderEnabled
           ? 'El recordatorio de backup esta desactivado en ajustes.'
           : backupFreshness === 'fresh'
-          ? 'Existe una copia reciente del estado local.'
-          : 'Conviene exportar una copia antes de seguir operando.',
+            ? 'Existe una copia reciente del estado local.'
+            : 'Conviene exportar una copia antes de seguir operando.',
       status:
         !settings.dataSafetySettings.backupReminderEnabled || backupFreshness === 'fresh'
           ? 'ok'
@@ -77,7 +77,7 @@ export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
       label: 'Sin claves corruptas',
       description:
         health.corruptedKeys.length === 0
-          ? 'No se detectó JSON roto en TeamGest.'
+          ? 'No se detecto JSON roto en TeamGest.'
           : `Se detectaron ${health.corruptedKeys.length} claves corruptas.`,
       status: health.corruptedKeys.length === 0 ? 'ok' : 'warning',
     },
@@ -87,7 +87,7 @@ export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
       description:
         overview.lockedMonthsCount > 0
           ? `Hay ${overview.lockedMonthsCount} meses bloqueados disponibles para consulta.`
-          : 'Todavía no hay cierres bloqueados en local.',
+          : 'Todavia no hay cierres bloqueados en local.',
       status: overview.lockedMonthsCount > 0 ? 'ok' : 'warning',
     },
     {
@@ -99,7 +99,7 @@ export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
     {
       id: 'protected-actions',
       label: 'Import y reset protegidos',
-      description: 'La importación y el reset requieren confirmación explícita en pantalla.',
+      description: 'La importacion y el reset requieren confirmacion explicita en pantalla.',
       status: 'ok',
     },
   ]

@@ -2,6 +2,7 @@ import { FormField } from '../../../components/forms/FormField'
 import { Button } from '../../../components/ui/Button'
 import type { QuickEntrySettings } from '../../../domain/settings/appSettings.types'
 import { SettingsSection } from './SettingsSection'
+import { SettingsToggleField } from './SettingsToggleField'
 
 type QuickEntrySettingsPanelProps = {
   value: QuickEntrySettings
@@ -19,63 +20,67 @@ export function QuickEntrySettingsPanel({
   return (
     <SettingsSection
       title="Registro rapido"
-      description="Ajustes seguros del flujo principal para registrar trabajo ya realizado."
+      description="Controla el comportamiento por defecto del flujo principal para registrar horas ya trabajadas."
     >
       <div className="form-grid">
         <FormField
           control="select"
           label="Estado por defecto en fecha pasada"
+          hint="Define como se guarda una entrada con fecha anterior a hoy."
           value={value.defaultServiceStatusForPastDate}
           options={[
             { label: 'Completado', value: 'completed' },
             { label: 'Revisado', value: 'reviewed' },
           ]}
-          onChange={(next) => onChange({ defaultServiceStatusForPastDate: next as QuickEntrySettings['defaultServiceStatusForPastDate'] })}
+          onChange={(next) =>
+            onChange({
+              defaultServiceStatusForPastDate:
+                next as QuickEntrySettings['defaultServiceStatusForPastDate'],
+            })
+          }
         />
         <FormField
           control="select"
           label="Estado por defecto en fecha futura"
+          hint="Evita marcar por error trabajo futuro como ya ejecutado."
           value={value.defaultServiceStatusForFutureDate}
           options={[
             { label: 'Programado', value: 'scheduled' },
             { label: 'Borrador', value: 'draft' },
           ]}
-          onChange={(next) => onChange({ defaultServiceStatusForFutureDate: next as QuickEntrySettings['defaultServiceStatusForFutureDate'] })}
+          onChange={(next) =>
+            onChange({
+              defaultServiceStatusForFutureDate:
+                next as QuickEntrySettings['defaultServiceStatusForFutureDate'],
+            })
+          }
         />
       </div>
       <div className="settings-boolean-list">
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={value.defaultConfirmed}
-            onChange={(event) => onChange({ defaultConfirmed: event.target.checked })}
-          />
-          <span>Confirmar asignacion por defecto al guardar</span>
-        </label>
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={value.rememberLastWorker}
-            onChange={(event) => onChange({ rememberLastWorker: event.target.checked })}
-          />
-          <span>Recordar el ultimo trabajador usado</span>
-        </label>
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={value.rememberLastProperty}
-            onChange={(event) => onChange({ rememberLastProperty: event.target.checked })}
-          />
-          <span>Recordar el ultimo inmueble usado</span>
-        </label>
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={value.showPayrollImpactMessage}
-            onChange={(event) => onChange({ showPayrollImpactMessage: event.target.checked })}
-          />
-          <span>Mostrar el mensaje de impacto en payroll al revisar</span>
-        </label>
+        <SettingsToggleField
+          checked={value.defaultConfirmed}
+          label="Confirmar asignacion por defecto"
+          hint="Marca la asignacion como confirmada al guardar si no hay incidencia."
+          onChange={(checked) => onChange({ defaultConfirmed: checked })}
+        />
+        <SettingsToggleField
+          checked={value.rememberLastWorker}
+          label="Recordar ultimo trabajador"
+          hint="Acelera nuevas entradas reutilizando el trabajador mas reciente."
+          onChange={(checked) => onChange({ rememberLastWorker: checked })}
+        />
+        <SettingsToggleField
+          checked={value.rememberLastProperty}
+          label="Recordar ultimo inmueble"
+          hint="Mantiene el inmueble reciente como ayuda de continuidad operativa."
+          onChange={(checked) => onChange({ rememberLastProperty: checked })}
+        />
+        <SettingsToggleField
+          checked={value.showPayrollImpactMessage}
+          label="Mostrar impacto en cierres"
+          hint="Recuerda que la entrada alimenta el cierre mensual interno."
+          onChange={(checked) => onChange({ showPayrollImpactMessage: checked })}
+        />
       </div>
       {warning ? <p className="warning-text">{warning}</p> : null}
       <div className="quick-actions">

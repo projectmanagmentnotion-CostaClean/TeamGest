@@ -50,7 +50,7 @@ Combined sprint block 8 should report QA-hardening work and data-real-readiness 
 
 ## Block 9 reporting
 
-Combined sprint block 9 should report entity CRUD work and Quick Work Entry work separately. Any local-only persistence or payroll-lock limitation must be stated explicitly.
+Combined sprint block 9 should report entity CRUD work and Quick Entry work separately. Any local-only persistence or payroll-lock limitation must be stated explicitly.
 
 ## Block 10 reporting
 
@@ -75,3 +75,7 @@ When changing shared form flows, verify that mobile does not keep desktop side r
 ## Block 13 settings delivery rule
 
 Settings work must start with a code audit of the real storage and safety layer before adding new configuration surfaces. New settings should be typed, validated, local-first and applied only in low-risk runtime areas unless the sprint explicitly approves broader adoption.
+
+## Block 14 reporting
+
+Block 14 should be reported as technical audit plus safe cleanup and settings polish. The report must separate proven removals from deferred cleanup, and it must state clearly that no browser visual QA, backend activation or broad refactor was performed.

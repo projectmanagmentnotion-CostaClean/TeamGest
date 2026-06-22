@@ -78,9 +78,9 @@ Browser visual QA was not performed in this block.
 - Service edit route resolves through repository-backed form flow.
 - Service mutation guards now block editing or deletion when the payroll month is locked.
 
-### Quick Work Entry and service management
+### Quick Entry and service management
 
-- Quick Work Entry creates one local service with one confirmed assignment.
+- Quick Entry creates one local service with one confirmed assignment.
 - Manual service form keeps entity selections, assignments and notes in a local draft.
 - Service delete remains limited to local-created services.
 - Confirm-hours review updates assignment confirmation only through repository-safe service update.
@@ -127,7 +127,7 @@ Browser visual QA was not performed in this block.
 ## Behavior added in Block 9
 
 1. Local CRUD now exists for workers, clients and properties through repository-backed form flows and guarded destructive actions.
-2. Quick Work Entry now exists as a primary route for fast hour registration.
+2. Quick Entry now exists as a primary route for fast hour registration.
 3. Service edit, cancel, restore and guarded delete now exist in local-first mode.
 4. Backup, import and reset now account for local entity CRUD namespaces.
 
@@ -229,3 +229,11 @@ Browser visual QA was not performed in this block.
 - Hour review now respects settings for required incident note, required exclusion reason and excluded-entry restore policy.
 - Settings backup/import/full reset remain inside recognized TeamGest namespaces only.
 - No direct `localStorage` API usage was introduced in `src/app`, `src/components` or `src/modules`.
+
+## Block 14 QA additions
+
+- Removed only legacy files with zero live imports after audit.
+- Live StepFlow, searchable selectors and current service management routes remained intact.
+- Settings health now exposes local storage mode, backup coverage and inactive runtime scope more clearly.
+- User-facing runtime copy no longer relies on raw `localStorage` wording in active settings and payroll surfaces.
+- Browser visual QA was still not performed in this block.

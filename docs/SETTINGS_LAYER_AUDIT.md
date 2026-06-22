@@ -285,3 +285,7 @@ The right next step was:
 3. store it only through infrastructure abstractions
 4. apply it first to Quick Entry, hour review and payroll
 5. avoid speculative backend, auth, calendar or fiscal settings
+
+## Block 14 follow-up
+
+The Block 14 cleanup kept this architecture intact. The main follow-up work was not structural replacement, but copy clarity, helper text coverage, health visibility and removal of fake-legacy overlap that was no longer imported.

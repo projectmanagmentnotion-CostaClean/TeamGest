@@ -9,10 +9,10 @@
 - ServiceAssignment: worker participation with hours, hourly rate, extras, deductions and confirmation state.
 - HourEntry: derived view model built from `ServiceAssignment`, `ServiceJob`, `Worker`, `Property`, `Client` and payroll month state.
 - PayrollSummary: monthly worker aggregation generated from confirmed assignments.
-- NewServiceDraft: transient model used by the StepFlow before preview or local persistence.
 - PayrollMonthState: persisted local state for month status, worker statuses and lock metadata.
 - PayrollAuditEntry: persisted local audit record for payroll workflow actions.
 - QuickEntryDraft: transient model used by the fast hours flow before local service creation.
+- ServiceInput: current transient draft model used by service create and edit flows before local persistence.
 
 ## Relationships
 
@@ -41,10 +41,14 @@
 - Client monthly cost is the sum of service labor cost for services linked to that client in the target month.
 - Property monthly cost is the sum of service labor cost for services linked to that property in the target month.
 - Property worker participation aggregates assignments by worker for the target month.
-- New service draft assignments reuse the same assignment pay formula before persistence.
 - Worker payroll status can diverge from month status in local state when needed.
 - Hour review should reuse repository-safe service mutation rules instead of bypassing them.
 - HourEntry remains derived in Block 12; no separate persisted hour entry namespace was introduced.
+
+## Block 14 cleanup note
+
+- The older `NewServiceDraft` step flow was removed after the audit proved it was no longer part of any live route.
+- Current live create and edit work now centers on `ServiceInput` plus `QuickEntryDraft`.
 
 ## Payroll logic
 

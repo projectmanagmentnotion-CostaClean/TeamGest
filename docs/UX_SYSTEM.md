@@ -108,9 +108,9 @@ Destructive controls should be visually separated from routine actions through d
 
 Worker, client, property and service maintenance now use compact form flows with a draft summary, inline validation and a single local save action.
 
-## Quick Work Entry UX
+## Quick Entry UX
 
-Quick Work Entry is the primary operational path for registering hours. It should minimize decision load, prefer one confirmed assignment and keep labor context visible while saving.
+Quick Entry is the primary operational path for registering hours. It should minimize decision load, prefer one confirmed assignment and keep labor context visible while saving.
 
 ## Prefilled operational actions
 
@@ -183,3 +183,7 @@ On mobile, settings should avoid one endless wall of controls. A compact section
 ## Data safety UX
 
 Backup and import belong in the data-safety section, while destructive reset actions should stay visually separated in a visible danger zone. System copy must keep reminding the operator that persistence is still browser-local.
+
+## Block 14 settings polish
+
+Settings health should explain validity, storage mode, backup coverage and inactive runtime boundaries without exposing developer jargon as if it were a real switch. User-facing copy should prefer `almacenamiento local del navegador` over raw storage API names.

@@ -112,12 +112,12 @@ Local-first runtime remains active. Supabase, auth, and real backend execution a
 Block 9 combines Sprint 17 and Sprint 18 on top of the same local-first runtime.
 
 - Sprint 17 adds local CRUD architecture for workers, clients and properties through repositories, draft services, form flows and audit events.
-- Sprint 18 adds Quick Work Entry as the primary service capture flow plus editable service management with locked-payroll protections.
+- Sprint 18 adds Quick Entry as the primary service capture flow plus editable service management with locked-payroll protections.
 
 ## Current runtime scope
 
 - Entity create, update, archive and guarded delete are local-first only.
-- Quick Work Entry creates a local service with one confirmed assignment.
+- Quick Entry creates a local service with one confirmed assignment.
 - Service editing and deletion respect payroll month lock state.
 - There is still no backend, auth, Supabase or payment execution.
 
@@ -173,3 +173,16 @@ Block 13 combines Sprint 25 and Sprint 26 on top of the same local-first runtime
 - App settings are now persisted locally under the TeamGest settings namespace through repository and storage abstractions.
 - Backup, import and full reset continue covering settings safely.
 - Runtime remains local-first only. Backend, Supabase, auth and real payments stay inactive.
+
+## Block 14 status
+
+Block 14 combines Sprint 27 and Sprint 28 on top of the same local-first runtime.
+
+- Sprint 27 audits legacy service-step remnants, settings QA gaps, runtime boundaries, navigation copy and documentation drift in `docs/TECHNICAL_CLEANUP_AUDIT.md`.
+- Sprint 28 removes proven-unused legacy files, preserves live StepFlow and selector flows, and polishes Settings messaging around local storage, backup coverage and runtime status.
+
+## Block 14 runtime note
+
+- Quick Entry, Hours, CRUD management, payroll, backup, import, reset and audit remain active.
+- No backend, Supabase, auth, payments, pipeline or calendar work was activated.
+- Runtime boundaries remain local-first and browser-scoped.
