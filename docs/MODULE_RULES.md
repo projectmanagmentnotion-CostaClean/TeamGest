@@ -75,3 +75,11 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - URL prefill params must be parsed safely and normalized before reaching UI state.
 - Payroll impact messaging must resolve through service and repository data, not hardcoded UI assumptions.
 - CRUD protections and dependency rules stay in repositories and supporting services, never in UI pages.
+
+## Block 11 ownership
+
+- Hours owns derived hour-entry view models, review filters, hour warnings and hour-status helpers.
+- Hours must derive from services, assignments and payroll state; it does not create a second persisted source of truth in this block.
+- Confirm-hours behavior, when available, must go through repository-safe service updates and existing lock rules.
+- Quick Entry remains service-module owned as the primary write path for worked hours.
+- Pipeline, calendar and external scheduling integrations remain out of scope.

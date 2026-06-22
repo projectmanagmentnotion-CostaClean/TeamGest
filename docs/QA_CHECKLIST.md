@@ -2,7 +2,7 @@
 
 ## Scope
 
-Block 10 QA was a code-level validation pass over the current local-first runtime.
+Block 11 QA is a code-level validation pass over the current local-first runtime.
 
 Verified by code review plus `npm run lint` and `npm run build`:
 
@@ -24,6 +24,10 @@ Verified by code review plus `npm run lint` and `npm run build`:
 - `/services/new`
 - `/services/:id/edit`
 - `/quick-entry`
+- `/hours`
+- `/hours/review`
+- `/hours/workers/:workerId`
+- `/hours/properties/:propertyId`
 - `/quick-entry?workerId=...`
 - `/quick-entry?propertyId=...`
 - `/quick-entry?date=YYYY-MM-DD`
@@ -45,7 +49,7 @@ Browser visual QA was not performed in this block.
 ### Dashboard
 
 - Stats and warnings still resolve through repositories.
-- Quick actions still route to quick entry, services and payroll.
+- Quick actions now route to quick entry, hours, services and payroll.
 - Local services remain part of repository-driven reads.
 
 ### Workers
@@ -79,6 +83,7 @@ Browser visual QA was not performed in this block.
 - Quick Work Entry creates one local service with one confirmed assignment.
 - Manual service form keeps entity selections, assignments and notes in a local draft.
 - Service delete remains limited to local-created services.
+- Confirm-hours review updates assignment confirmation only through repository-safe service update.
 
 ### Payroll
 
@@ -88,6 +93,7 @@ Browser visual QA was not performed in this block.
 - Fixed worker service breakdown so it only lists confirmed assignments, matching the actual monthly payroll calculation rules.
 - Invalid month param still falls back safely to current month with warning.
 - Review, paid and locked workflow still builds with snapshot and audit updates.
+- Payroll now links back to hour review before closure.
 
 ### Settings and storage
 
@@ -186,3 +192,11 @@ Browser visual QA was not performed in this block.
 - Worker and property selections use large card targets.
 - Main actions remain full width on narrow screens through shared responsive action rows.
 - Summary and success sections stack cleanly through existing responsive grids.
+
+## Block 11 QA additions
+
+- Hours routes resolve through the shared shell and compile cleanly.
+- HourEntry remains derived only; no new persisted hours namespace was added.
+- Worker and property detail pages link into dedicated hours drilldowns.
+- Review queue exposes confirm-hours only when the entry is pending review and the month is not locked.
+- Existing service, payroll, backup and reset behavior remains local-first.

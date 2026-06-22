@@ -123,3 +123,19 @@ Hour registration should always clarify that the entry feeds the internal monthl
 ## Mobile-first hour registration
 
 Quick Entry should favor stacked cards, large tap targets, full-width actions and no horizontal overflow on small screens.
+
+## Hours-first control UX
+
+The new central operational surface should be `Control de horas`, not a dense service board. It should read as a monthly review workspace built from worker, property and client context.
+
+## Hour review UX
+
+Hour review should isolate pending confirmations, invalid rates, invalid hours and locked-month boundaries. Actions should stay cautious and repository-safe.
+
+## Worker and property hour drilldowns
+
+Worker and property detail pages should expose direct paths into derived hour review so the operator can move from profile context into closure-ready work without hunting through all services.
+
+## Deprioritized UX directions
+
+Pipeline boards, calendar-centric planning and external calendar or Notion integrations are intentionally deprioritized in the current product direction.

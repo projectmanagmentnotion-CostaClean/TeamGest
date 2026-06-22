@@ -55,3 +55,7 @@ Combined sprint block 9 should report entity CRUD work and Quick Work Entry work
 ## Block 10 reporting
 
 Block 10 should be reported as CRUD hardening plus Quick Entry polish. Any code-level QA limitation, missing browser visual QA or local-only runtime constraint must be stated explicitly.
+
+## Block 11 reporting
+
+Block 11 should be reported as hours-first audit plus Hours Control module delivery. Any limitation around derived-only hour entries, missing browser visual QA or local-only runtime must be stated explicitly.

@@ -3,6 +3,7 @@ import { Card } from '../../../components/ui/Card'
 
 const actions = [
   { label: 'Registrar horas', to: '/quick-entry' },
+  { label: 'Control de horas', to: '/hours' },
   { label: 'Crear servicio', to: '/services/new' },
   { label: 'Ver trabajadores', to: '/workers' },
   { label: 'Ver inmuebles', to: '/properties' },

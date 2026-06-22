@@ -11,7 +11,7 @@ export function TopBar() {
     <header className="topbar">
       <div>
         <p className="eyebrow">CostaFlow Ops</p>
-        <h2>Centro operativo</h2>
+        <h2>Control de horas</h2>
       </div>
 
       <div className="topbar-actions">

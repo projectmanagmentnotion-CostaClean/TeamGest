@@ -22,6 +22,7 @@ const auditActionLabels: Record<AppAuditAction, string> = {
   'service.cancelled': 'Servicio cancelado',
   'service.restored': 'Servicio restaurado',
   'service.deleted': 'Servicio eliminado',
+  'hour.confirmed': 'Horas confirmadas',
   'payroll.status_updated': 'Estado de nómina actualizado',
   'payroll.locked': 'Cierre bloqueado',
   'backup.exported': 'Copia exportada',

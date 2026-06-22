@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatusPill } from '../../../components/ui/StatusPill'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
@@ -105,7 +105,16 @@ export function PayrollMonthDetailPage() {
         title={getPayrollMonthLabel(month)}
         description="Resumen mensual de seguimiento interno, estado de revision y control de bloqueo operativo."
         meta={<StatusPill tone="info">Seguimiento interno</StatusPill>}
+        primaryAction={
+          <Link className="button button--primary" to="/hours/review">
+            Revisar horas
+          </Link>
+        }
       />
+
+      <WarningBanner title="Fuente del cierre" tone="info">
+        El cierre se alimenta de horas confirmadas en servicios completados, revisados o cerrados.
+      </WarningBanner>
 
       <PayrollMonthHeader month={month} state={monthState} />
       <PayrollMonthSelector selectedMonth={month} />

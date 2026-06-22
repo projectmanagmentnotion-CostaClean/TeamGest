@@ -5,6 +5,10 @@ import { ClientsPage } from '../modules/clients/pages/ClientsPage'
 import { EditClientPage } from '../modules/clients/pages/EditClientPage'
 import { NewClientPage } from '../modules/clients/pages/NewClientPage'
 import { DashboardPage } from '../modules/dashboard/pages/DashboardPage'
+import { HoursPage } from '../modules/hours/pages/HoursPage'
+import { HoursReviewPage } from '../modules/hours/pages/HoursReviewPage'
+import { PropertyHoursPage } from '../modules/hours/pages/PropertyHoursPage'
+import { WorkerHoursPage } from '../modules/hours/pages/WorkerHoursPage'
 import { PayrollMonthDetailPage } from '../modules/payroll/pages/PayrollMonthDetailPage'
 import { PayrollPage } from '../modules/payroll/pages/PayrollPage'
 import { EditPropertyPage } from '../modules/properties/pages/EditPropertyPage'
@@ -31,6 +35,10 @@ export function AppRoutes() {
         { index: true, element: <Navigate to="/dashboard" replace /> },
         { path: 'dashboard', element: <DashboardPage /> },
         { path: 'quick-entry', element: <QuickWorkEntryPage /> },
+        { path: 'hours', element: <HoursPage /> },
+        { path: 'hours/review', element: <HoursReviewPage /> },
+        { path: 'hours/workers/:workerId', element: <WorkerHoursPage /> },
+        { path: 'hours/properties/:propertyId', element: <PropertyHoursPage /> },
         { path: 'workers', element: <WorkersPage /> },
         { path: 'workers/new', element: <NewWorkerPage /> },
         { path: 'workers/:id', element: <WorkerDetailPage /> },

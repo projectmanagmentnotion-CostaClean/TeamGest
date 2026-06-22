@@ -2,7 +2,7 @@
 
 ## What the app is
 
-CostaFlow Ops is a lightweight operations CRM for a cleaning business. It is designed to organize workers, clients, properties, service jobs, assignments and monthly closures from a single operational workspace.
+CostaFlow Ops is a lightweight local-first operations app for a cleaning business. It now prioritizes worked hours control per worker, monthly review and internal closure tracking while preserving supporting service, worker, property and client records.
 
 ## Core modules
 
@@ -16,7 +16,7 @@ CostaFlow Ops is a lightweight operations CRM for a cleaning business. It is des
 
 ## Future workflow
 
-The intended workflow starts with service planning, continues with worker assignment and finishes with monthly closure review. The current shell, routing and reusable components are prepared to support that sequence without mixing future business rules into the UI layer.
+The intended workflow is now hours-first: register worked hours, review confirmations and issues, then close the month with internal payroll tracking. Service records remain the source context, but the product focus is no longer pipeline or calendar planning.
 
 ## Intentionally not included yet
 
@@ -133,3 +133,17 @@ Block 10 combines Sprint 19 and Sprint 20 on top of the same local-first runtime
 - Quick Entry is now the fastest path to register completed work.
 - Dashboard, workers, properties and services prioritize `Registrar horas`.
 - Runtime remains local-first only. No backend, Supabase, auth or real payments were activated.
+
+## Block 11 status
+
+Block 11 combines Sprint 21 and Sprint 22 on top of the same local-first runtime.
+
+- Sprint 21 audits the existing service/payroll architecture against the new hours-first direction and documents the result in `docs/HOURS_FIRST_AUDIT.md`.
+- Sprint 22 adds the derived Hours Control module, review queue, worker/property hour drilldowns and low-risk navigation refocus.
+
+## Hours-first runtime note
+
+- Quick Entry remains the primary input path for registering worked hours.
+- Payroll remains derived from confirmed assignments on completed, reviewed and closed services.
+- `HourEntry` is a derived view model only in this block.
+- Pipeline, calendar, Google Calendar and Notion integrations remain intentionally out of scope.

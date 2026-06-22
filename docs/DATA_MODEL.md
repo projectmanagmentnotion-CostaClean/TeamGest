@@ -7,6 +7,7 @@
 - Property: service location linked to a client.
 - ServiceJob: operational service with status, date and worker assignments.
 - ServiceAssignment: worker participation with hours, hourly rate, extras, deductions and confirmation state.
+- HourEntry: derived view model built from `ServiceAssignment`, `ServiceJob`, `Worker`, `Property`, `Client` and payroll month state.
 - PayrollSummary: monthly worker aggregation generated from confirmed assignments.
 - NewServiceDraft: transient model used by the StepFlow before preview or local persistence.
 - PayrollMonthState: persisted local state for month status, worker statuses and lock metadata.
@@ -24,6 +25,7 @@
 - In the UI, property profiles aggregate their linked services and worker participation history.
 - Services follow a visible lifecycle from draft to closure.
 - Payroll rows are derived from payable service assignments.
+- HourEntry rows are derived from existing service assignments and are not persisted separately in Block 11.
 - Worker, client and property records can now have local created state, local overrides and archived state.
 
 ## Calculation rules
@@ -32,12 +34,14 @@
 - Assignment pay = hours worked x hourly rate + extras - deductions.
 - Worker monthly and payroll totals count only services in status `completed`, `reviewed` or `closed`.
 - Monthly hours and monthly pay count only confirmed assignments.
+- Hour status is derived from service status, confirmation state, worker/month payroll state and lock state.
 - Missing hourly rate resolves safely to `0` and should surface as a warning.
 - Client monthly cost is the sum of service labor cost for services linked to that client in the target month.
 - Property monthly cost is the sum of service labor cost for services linked to that property in the target month.
 - Property worker participation aggregates assignments by worker for the target month.
 - New service draft assignments reuse the same assignment pay formula before persistence.
 - Worker payroll status can diverge from month status in local state when needed.
+- Hour review should reuse repository-safe service mutation rules instead of bypassing them.
 
 ## Payroll logic
 

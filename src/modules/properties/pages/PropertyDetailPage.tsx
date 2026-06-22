@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { EntityArchiveDialog } from '../../../components/forms/EntityArchiveDialog'
 import { EntityDeleteDialog } from '../../../components/forms/EntityDeleteDialog'
+import { ActionBar } from '../../../components/ui/ActionBar'
 import { Card } from '../../../components/ui/Card'
 import { EmptyState } from '../../../components/ui/EmptyState'
 import { PageHeader } from '../../../components/ui/PageHeader'
@@ -82,11 +83,17 @@ export function PropertyDetailPage() {
           </Link>
         }
         secondaryAction={
-          <Link className="button button--secondary button--sm" to={`/quick-entry?propertyId=${property.id}`}>
-            Registrar horas
+          <Link className="button button--secondary button--sm" to={`/hours/properties/${property.id}`}>
+            Ver horas del inmueble
           </Link>
         }
       />
+
+      <ActionBar>
+        <Link className="button button--secondary button--sm" to={`/quick-entry?propertyId=${property.id}`}>
+          Registrar horas
+        </Link>
+      </ActionBar>
 
       {message ? (
         <WarningBanner title="Operacion local" tone="info">
@@ -116,6 +123,19 @@ export function PropertyDetailPage() {
           totalWorkerParticipations={workerParticipations.reduce((sum, item) => sum + item.serviceCount, 0)}
         />
         <PropertyWarningsPanel warnings={propertyWarnings} />
+        <Card
+          title="Control de horas"
+          description="Lectura derivada por inmueble con foco en horas, revision y coste interno."
+          action={
+            <Link className="button button--secondary button--sm" to={`/hours/properties/${property.id}`}>
+              Abrir horas
+            </Link>
+          }
+        >
+          <p className="page-description">
+            Usa esta vista cuando necesites revisar horas registradas en este inmueble sin navegar por todos los servicios.
+          </p>
+        </Card>
       </section>
 
       <section className="dashboard-grid">

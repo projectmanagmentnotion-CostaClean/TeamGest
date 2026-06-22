@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 
 const mobileItems = [
   { label: 'Inicio', to: '/dashboard' },
-  { label: 'Horas', to: '/quick-entry' },
+  { label: 'Horas', to: '/hours' },
   { label: 'Servicios', to: '/services' },
   { label: 'Cierres', to: '/payroll' },
   { label: 'Ajustes', to: '/settings' },

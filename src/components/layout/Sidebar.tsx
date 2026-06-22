@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 
 const navigationItems = [
   { label: 'Inicio', to: '/dashboard' },
+  { label: 'Control de horas', to: '/hours' },
   { label: 'Servicios', to: '/services' },
   { label: 'Trabajadores', to: '/workers' },
   { label: 'Inmuebles', to: '/properties' },
@@ -15,8 +16,8 @@ export function Sidebar() {
     <aside className="sidebar">
       <div className="brand-block">
         <span className="brand-kicker">CostaFlow Ops</span>
-        <h1>Operations CRM</h1>
-        <p>Base operativa para servicios, equipos y cierres mensuales.</p>
+        <h1>Control interno</h1>
+        <p>Horas trabajadas, revision operativa y cierres mensuales en local-first.</p>
       </div>
 
       <nav className="nav-list" aria-label="Principal">

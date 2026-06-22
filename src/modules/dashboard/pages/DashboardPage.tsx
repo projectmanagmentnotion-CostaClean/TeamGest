@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
+import { Card } from '../../../components/ui/Card'
 import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatusPill } from '../../../components/ui/StatusPill'
 import { listAuditEntries } from '../../../infrastructure/audit/auditRepository'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { buildHourEntries } from '../../hours/services/hourEntryBuilder'
+import { calculateHourEntrySummary } from '../../hours/services/hourCalculations'
 import { ActivityFeed } from '../components/ActivityFeed'
 import { DashboardStats } from '../components/DashboardStats'
 import { DashboardWarnings } from '../components/DashboardWarnings'
@@ -36,13 +39,24 @@ export function DashboardPage() {
   const todayServices = getTodayServices(services).filter(
     (service) => service.status === 'scheduled' || service.status === 'completed',
   )
+  const payrollStates = Object.fromEntries(
+    [...new Set(services.map((service) => service.date.slice(0, 7)))].map((item) => [
+      item,
+      repositories.payroll.getPayrollMonthState(item),
+    ]),
+  )
+  const hoursSummary = calculateHourEntrySummary(
+    buildHourEntries(services, workers, clients, properties, payrollStates).filter(
+      (entry) => entry.payrollMonth === month,
+    ),
+  )
 
   return (
     <div className="page-stack">
       <PageHeader
         eyebrow="Dashboard"
         title="Panel operativo"
-        description="Estado actual de la operacion, focos criticos y actividad reciente para coordinar servicios y cierres desde una sola vista."
+        description="Estado actual de la operacion, control de horas y actividad reciente para coordinar trabajo y cierres desde una sola vista."
         meta={<StatusPill tone="info">{getCurrentMonthLabel()}</StatusPill>}
         primaryAction={
           <Link className="button button--primary" to="/quick-entry">
@@ -50,8 +64,8 @@ export function DashboardPage() {
           </Link>
         }
         secondaryAction={
-          <Link className="button button--secondary" to="/services/new">
-            Nuevo servicio
+          <Link className="button button--secondary button--sm" to="/hours">
+            Ver control de horas
           </Link>
         }
       />
@@ -64,15 +78,42 @@ export function DashboardPage() {
           properties={properties}
           services={recentQuickEntries}
         />
+        <Card
+          title="Control de horas"
+          description="Seguimiento mensual centrado en horas confirmadas, revision e incidencias."
+          action={
+            <Link className="button button--secondary button--sm" to="/hours">
+              Ver control
+            </Link>
+          }
+        >
+          <div className="detail-grid">
+            <div>
+              <span className="muted-caption">Horas este mes</span>
+              <strong>{hoursSummary.totalHours.toFixed(1)} h</strong>
+            </div>
+            <div>
+              <span className="muted-caption">Pendientes</span>
+              <strong>{hoursSummary.pendingReviewCount}</strong>
+            </div>
+            <div>
+              <span className="muted-caption">Incidencias</span>
+              <strong>{hoursSummary.issueCount}</strong>
+            </div>
+          </div>
+          <p className="muted-caption">
+            Quick Entry sigue siendo la entrada principal para registrar trabajo realizado.
+          </p>
+        </Card>
+      </section>
+
+      <section className="dashboard-grid">
         <OperationalFocus items={focusItems} />
-      </section>
-
-      <section className="dashboard-grid">
         <TodayServices clients={clients} properties={properties} services={todayServices} />
-        <DashboardWarnings warnings={warnings} />
       </section>
 
       <section className="dashboard-grid">
+        <DashboardWarnings warnings={warnings} />
         <ActivityFeed items={recentActivity} />
         <QuickActions />
       </section>

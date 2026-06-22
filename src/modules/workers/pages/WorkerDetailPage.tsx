@@ -78,11 +78,20 @@ export function WorkerDetailPage() {
           </Link>
         }
         secondaryAction={
-          <Link className="button button--secondary button--sm" to={`/quick-entry?workerId=${worker.id}`}>
-            Registrar horas
+          <Link className="button button--secondary button--sm" to={`/hours/workers/${worker.id}`}>
+            Ver control de horas
           </Link>
         }
       />
+
+      <ActionBar>
+        <Button variant="secondary" onClick={() => navigate('/workers')}>
+          Volver
+        </Button>
+        <Link className="button button--secondary button--sm" to={`/quick-entry?workerId=${worker.id}`}>
+          Registrar horas
+        </Link>
+      </ActionBar>
 
       {message ? (
         <WarningBanner title="Operacion local" tone="info">
@@ -100,12 +109,6 @@ export function WorkerDetailPage() {
         summary={`${workerServices.length} servicios asociados y ${warnings.length} incidencias detectadas con datos actuales.`}
         worker={worker}
       />
-
-      <ActionBar>
-        <Button variant="secondary" onClick={() => navigate('/workers')}>
-          Volver
-        </Button>
-      </ActionBar>
 
       <section className="dashboard-grid">
         <WorkerMonthlySummary
@@ -134,6 +137,19 @@ export function WorkerDetailPage() {
           </div>
           <p className="muted-caption">
             Solo se cuentan servicios completados, revisados o cerrados con asignaciones confirmadas.
+          </p>
+        </Card>
+        <Card
+          title="Control de horas"
+          description="Ruta especifica para revisar confirmaciones, incidencias y detalle por trabajador."
+          action={
+            <Link className="button button--secondary button--sm" to={`/hours/workers/${worker.id}`}>
+              Abrir horas
+            </Link>
+          }
+        >
+          <p className="page-description">
+            El control de horas deriva de servicios y asignaciones existentes. Mantiene el historial de servicios, pero centra la revision en horas trabajadas y pago interno.
           </p>
         </Card>
       </section>

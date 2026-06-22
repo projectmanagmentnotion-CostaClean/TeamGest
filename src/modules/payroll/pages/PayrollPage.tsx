@@ -5,6 +5,9 @@ import { StatusPill } from '../../../components/ui/StatusPill'
 import { StatCard } from '../../../components/ui/StatCard'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { PayrollMonthSelector } from '../components/PayrollMonthSelector'
+import { PayrollSummaryCard } from '../components/PayrollSummaryCard'
+import { PayrollWorkerRow } from '../components/PayrollWorkerRow'
 import {
   calculatePayrollMonthSummary,
   calculatePayrollTotals,
@@ -13,9 +16,6 @@ import {
   getPayrollWarningsCount,
 } from '../services/payrollCalculations'
 import { getPayrollWarnings } from '../services/payrollWarnings'
-import { PayrollMonthSelector } from '../components/PayrollMonthSelector'
-import { PayrollSummaryCard } from '../components/PayrollSummaryCard'
-import { PayrollWorkerRow } from '../components/PayrollWorkerRow'
 
 export function PayrollPage() {
   const repositories = getRepositories()
@@ -40,6 +40,11 @@ export function PayrollPage() {
         title="Seguimiento mensual"
         description="Control mensual operativo de payroll basado en horas confirmadas y estados internos de revision."
         meta={<StatusPill tone="info">Seguimiento interno</StatusPill>}
+        primaryAction={
+          <Link className="button button--primary" to="/hours/review">
+            Revisar horas
+          </Link>
+        }
       />
 
       <PayrollMonthSelector selectedMonth={month} />
@@ -54,6 +59,10 @@ export function PayrollPage() {
 
       <WarningBanner title="Calculo operativo" tone="info">
         Los importes son estimaciones operativas basadas en horas confirmadas. No ejecutan pagos reales.
+      </WarningBanner>
+
+      <WarningBanner title="Fuente del cierre" tone="info">
+        El cierre se alimenta de horas confirmadas en servicios completados, revisados o cerrados.
       </WarningBanner>
 
       <PayrollSummaryCard
@@ -81,7 +90,7 @@ export function PayrollPage() {
         ))}
       </section>
 
-      <Link className="button button--primary" to={`/payroll/${month}`}>
+      <Link className="button button--secondary" to={`/payroll/${month}`}>
         Ver detalle del mes
       </Link>
     </div>

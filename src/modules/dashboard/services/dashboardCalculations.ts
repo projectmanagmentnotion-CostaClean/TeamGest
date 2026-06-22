@@ -4,14 +4,14 @@ import type { ServiceJob } from '../../../domain/services/service.types'
 import type { WarningItem } from '../../../domain/shared/warning.types'
 import type { Worker } from '../../../domain/workers/worker.types'
 import type { AppAuditEntry } from '../../../infrastructure/audit/audit.types'
-import { getPayrollWarnings } from '../../payroll/services/payrollWarnings'
-import { getPropertyWarnings } from '../../properties/services/propertyWarnings'
-import { getServiceWarnings } from '../../services/services/serviceWarnings'
-import { getWorkersWithWarnings, getWorkerOperationalWarnings } from '../../workers/services/workerWarnings'
 import { formatDate, formatMonthLabel, getMonthKey, isSameDay, isSameMonthKey } from '../../../utils/dates'
 import { formatServiceTypeLabel } from '../../../utils/labels'
 import { formatMoney } from '../../../utils/money'
+import { getPayrollWarnings } from '../../payroll/services/payrollWarnings'
 import { calculateMonthlyPayrollSummary } from '../../payroll/services/payrollCalculations'
+import { getPropertyWarnings } from '../../properties/services/propertyWarnings'
+import { getServiceWarnings } from '../../services/services/serviceWarnings'
+import { getWorkerOperationalWarnings, getWorkersWithWarnings } from '../../workers/services/workerWarnings'
 
 const warningPriority = {
   danger: 1,
@@ -89,7 +89,7 @@ export function getRecentActivity(
 
         return {
           id: `${service.id}-${assignment.id}`,
-          title: worker ? `Asignación confirmada para ${worker.name}` : 'Asignación registrada',
+          title: worker ? `Asignacion confirmada para ${worker.name}` : 'Asignacion registrada',
           text: `${formatServiceTypeLabel(service.serviceType)} en ${property?.name ?? 'inmueble'} con tarifa ${formatMoney(assignment.hourlyRate ?? 0)}.`,
           date: formatDate(service.updatedAt),
           entityLabel: client?.name ?? property?.name,
@@ -120,9 +120,9 @@ export function getOperationalFocus(
 
   return [
     {
-      label: 'Pendiente de revisar',
+      label: 'Horas por revisar',
       value: getCompletedServicesThisMonth(services).length.toString(),
-      hint: 'Servicios listos para cierre operativo.',
+      hint: 'Servicios pagables que aun pueden esconder confirmaciones pendientes.',
     },
     {
       label: 'Servicios cerrados',
@@ -163,13 +163,13 @@ export function calculateDashboardStats(
     {
       label: 'Servicios hoy',
       value: getTodayServices(services).length.toString(),
-      hint: 'Programados o cerrados durante la jornada actual.',
+      hint: 'Operacion prevista o completada durante la jornada actual.',
       tone: 'info' as const,
     },
     {
       label: 'Trabajadores activos',
       value: workers.filter((worker) => worker.status === 'active').length.toString(),
-      hint: 'Equipo disponible para operación.',
+      hint: 'Equipo disponible para operacion.',
       tone: 'success' as const,
     },
     {
@@ -179,9 +179,9 @@ export function calculateDashboardStats(
       tone: 'neutral' as const,
     },
     {
-      label: 'Nómina estimada del mes',
+      label: 'Pago interno estimado',
       value: formatMoney(payrollTotal),
-      hint: `Cálculo para ${formatMonthLabel(month)} con servicios cerrables.`,
+      hint: `Estimacion de ${formatMonthLabel(month)} basada en horas confirmadas.`,
       tone: 'info' as const,
     },
     {
@@ -193,7 +193,7 @@ export function calculateDashboardStats(
     {
       label: 'Alertas abiertas',
       value: warnings.filter((warning) => warning.level !== 'success').length.toString(),
-      hint: 'Incidencias y bloqueos detectados en la operación.',
+      hint: 'Incidencias y bloqueos detectados en la operacion.',
       tone: 'warning' as const,
     },
   ]

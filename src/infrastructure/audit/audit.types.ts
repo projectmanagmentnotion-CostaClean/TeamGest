@@ -20,6 +20,7 @@ export type AppAuditAction =
   | 'service.cancelled'
   | 'service.restored'
   | 'service.deleted'
+  | 'hour.confirmed'
   | 'payroll.status_updated'
   | 'payroll.locked'
   | 'backup.exported'
