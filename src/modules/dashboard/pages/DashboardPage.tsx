@@ -102,7 +102,7 @@ export function DashboardPage() {
             </div>
           </div>
           <p className="muted-caption">
-            Quick Entry sigue siendo la entrada principal para registrar trabajo realizado.
+            El registro rapido sigue siendo la entrada principal para registrar trabajo realizado.
           </p>
         </Card>
       </section>

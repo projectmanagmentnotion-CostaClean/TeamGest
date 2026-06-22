@@ -27,7 +27,7 @@ export function QuickEntryPriorityCard({
       }
     >
       <p className="page-description">
-        Quick Entry es el flujo principal para trabajo ya realizado y confirmado para nomina interna.
+        El registro rapido es el flujo principal para trabajo ya realizado y confirmado para nomina interna.
       </p>
       {services.length > 0 ? (
         <div className="stack-list">

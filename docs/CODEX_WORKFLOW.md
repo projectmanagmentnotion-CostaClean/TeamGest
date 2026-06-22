@@ -63,3 +63,11 @@ Block 11 should be reported as hours-first audit plus Hours Control module deliv
 ## Block 12 reporting
 
 Block 12 should be reported as hours review actions plus StepFlow Pro selector upgrade. Any limitation around shared service time fields, missing browser visual QA or local-only runtime must be stated explicitly.
+
+## Block 13 reporting
+
+Block 13 should be reported as mobile StepFlow hardening plus Quick Entry mobile polish. Any lack of browser visual QA or remaining local-only runtime limitations must be stated explicitly.
+
+## Mobile StepFlow delivery rule
+
+When changing shared form flows, verify that mobile does not keep desktop side rails, compressed columns or overflowing selector panels. Shared fixes should land in reusable StepFlow and selector layers before page-specific overrides are considered.

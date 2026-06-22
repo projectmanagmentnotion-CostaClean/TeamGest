@@ -155,3 +155,19 @@ Important forms should avoid endless vertical stacks. Long selectors must scroll
 ## Mobile-first selector rules
 
 Searchable selectors should remain tappable, readable and capped on small screens. Internal option lists can scroll, but the surrounding page should stay stable.
+
+## Mobile StepFlow standard
+
+On screens under `768px`, StepFlow must switch from any desktop rail treatment to a fully stacked flow. The mobile experience should show a compact progress header, the current step title, full-width form content and full-width footer actions without side columns.
+
+## Compact mobile progress indicator
+
+Mobile StepFlow should communicate progress with `Paso X de Y`, a compact progress bar and the current step label. Large vertical step pills should stay desktop-only so the active form keeps the available viewport width.
+
+## Searchable dropdown mobile behavior
+
+Searchable dropdowns should inherit the input width, stay inside the viewport, cap their own height and scroll internally. Long labels, subtitles and meta values should wrap safely instead of forcing page-level horizontal overflow.
+
+## Quick Entry mobile standard
+
+`Registrar horas` is the primary mobile StepFlow benchmark. Its summary card, current step content and footer actions should stack cleanly without a narrow left column or selector panels that stretch the page.

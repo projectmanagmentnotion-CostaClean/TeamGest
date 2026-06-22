@@ -58,7 +58,7 @@ export function QuickWorkEntryPage() {
     return (
       <div className="page-stack">
         <PageHeader
-          eyebrow="Quick Entry"
+          eyebrow="Registro rapido"
           title="Registro completado"
           description="La entrada rapida ya quedo guardada en modo local-first."
         />
@@ -98,9 +98,9 @@ export function QuickWorkEntryPage() {
   return (
     <div className="page-stack">
       <PageHeader
-        eyebrow="Quick Entry"
+        eyebrow="Registro rapido"
         title="Registrar horas"
-        description="Anade trabajador, inmueble, horario, horas y tarifa en una secuencia corta y revisable."
+        description="Entrada rapida para registrar horas trabajadas en una secuencia corta y revisable."
       />
 
       {errors.length > 0 && currentStep >= 2 ? (
@@ -130,8 +130,8 @@ export function QuickWorkEntryPage() {
       />
 
       <StepFlowScreen
-        title="Quick Work Entry"
-        description="Entrada prioritaria para registrar horas confirmadas sin listas infinitas."
+        title="Registrar horas"
+        description="Entrada rapida para registrar horas confirmadas sin listas infinitas."
       >
         <div className="page-stack">
           <StepFlowHeader

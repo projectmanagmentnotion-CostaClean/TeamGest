@@ -211,3 +211,12 @@ Browser visual QA was not performed in this block.
 - Property form client selection now uses a searchable dropdown instead of a full client list.
 - Service form client, property and worker selection now use searchable flows with selected-worker cards instead of full-list worker walls.
 - Major maintenance flows now render one active step at a time instead of endless stacked form screens.
+
+## Block 13 QA additions
+
+- Shared StepFlow forms now switch to a stacked mobile layout under `768px` instead of keeping a sidebar-like step rail.
+- Mobile StepFlow now shows a compact progress indicator with `Paso X de Y`, current step label and a progress bar.
+- Quick Entry now uses Spanish primary labels for the main hour-registration surface.
+- Quick Entry summary, active step content and footer actions keep full usable width on narrow screens.
+- Searchable dropdown panels remain capped with internal scroll and do not rely on page-level infinite scrolling.
+- Shared create/edit flows and hour correction inherit the same mobile StepFlow behavior through shared components and CSS.

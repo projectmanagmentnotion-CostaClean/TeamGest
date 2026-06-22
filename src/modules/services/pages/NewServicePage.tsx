@@ -7,7 +7,7 @@ export function NewServicePage() {
       <PageHeader
         eyebrow="Servicios"
         title="Nuevo servicio"
-        description="Alta manual local-first para casos fuera del Quick Work Entry."
+        description="Alta manual local-first para casos fuera del registro rapido de horas."
       />
       <ServiceFormFlow />
     </div>

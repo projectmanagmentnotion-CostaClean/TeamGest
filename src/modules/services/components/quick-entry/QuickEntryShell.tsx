@@ -16,7 +16,7 @@ const steps = [
 
 export function QuickEntryShell({ children }: QuickEntryShellProps) {
   return (
-    <Card title="Quick Work Entry" description="Entrada prioritaria para registrar horas confirmadas.">
+    <Card title="Registrar horas" description="Entrada prioritaria para registrar horas confirmadas.">
       <Stepper currentStep={4} steps={steps} />
       {children}
     </Card>
