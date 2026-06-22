@@ -1,3 +1,4 @@
+import type { AppSettings } from '../../domain/settings/appSettings.types'
 import type { Client } from '../../domain/clients/client.types'
 import type { PayrollMonthState } from '../../domain/payroll/payroll.types'
 import type { Property } from '../../domain/properties/property.types'
@@ -30,6 +31,59 @@ import {
 
 export type LocalSettingsState = {
   importMode?: 'text' | 'file'
+  activeSection?:
+    | 'company'
+    | 'hours'
+    | 'quick-entry'
+    | 'review'
+    | 'services'
+    | 'display'
+    | 'data-safety'
+    | 'audit'
+    | 'system'
+  lastQuickEntryWorkerId?: string
+  lastQuickEntryPropertyId?: string
+}
+
+export type StoredSettingsPayload = {
+  appSettings?: AppSettings | Record<string, unknown>
+  localState?: LocalSettingsState
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function normalizeLocalSettingsState(value: unknown): LocalSettingsState {
+  if (!isRecord(value)) {
+    return {}
+  }
+
+  return {
+    importMode: value.importMode === 'file' ? 'file' : value.importMode === 'text' ? 'text' : undefined,
+    activeSection: typeof value.activeSection === 'string' ? (value.activeSection as LocalSettingsState['activeSection']) : undefined,
+    lastQuickEntryWorkerId:
+      typeof value.lastQuickEntryWorkerId === 'string' ? value.lastQuickEntryWorkerId : undefined,
+    lastQuickEntryPropertyId:
+      typeof value.lastQuickEntryPropertyId === 'string' ? value.lastQuickEntryPropertyId : undefined,
+  }
+}
+
+export function normalizeStoredSettingsPayload(value: unknown): StoredSettingsPayload {
+  if (!isRecord(value)) {
+    return {}
+  }
+
+  if ('appSettings' in value || 'localState' in value) {
+    return {
+      appSettings: isRecord(value.appSettings) ? value.appSettings : undefined,
+      localState: normalizeLocalSettingsState(value.localState),
+    }
+  }
+
+  return {
+    localState: normalizeLocalSettingsState(value),
+  }
 }
 
 export function getStorageOverviewSnapshot() {
@@ -58,12 +112,34 @@ export function getStorageOverviewSnapshot() {
 }
 
 export function readLocalSettingsState() {
-  return readJson<LocalSettingsState>(SETTINGS_KEY, {})
+  return normalizeStoredSettingsPayload(readJson<StoredSettingsPayload | Record<string, unknown>>(SETTINGS_KEY, {})).localState ?? {}
 }
 
 export function writeLocalSettingsState(nextState: LocalSettingsState) {
-  writeJson(SETTINGS_KEY, nextState)
+  const current = normalizeStoredSettingsPayload(readJson<StoredSettingsPayload | Record<string, unknown>>(SETTINGS_KEY, {}))
+  writeJson(SETTINGS_KEY, {
+    ...current,
+    localState: nextState,
+  })
   return nextState
+}
+
+export function readStoredAppSettingsValue() {
+  return normalizeStoredSettingsPayload(
+    readJson<StoredSettingsPayload | Record<string, unknown>>(SETTINGS_KEY, {}),
+  ).appSettings
+}
+
+export function writeStoredAppSettingsValue(nextSettings: AppSettings | Record<string, unknown>) {
+  const current = normalizeStoredSettingsPayload(
+    readJson<StoredSettingsPayload | Record<string, unknown>>(SETTINGS_KEY, {}),
+  )
+  writeJson(SETTINGS_KEY, {
+    ...current,
+    appSettings: nextSettings,
+  })
+
+  return nextSettings
 }
 
 export function clearServiceLocalState() {

@@ -1,5 +1,6 @@
 import { getStorageHealthReport } from '../../../infrastructure/storage/storageHealth'
 import { getStorageMetadata } from '../../../infrastructure/storage/storageMetadata'
+import { getAppSettings } from './appSettingsService'
 import { getStorageOverview } from './settingsStorage'
 
 export type DataSafetyChecklistItem = {
@@ -11,13 +12,20 @@ export type DataSafetyChecklistItem = {
 
 export function getBackupFreshnessStatus() {
   const metadata = getStorageMetadata()
+  const settings = getAppSettings()
   if (!metadata.lastBackupAt) {
     return 'missing' as const
   }
 
   const elapsedMs = Date.now() - new Date(metadata.lastBackupAt).getTime()
-  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000
-  return elapsedMs <= sevenDaysMs ? 'fresh' as const : 'stale' as const
+  const maxAgeDays =
+    settings.dataSafetySettings.backupReminderFrequency === 'monthly'
+      ? 30
+      : settings.dataSafetySettings.backupReminderFrequency === 'biweekly'
+        ? 14
+        : 7
+
+  return elapsedMs <= maxAgeDays * 24 * 60 * 60 * 1000 ? 'fresh' as const : 'stale' as const
 }
 
 export function getLocalDataRiskLevel() {
@@ -39,6 +47,7 @@ export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
   const health = getStorageHealthReport()
   const overview = getStorageOverview()
   const backupFreshness = getBackupFreshnessStatus()
+  const settings = getAppSettings()
 
   return [
     {
@@ -53,10 +62,15 @@ export function getDataSafetyChecklist(): DataSafetyChecklistItem[] {
       id: 'recent-backup',
       label: 'Backup reciente',
       description:
-        backupFreshness === 'fresh'
+        !settings.dataSafetySettings.backupReminderEnabled
+          ? 'El recordatorio de backup esta desactivado en ajustes.'
+          : backupFreshness === 'fresh'
           ? 'Existe una copia reciente del estado local.'
           : 'Conviene exportar una copia antes de seguir operando.',
-      status: backupFreshness === 'fresh' ? 'ok' : 'warning',
+      status:
+        !settings.dataSafetySettings.backupReminderEnabled || backupFreshness === 'fresh'
+          ? 'ok'
+          : 'warning',
     },
     {
       id: 'corrupted-keys',

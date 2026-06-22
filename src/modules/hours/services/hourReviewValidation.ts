@@ -1,3 +1,5 @@
+import { getAppSettings } from '../../settings/services/appSettingsService'
+
 export type HourCorrectionPatch = {
   startTime?: string
   endTime?: string
@@ -35,9 +37,11 @@ export function validateHourCorrectionPatch(patch: HourCorrectionPatch) {
 }
 
 export function validateIncidentNote(note: string) {
-  return note.trim().length > 0 ? [] : ['La nota de incidencia es obligatoria.']
+  const required = getAppSettings().hourReviewSettings.requireNoteForIncident
+  return !required || note.trim().length > 0 ? [] : ['La nota de incidencia es obligatoria.']
 }
 
 export function validateExcludeReason(reason: string) {
-  return reason.trim().length > 0 ? [] : ['El motivo de exclusion es obligatorio.']
+  const required = getAppSettings().hourReviewSettings.requireReasonForExclusion
+  return !required || reason.trim().length > 0 ? [] : ['El motivo de exclusion es obligatorio.']
 }

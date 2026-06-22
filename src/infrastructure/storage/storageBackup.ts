@@ -1,4 +1,6 @@
+import { validateAndNormalizeAppSettings } from '../../domain/settings/appSettingsValidation'
 import { recordAuditEvent } from '../audit/auditRepository'
+import { normalizeStoredSettingsPayload } from './storageAdmin'
 import { readJson, writeJson } from './localStorageAdapter'
 import { markLastBackupAt } from './storageMetadata'
 import {
@@ -102,7 +104,7 @@ function normalizeTeamGestBackupPayload(payload: LegacyTeamGestBackupPayload): T
       payrollMonths: normalizeRecord(data.payrollMonths),
       payrollAudit: normalizeRecord(data.payrollAudit),
       appAudit: normalizeArray(data.appAudit),
-      settings: normalizeRecord(data.settings),
+      settings: normalizeStoredSettingsPayload(data.settings),
       metadata: normalizeRecord(data.metadata),
     },
   }
@@ -112,6 +114,9 @@ export function buildTeamGestBackup(): TeamGestBackupPayload {
   const metadata = readJson<Record<string, unknown>>(STORAGE_METADATA_KEY, {})
   const schemaVersion = typeof metadata.schemaVersion === 'number' ? metadata.schemaVersion : 1
   const exportedAt = new Date().toISOString()
+  const storedSettings = normalizeStoredSettingsPayload(
+    readJson<Record<string, unknown>>(SETTINGS_KEY, {}),
+  )
 
   return {
     appName: 'TeamGest',
@@ -133,7 +138,10 @@ export function buildTeamGestBackup(): TeamGestBackupPayload {
       payrollMonths: readJson<Record<string, unknown>>(PAYROLL_MONTHS_KEY, {}),
       payrollAudit: readJson<Record<string, unknown>>(PAYROLL_AUDIT_KEY, {}),
       appAudit: readJson<unknown[]>(APP_AUDIT_KEY, []),
-      settings: readJson<Record<string, unknown>>(SETTINGS_KEY, {}),
+      settings: {
+        ...storedSettings,
+        appSettings: validateAndNormalizeAppSettings(storedSettings.appSettings).settings,
+      },
       metadata,
     },
   }
@@ -239,6 +247,7 @@ export function downloadTeamGestBackup(payload = buildTeamGestBackup()) {
 
 export function restoreTeamGestBackup(payload: TeamGestBackupPayload) {
   const normalizedPayload = normalizeTeamGestBackupPayload(payload)
+  const normalizedSettings = normalizeStoredSettingsPayload(normalizedPayload.data.settings)
 
   writeJson(SERVICES_CREATED_KEY, normalizedPayload.data.createdServices)
   writeJson(SERVICES_OVERRIDES_KEY, normalizedPayload.data.serviceOverrides)
@@ -255,7 +264,10 @@ export function restoreTeamGestBackup(payload: TeamGestBackupPayload) {
   writeJson(PAYROLL_MONTHS_KEY, normalizedPayload.data.payrollMonths)
   writeJson(PAYROLL_AUDIT_KEY, normalizedPayload.data.payrollAudit)
   writeJson(APP_AUDIT_KEY, normalizedPayload.data.appAudit)
-  writeJson(SETTINGS_KEY, normalizedPayload.data.settings)
+  writeJson(SETTINGS_KEY, {
+    ...normalizedSettings,
+    appSettings: validateAndNormalizeAppSettings(normalizedSettings.appSettings).settings,
+  })
   writeJson(STORAGE_METADATA_KEY, {
     ...normalizedPayload.data.metadata,
     schemaVersion: normalizedPayload.schemaVersion,

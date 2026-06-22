@@ -1,3 +1,4 @@
+import { createAppSettingsRepository } from './repositories/appSettingsRepository'
 import { createClientRepository } from './repositories/clientRepository'
 import { createPayrollRepository } from './repositories/payrollRepository'
 import { createPropertyRepository } from './repositories/propertyRepository'
@@ -10,6 +11,7 @@ import { migrateStorageIfNeeded } from './storage/storageMigrations'
 
 let repositories: ReturnType<typeof createRepositories> | null = null
 let storageTools: ReturnType<typeof createStorageTools> | null = null
+let appSettingsRepository: ReturnType<typeof createAppSettingsRepository> | null = null
 
 function createRepositories() {
   const workerRepository = createWorkerRepository()
@@ -56,4 +58,12 @@ export function getStorageTools() {
   }
 
   return storageTools
+}
+
+export function getAppSettingsRepository() {
+  if (!appSettingsRepository) {
+    appSettingsRepository = createAppSettingsRepository()
+  }
+
+  return appSettingsRepository
 }

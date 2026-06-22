@@ -3,6 +3,7 @@ import { FormField } from '../../../components/forms/FormField'
 import { FormFlowActions } from '../../../components/forms/FormFlowActions'
 import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
+import { getAppSettings } from '../../settings/services/appSettingsService'
 
 type HourExcludeDialogProps = {
   onCancel: () => void
@@ -11,6 +12,7 @@ type HourExcludeDialogProps = {
 
 export function HourExcludeDialog({ onCancel, onSave }: HourExcludeDialogProps) {
   const [reason, setReason] = useState('')
+  const requireReason = getAppSettings().hourReviewSettings.requireReasonForExclusion
 
   return (
     <Card title="Excluir del payroll" description="Esta entrada no entrara al cierre mensual mientras permanezca excluida.">
@@ -18,6 +20,7 @@ export function HourExcludeDialog({ onCancel, onSave }: HourExcludeDialogProps) 
         <FormField
           control="textarea"
           label="Motivo de exclusion"
+          hint={requireReason ? 'El motivo es obligatorio antes de excluir.' : 'El motivo es opcional en la configuracion actual.'}
           value={reason}
           onChange={setReason}
         />
@@ -28,7 +31,7 @@ export function HourExcludeDialog({ onCancel, onSave }: HourExcludeDialogProps) 
             </Button>
           }
           primaryAction={
-            <Button onClick={() => onSave(reason)} disabled={!reason.trim()}>
+            <Button onClick={() => onSave(reason)} disabled={requireReason && !reason.trim()}>
               Excluir
             </Button>
           }

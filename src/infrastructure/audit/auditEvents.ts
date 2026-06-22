@@ -31,6 +31,8 @@ const auditActionLabels: Record<AppAuditAction, string> = {
   'payroll.locked': 'Cierre bloqueado',
   'backup.exported': 'Copia exportada',
   'backup.imported': 'Copia importada',
+  'settings.updated': 'Ajustes actualizados',
+  'settings.reset': 'Ajustes restaurados',
   'data.reset': 'Datos locales reiniciados',
   'storage.migration_run': 'Migración ejecutada',
 }

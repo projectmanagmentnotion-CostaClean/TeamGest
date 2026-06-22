@@ -3,6 +3,7 @@ import type { PayrollMonthState } from '../../../domain/payroll/payroll.types'
 import type { ServiceInput } from '../../../domain/services/service.inputs'
 import { recordAuditEvent } from '../../../infrastructure/audit/auditRepository'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { getAppSettings } from '../../settings/services/appSettingsService'
 import { validateExcludeReason, validateHourCorrectionPatch, validateIncidentNote, type HourCorrectionPatch } from './hourReviewValidation'
 
 function parseHourEntryId(entryId: string) {
@@ -111,6 +112,10 @@ export function canRestoreHourEntry(entry: HourEntry, payrollState?: PayrollMont
   const policy = canEditHourEntry(entry, payrollState)
   if (!policy.allowed) {
     return policy
+  }
+
+  if (!getAppSettings().hourReviewSettings.allowExcludedEntriesRestore) {
+    return { allowed: false, reason: 'La restauracion de excluidas esta desactivada en ajustes.' }
   }
 
   if (entry.hourStatus !== 'excluded') {

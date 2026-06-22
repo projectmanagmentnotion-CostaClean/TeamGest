@@ -220,3 +220,12 @@ Browser visual QA was not performed in this block.
 - Quick Entry summary, active step content and footer actions keep full usable width on narrow screens.
 - Searchable dropdown panels remain capped with internal scroll and do not rely on page-level infinite scrolling.
 - Shared create/edit flows and hour correction inherit the same mobile StepFlow behavior through shared components and CSS.
+
+## Block 13 settings-layer QA additions
+
+- Settings now normalize through explicit defaults and do not crash on missing or corrupt inner values.
+- Quick Entry consumes settings for confirmation defaults, date-based status defaults, payroll impact visibility and fallback hourly rate.
+- Payroll inclusion now respects settings for rate requirement, confirmation requirement and incident inclusion policy.
+- Hour review now respects settings for required incident note, required exclusion reason and excluded-entry restore policy.
+- Settings backup/import/full reset remain inside recognized TeamGest namespaces only.
+- No direct `localStorage` API usage was introduced in `src/app`, `src/components` or `src/modules`.

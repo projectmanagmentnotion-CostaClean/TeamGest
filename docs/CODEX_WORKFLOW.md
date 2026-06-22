@@ -71,3 +71,7 @@ Block 13 should be reported as mobile StepFlow hardening plus Quick Entry mobile
 ## Mobile StepFlow delivery rule
 
 When changing shared form flows, verify that mobile does not keep desktop side rails, compressed columns or overflowing selector panels. Shared fixes should land in reusable StepFlow and selector layers before page-specific overrides are considered.
+
+## Block 13 settings delivery rule
+
+Settings work must start with a code audit of the real storage and safety layer before adding new configuration surfaces. New settings should be typed, validated, local-first and applied only in low-risk runtime areas unless the sprint explicitly approves broader adoption.

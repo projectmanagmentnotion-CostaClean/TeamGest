@@ -3,6 +3,7 @@ import { EmptyState } from '../../../components/ui/EmptyState'
 import { getAuditActionLabel } from '../../../infrastructure/audit/auditEvents'
 import type { AppAuditEntry } from '../../../infrastructure/audit/audit.types'
 import { formatDate } from '../../../utils/dates'
+import { getAppSettings } from '../services/appSettingsService'
 import { SettingsSection } from './SettingsSection'
 
 type AuditLogPanelProps = {
@@ -10,6 +11,8 @@ type AuditLogPanelProps = {
 }
 
 export function AuditLogPanel({ entries }: AuditLogPanelProps) {
+  const showTechnicalIds = getAppSettings().displaySettings.showTechnicalIds
+
   return (
     <SettingsSection
       title="Auditoría local"
@@ -34,7 +37,7 @@ export function AuditLogPanel({ entries }: AuditLogPanelProps) {
                   </div>
                   <Badge tone="info">{formatDate(entry.createdAt)}</Badge>
                 </div>
-                {entry.entityType || entry.entityId ? (
+                {showTechnicalIds && (entry.entityType || entry.entityId) ? (
                   <p className="muted-caption">
                     {entry.entityType ?? 'Entidad'} {entry.entityId ? `· ${entry.entityId}` : ''}
                   </p>

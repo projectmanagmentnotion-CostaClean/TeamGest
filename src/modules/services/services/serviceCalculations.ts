@@ -3,6 +3,7 @@ import type { Property } from '../../../domain/properties/property.types'
 import type { ServiceAssignment, ServiceJob } from '../../../domain/services/service.types'
 import type { Worker } from '../../../domain/workers/worker.types'
 import { isPayrollEligibleService, isSameMonthKey } from '../../../utils/dates'
+import { getAppSettings } from '../../settings/services/appSettingsService'
 import { getServiceWarnings } from './serviceWarnings'
 
 export function getServiceClient(service: ServiceJob, clients: Client[]) {
@@ -51,14 +52,19 @@ export function isAssignmentIncludedInPayroll(
   service: Pick<ServiceJob, 'status'>,
   assignment: PayableAssignment,
 ) {
+  const settings = getAppSettings()
+  const requiresConfirmation = settings.hoursSettings.requireConfirmedHoursForPayroll
+  const requiresRate = settings.hoursSettings.requireRateForPayroll
+  const incidentAllowed = settings.hourReviewSettings.allowIncidentEntriesInPayroll
+
   return (
     isPayrollEligibleService(service.status) &&
-    assignment.confirmed &&
+    (!requiresConfirmation || assignment.confirmed) &&
     !assignment.excludedFromPayroll &&
     assignment.hourStatusOverride !== 'excluded' &&
-    assignment.hourStatusOverride !== 'issue' &&
+    (incidentAllowed || assignment.hourStatusOverride !== 'issue') &&
     assignment.hoursWorked > 0 &&
-    (assignment.hourlyRate ?? 0) > 0
+    (!requiresRate || (assignment.hourlyRate ?? 0) > 0)
   )
 }
 

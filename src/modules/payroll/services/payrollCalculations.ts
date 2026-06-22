@@ -88,7 +88,9 @@ export function calculatePayrollMonthSummary(
   const activeWorkers = workers.filter((worker) => worker.status === 'active')
   const payableWorkerIds = new Set(
     payableServices.flatMap((service) =>
-      service.assignments.filter((assignment) => assignment.confirmed).map((assignment) => assignment.workerId),
+      service.assignments
+        .filter((assignment) => isAssignmentIncludedInPayroll(service, assignment))
+        .map((assignment) => assignment.workerId),
     )
   )
   const visibleWorkers = workers.filter(

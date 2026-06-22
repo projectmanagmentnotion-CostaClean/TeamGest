@@ -1,4 +1,5 @@
 import type { Worker } from '../../../domain/workers/worker.types'
+import { getAppSettings } from '../../settings/services/appSettingsService'
 
 export type QuickEntryDraft = {
   workerId: string
@@ -15,14 +16,16 @@ export type QuickEntryDraft = {
 }
 
 export function createQuickEntryDraft(params?: Partial<QuickEntryDraft>): QuickEntryDraft {
+  const settings = getAppSettings()
+
   return {
     workerId: params?.workerId ?? '',
     propertyId: params?.propertyId ?? '',
     date: params?.date ?? new Date().toISOString().slice(0, 10),
     startTime: params?.startTime ?? '',
     endTime: params?.endTime ?? '',
-    hoursWorked: params?.hoursWorked ?? 2,
-    hourlyRate: params?.hourlyRate,
+    hoursWorked: params?.hoursWorked ?? Math.max(settings.hoursSettings.minimumHoursPerEntry, 2),
+    hourlyRate: params?.hourlyRate ?? settings.hoursSettings.defaultHourlyRate,
     extraAmount: params?.extraAmount,
     deductions: params?.deductions,
     notes: params?.notes ?? '',
@@ -41,6 +44,8 @@ export function resolveQuickEntryPrefill(searchParams: URLSearchParams) {
 }
 
 export function calculateQuickEntryHoursFromSchedule(startTime?: string, endTime?: string) {
+  const roundingMinutes = getAppSettings().hoursSettings.roundHoursToNearestMinutes
+
   if (!startTime || !endTime) {
     return null
   }
@@ -61,7 +66,11 @@ export function calculateQuickEntryHoursFromSchedule(startTime?: string, endTime
     return null
   }
 
-  return Number(((endTotalMinutes - startTotalMinutes) / 60).toFixed(2))
+  const totalMinutes = endTotalMinutes - startTotalMinutes
+  const roundedMinutes =
+    roundingMinutes > 0 ? Math.round(totalMinutes / roundingMinutes) * roundingMinutes : totalMinutes
+
+  return Number((roundedMinutes / 60).toFixed(2))
 }
 
 export function applyQuickEntrySchedulePatch(
@@ -106,6 +115,8 @@ export function syncQuickEntryHoursWithSchedule(current: QuickEntryDraft) {
 }
 
 export function applyQuickEntryWorkerSelection(current: QuickEntryDraft, worker?: Worker) {
+  const defaultRate = getAppSettings().hoursSettings.defaultHourlyRate
+
   if (!worker) {
     return {
       ...current,
@@ -116,6 +127,6 @@ export function applyQuickEntryWorkerSelection(current: QuickEntryDraft, worker?
   return {
     ...current,
     workerId: worker.id,
-    hourlyRate: worker.defaultHourlyRate ?? current.hourlyRate,
+    hourlyRate: worker.defaultHourlyRate ?? current.hourlyRate ?? defaultRate,
   }
 }

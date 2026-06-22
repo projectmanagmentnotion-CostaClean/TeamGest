@@ -6,6 +6,7 @@ import { StatCard } from '../../../components/ui/StatCard'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { buildHourEntries } from '../../hours/services/hourEntryBuilder'
+import { getAppSettings } from '../../settings/services/appSettingsService'
 import { PayrollMonthSelector } from '../components/PayrollMonthSelector'
 import { PayrollSummaryCard } from '../components/PayrollSummaryCard'
 import { PayrollWorkerRow } from '../components/PayrollWorkerRow'
@@ -19,6 +20,7 @@ import {
 import { getPayrollWarnings } from '../services/payrollWarnings'
 
 export function PayrollPage() {
+  const appSettings = getAppSettings()
   const repositories = getRepositories()
   const month = getCurrentPayrollMonth()
   const workers = repositories.workers.listWorkers()
@@ -77,7 +79,7 @@ export function PayrollPage() {
         El cierre se alimenta de horas confirmadas en servicios completados, revisados o cerrados.
       </WarningBanner>
 
-      {reviewEntries.length > 0 ? (
+      {appSettings.hourReviewSettings.requireReviewBeforePayrollClose && reviewEntries.length > 0 ? (
         <WarningBanner title="Revision pendiente antes del cierre" tone="warning">
           Hay {reviewEntries.length} entradas con incidencia, exclusion o confirmacion pendiente en este mes. Revisa /hours/review antes de cerrar.
         </WarningBanner>

@@ -91,3 +91,10 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Important create, edit and review flows should use contained step screens rather than endless stacked forms.
 - Validation must stay outside UI components even when the UI is step-based.
 - Modules must not reintroduce direct browser storage access while adding review actions or selector UX.
+
+## Block 13 ownership
+
+- Typed app settings belong to the settings domain plus infrastructure repository/storage abstractions.
+- Settings UI may read and write only through settings services or repositories, never through direct browser storage calls.
+- Backup, import, reset and audit remain settings-module responsibilities, but they must preserve recognized namespaces only.
+- Cross-module settings usage should stay low-risk and limited to current runtime behavior, not speculative future systems.

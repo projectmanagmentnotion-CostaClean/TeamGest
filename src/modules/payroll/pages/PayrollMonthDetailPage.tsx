@@ -5,6 +5,7 @@ import { StatusPill } from '../../../components/ui/StatusPill'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { buildHourEntries } from '../../hours/services/hourEntryBuilder'
+import { getAppSettings } from '../../settings/services/appSettingsService'
 import { PayrollActions } from '../components/PayrollActions'
 import { PayrollAuditTrail } from '../components/PayrollAuditTrail'
 import { PayrollLockPanel } from '../components/PayrollLockPanel'
@@ -30,6 +31,7 @@ import {
 } from '../services/payrollWarnings'
 
 export function PayrollMonthDetailPage() {
+  const appSettings = getAppSettings()
   const { month: routeMonth } = useParams()
   const [, setRefreshKey] = useState(0)
   const repositories = getRepositories()
@@ -68,6 +70,10 @@ export function PayrollMonthDetailPage() {
       entry.payrollMonth === month &&
       (entry.hourStatus === 'pending_review' || entry.hourStatus === 'issue' || entry.hourStatus === 'excluded'),
   )
+  const reviewBlockingCount =
+    appSettings.hourReviewSettings.requireReviewBeforePayrollClose && reviewEntries.length > 0
+      ? reviewEntries.length
+      : 0
 
   const addAudit = (action: string, message: string, metadata?: Record<string, string>) => {
     repositories.payroll.addPayrollAuditEntry(
@@ -122,7 +128,7 @@ export function PayrollMonthDetailPage() {
         El cierre se alimenta de horas confirmadas en servicios completados, revisados o cerrados.
       </WarningBanner>
 
-      {reviewEntries.length > 0 ? (
+      {appSettings.hourReviewSettings.requireReviewBeforePayrollClose && reviewEntries.length > 0 ? (
         <WarningBanner title="Entradas pendientes para este cierre" tone="warning">
           Hay {reviewEntries.length} entradas que siguen pendientes, con incidencia o excluidas. Conviene resolverlas en /hours/review antes de marcar este mes como pagado o bloquearlo.
         </WarningBanner>
@@ -146,7 +152,7 @@ export function PayrollMonthDetailPage() {
       <section className="dashboard-grid">
         <PayrollWarningsPanel warnings={allWarnings} />
         <PayrollLockPanel
-          blockingWarningsCount={blockingWarnings.length}
+          blockingWarningsCount={blockingWarnings.length + reviewBlockingCount}
           onLock={handleLock}
           snapshot={monthState.lockedSnapshot}
           state={monthState}

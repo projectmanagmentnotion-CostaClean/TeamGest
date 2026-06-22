@@ -171,3 +171,15 @@ Searchable dropdowns should inherit the input width, stay inside the viewport, c
 ## Quick Entry mobile standard
 
 `Registrar horas` is the primary mobile StepFlow benchmark. Its summary card, current step content and footer actions should stack cleanly without a narrow left column or selector panels that stretch the page.
+
+## Settings control-center standard
+
+Settings should feel like an operational control center, not a developer dump. The page should separate routine configuration, local data safety, audit visibility and system state into distinct sections with clear labels and helper text.
+
+## Settings mobile standard
+
+On mobile, settings should avoid one endless wall of controls. A compact section navigator should switch the visible card group so the operator can focus on one settings area at a time.
+
+## Data safety UX
+
+Backup and import belong in the data-safety section, while destructive reset actions should stay visually separated in a visible danger zone. System copy must keep reminding the operator that persistence is still browser-local.

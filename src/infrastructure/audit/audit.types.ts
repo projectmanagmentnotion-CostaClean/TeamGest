@@ -29,6 +29,8 @@ export type AppAuditAction =
   | 'payroll.locked'
   | 'backup.exported'
   | 'backup.imported'
+  | 'settings.updated'
+  | 'settings.reset'
   | 'data.reset'
   | 'storage.migration_run'
 

@@ -8,6 +8,7 @@ import { Button } from '../../../components/ui/Button'
 import { PageHeader } from '../../../components/ui/PageHeader'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { getAppSettings } from '../../settings/services/appSettingsService'
 import { QuickEntryPayStep } from '../components/quick-entry/QuickEntryPayStep'
 import { QuickEntryPropertyStep } from '../components/quick-entry/QuickEntryPropertyStep'
 import { QuickEntryReviewStep } from '../components/quick-entry/QuickEntryReviewStep'
@@ -37,6 +38,7 @@ import {
 const steps = ['Trabajador', 'Inmueble', 'Horario', 'Pago', 'Revision']
 
 export function QuickWorkEntryPage() {
+  const appSettings = getAppSettings()
   const repositories = getRepositories()
   const workers = repositories.workers.listWorkers().filter((worker) => worker.status !== 'archived')
   const properties = repositories.properties.listProperties().filter((property) => property.status !== 'archived')
@@ -195,9 +197,11 @@ export function QuickWorkEntryPage() {
                 notes={draft.notes}
                 onChange={(patch) => setDraft((current) => ({ ...current, ...patch }))}
               />
+              {appSettings.quickEntrySettings.showPayrollImpactMessage ? (
               <WarningBanner title="Impacto en payroll" tone="info">
                 Se sumara al cierre mensual de {payrollMonthLabel}. Total a pagar previsto: {totalPay.toFixed(2)} EUR. Confirmado para nomina interna.
               </WarningBanner>
+              ) : null}
             </>
           ) : null}
 

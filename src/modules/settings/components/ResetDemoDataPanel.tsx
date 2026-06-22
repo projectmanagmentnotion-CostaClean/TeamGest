@@ -3,6 +3,7 @@ import { Button } from '../../../components/ui/Button'
 import { ConfirmDangerBox } from '../../../components/ui/ConfirmDangerBox'
 import { Input } from '../../../components/ui/Input'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
+import { getAppSettings } from '../services/appSettingsService'
 import {
   resetAllTeamGestLocalData,
   resetEntityManagementLocalState,
@@ -17,6 +18,7 @@ type ResetDemoDataPanelProps = {
 export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
   const [confirmation, setConfirmation] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  const requireTypedConfirmation = getAppSettings().dataSafetySettings.requireTypedConfirmation
 
   const runAction = (action: () => string, nextMessage: string) => {
     action()
@@ -95,14 +97,18 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
                   'Todo el espacio local TeamGest fue reiniciado.',
                 )
               }
-              disabled={confirmation !== 'RESET'}
+              disabled={requireTypedConfirmation && confirmation !== 'RESET'}
             >
               Reset total
             </Button>
           </div>
           <Input
             label="Confirmacion obligatoria"
-            hint="Escribe RESET para habilitar el borrado completo."
+            hint={
+              requireTypedConfirmation
+                ? 'Escribe RESET para habilitar el borrado completo.'
+                : 'La confirmacion escrita esta desactivada en ajustes.'
+            }
             value={confirmation}
             onChange={(event) => setConfirmation(event.target.value)}
           />

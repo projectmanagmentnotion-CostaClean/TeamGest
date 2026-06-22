@@ -74,6 +74,7 @@
 - TeamGestBackupPayload: appName, exportedAt, schemaVersion and recognized local namespaces only.
 - AppAuditEntry: local event log with action, message, optional entity reference and safe metadata.
 - StorageHealthReport: availability, corrupted keys, missing expected keys, storage size, schema version and derived level.
+- AppSettings: typed local configuration split into company, hours, quick entry, review, service, display, data safety and system sections.
 
 ## Local safety policy
 
@@ -82,6 +83,12 @@
 - Locked closures remain operational state, not fiscal or legal finalization.
 - Soft delete is not broadly implemented yet; reset is the only destructive local operation in this sprint.
 - Local entity delete is guarded and limited to local-only records without blocked dependencies.
+
+## Settings model note
+
+- Settings now normalize through explicit defaults and safe validation before runtime use.
+- System settings remain locked to `appMode = local` and `dataRealStatus = planning_only`.
+- Settings audit events store section and changed keys, not the full settings payload.
 
 ## Block 8 readiness note
 

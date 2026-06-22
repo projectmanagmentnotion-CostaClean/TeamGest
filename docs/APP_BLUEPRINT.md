@@ -160,3 +160,16 @@ Block 12 combines Sprint 23 and Sprint 24 on top of the same local-first runtime
 - Hours review now persists review metadata through service assignment updates, not through a new hours namespace.
 - Quick Entry, service, property, worker and client maintenance now use contained step screens instead of endless stacked forms.
 - Worker, client and property selectors with meaningful volume now prefer searchable dropdown UX over giant lists.
+
+## Block 13 status
+
+Block 13 combines Sprint 25 and Sprint 26 on top of the same local-first runtime.
+
+- Sprint 25 audits the real settings, storage, backup, import, reset and audit layer in `docs/SETTINGS_LAYER_AUDIT.md`.
+- Sprint 26 adds a typed settings architecture, sectioned settings UI, settings validation and low-risk runtime usage in Quick Entry, hours review and payroll.
+
+## Settings runtime note
+
+- App settings are now persisted locally under the TeamGest settings namespace through repository and storage abstractions.
+- Backup, import and full reset continue covering settings safely.
+- Runtime remains local-first only. Backend, Supabase, auth and real payments stay inactive.
