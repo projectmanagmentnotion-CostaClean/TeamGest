@@ -1,4 +1,8 @@
+import { SearchableEntitySelect } from '../../../../components/forms/SearchableEntitySelect'
+import { Card } from '../../../../components/ui/Card'
 import type { Worker } from '../../../../domain/workers/worker.types'
+import { formatWorkerRoleLabel } from '../../../../utils/labels'
+import { formatMoney } from '../../../../utils/money'
 
 type QuickEntryWorkerStepProps = {
   workerId: string
@@ -7,36 +11,50 @@ type QuickEntryWorkerStepProps = {
 }
 
 export function QuickEntryWorkerStep({ onChange, workerId, workers }: QuickEntryWorkerStepProps) {
+  const selectedWorker = workers.find((worker) => worker.id === workerId)
+
   return (
     <section className="page-stack">
       <div className="section-header__content">
-        <h3>Trabajador</h3>
-        <p>Selecciona el trabajador y reutiliza su tarifa por defecto cuando exista.</p>
+        <h3>Selecciona un trabajador</h3>
+        <p>Busca por nombre, rol o telefono y reutiliza su tarifa por defecto cuando exista.</p>
       </div>
-      <div className="cards-grid">
-        {workers.map((worker) => {
-          const isSelected = worker.id === workerId
-
-          return (
-            <button
-              key={worker.id}
-              className={`choice-card${isSelected ? ' is-selected' : ''}`}
-              type="button"
-              onClick={() => onChange(worker.id)}
-            >
-              <div className="row-card__main">
-                <div>
-                  <strong>{worker.name}</strong>
-                  <p>{worker.role}</p>
-                </div>
-                <span className="muted-caption">
-                  {worker.defaultHourlyRate ? `${worker.defaultHourlyRate} EUR/h` : 'Tarifa pendiente'}
-                </span>
-              </div>
-            </button>
-          )
-        })}
-      </div>
+      <SearchableEntitySelect
+        label="Buscar trabajador"
+        entityLabel="trabajador"
+        value={workerId}
+        placeholder="Buscar trabajador"
+        options={workers.map((worker) => ({
+          id: worker.id,
+          label: worker.name,
+          subtitle: worker.phone ?? worker.email ?? 'Contacto pendiente',
+          meta: worker.defaultHourlyRate ? `${formatMoney(worker.defaultHourlyRate)} / h` : 'Tarifa pendiente',
+          status: worker.status,
+        }))}
+        onChange={onChange}
+      />
+      {selectedWorker ? (
+        <Card title={selectedWorker.name} description="Trabajador seleccionado">
+          <div className="detail-grid">
+            <div>
+              <span className="muted-caption">Rol</span>
+              <strong>{formatWorkerRoleLabel(selectedWorker.role)}</strong>
+            </div>
+            <div>
+              <span className="muted-caption">Tarifa por defecto</span>
+              <strong>
+                {selectedWorker.defaultHourlyRate
+                  ? `${formatMoney(selectedWorker.defaultHourlyRate)} / h`
+                  : 'Tarifa pendiente'}
+              </strong>
+            </div>
+            <div>
+              <span className="muted-caption">Estado</span>
+              <strong>{selectedWorker.status}</strong>
+            </div>
+          </div>
+        </Card>
+      ) : null}
     </section>
   )
 }

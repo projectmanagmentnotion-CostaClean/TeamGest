@@ -1,6 +1,6 @@
 import type { ServiceJob } from '../../../domain/services/service.types'
 import type { Worker } from '../../../domain/workers/worker.types'
-import { calculateAssignmentPay } from '../../services/services/serviceCalculations'
+import { calculateAssignmentPay, isAssignmentIncludedInPayroll } from '../../services/services/serviceCalculations'
 import { isPayrollEligibleService, isSameMonthKey } from '../../../utils/dates'
 
 export function getWorkerServices(workerId: string, services: ServiceJob[]) {
@@ -28,7 +28,10 @@ export function getWorkerMonthlyHours(workerId: string, services: ServiceJob[], 
     return (
       total +
       service.assignments
-        .filter((assignment) => assignment.workerId === workerId && assignment.confirmed)
+        .filter(
+          (assignment) =>
+            assignment.workerId === workerId && isAssignmentIncludedInPayroll(service, assignment),
+        )
         .reduce((sum, assignment) => sum + assignment.hoursWorked, 0)
     )
   }, 0)
@@ -43,7 +46,10 @@ export function getWorkerMonthlyPay(workerId: string, services: ServiceJob[], mo
     return (
       total +
       service.assignments
-        .filter((assignment) => assignment.workerId === workerId && assignment.confirmed)
+        .filter(
+          (assignment) =>
+            assignment.workerId === workerId && isAssignmentIncludedInPayroll(service, assignment),
+        )
         .reduce((sum, assignment) => sum + calculateAssignmentPay(assignment), 0)
     )
   }, 0)
@@ -58,7 +64,10 @@ export function getWorkerMonthlyExtras(workerId: string, services: ServiceJob[],
     return (
       total +
       service.assignments
-        .filter((assignment) => assignment.workerId === workerId && assignment.confirmed)
+        .filter(
+          (assignment) =>
+            assignment.workerId === workerId && isAssignmentIncludedInPayroll(service, assignment),
+        )
         .reduce((sum, assignment) => sum + (assignment.extraAmount ?? 0), 0)
     )
   }, 0)
@@ -73,7 +82,10 @@ export function getWorkerMonthlyDeductions(workerId: string, services: ServiceJo
     return (
       total +
       service.assignments
-        .filter((assignment) => assignment.workerId === workerId && assignment.confirmed)
+        .filter(
+          (assignment) =>
+            assignment.workerId === workerId && isAssignmentIncludedInPayroll(service, assignment),
+        )
         .reduce((sum, assignment) => sum + (assignment.deductions ?? 0), 0)
     )
   }, 0)

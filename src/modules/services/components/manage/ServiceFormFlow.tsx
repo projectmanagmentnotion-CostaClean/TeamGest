@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FormField } from '../../../../components/forms/FormField'
-import { FormFlow } from '../../../../components/forms/FormFlow'
 import { FormFlowActions } from '../../../../components/forms/FormFlowActions'
-import { FormFlowStep } from '../../../../components/forms/FormFlowStep'
 import { FormValidationPanel } from '../../../../components/forms/FormValidationPanel'
+import { SearchableEntitySelect } from '../../../../components/forms/SearchableEntitySelect'
+import { StepFlowFooter } from '../../../../components/forms/StepFlowFooter'
+import { StepFlowHeader } from '../../../../components/forms/StepFlowHeader'
+import { StepFlowScreen } from '../../../../components/forms/StepFlowScreen'
 import { Button } from '../../../../components/ui/Button'
+import { Card } from '../../../../components/ui/Card'
 import type { ServiceInput } from '../../../../domain/services/service.inputs'
 import type { ServiceJob } from '../../../../domain/services/service.types'
-import { createEntityId } from '../../../../utils/ids'
 import { getRepositories } from '../../../../infrastructure/repositoryFactory'
+import { createEntityId } from '../../../../utils/ids'
+import { formatWorkerRoleLabel } from '../../../../utils/labels'
 import { createServiceFormDraft } from '../../services/serviceFormDraft'
 import { validateServiceForm } from '../../services/serviceFormValidation'
 import { ServiceFormSummary } from './ServiceFormSummary'
@@ -39,6 +43,8 @@ const statusOptions = [
   { label: 'Cerrado', value: 'closed' },
 ]
 
+const steps = ['Contexto', 'Equipo', 'Notas y revision']
+
 export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
   const repositories = getRepositories()
   const navigate = useNavigate()
@@ -46,6 +52,8 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
   const properties = repositories.properties.listProperties()
   const workers = repositories.workers.listWorkers().filter((worker) => worker.status !== 'archived')
   const [draft, setDraft] = useState(createServiceFormDraft(service))
+  const [currentStep, setCurrentStep] = useState(0)
+  const [workerToAdd, setWorkerToAdd] = useState('')
   const availableProperties = properties.filter((property) => property.clientId === draft.clientId)
   const errors = validateServiceForm(draft)
 
@@ -53,52 +61,46 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
     workerId: string,
     patch: Partial<ServiceInput['assignments'][number]>,
   ) => {
-    setDraft((current) => {
-      const exists = current.assignments.find((assignment) => assignment.workerId === workerId)
-
-      if (!exists) {
-        return {
-          ...current,
-          assignments: [
-            ...current.assignments,
-            {
-              workerId,
-              hoursWorked: 1,
-              confirmed: current.status !== 'draft',
-              ...patch,
-            },
-          ],
-        }
-      }
-
-      return {
-        ...current,
-        assignments: current.assignments.map((assignment) =>
-          assignment.workerId === workerId ? { ...assignment, ...patch } : assignment,
-        ),
-      }
-    })
+    setDraft((current) => ({
+      ...current,
+      assignments: current.assignments.map((assignment) =>
+        assignment.workerId === workerId ? { ...assignment, ...patch } : assignment,
+      ),
+    }))
   }
 
-  const toggleWorker = (workerId: string) => {
+  const addWorker = (workerId: string) => {
+    if (!workerId) {
+      return
+    }
+
     setDraft((current) => {
-      const exists = current.assignments.some((assignment) => assignment.workerId === workerId)
+      if (current.assignments.some((assignment) => assignment.workerId === workerId)) {
+        return current
+      }
 
       return {
         ...current,
-        assignments: exists
-          ? current.assignments.filter((assignment) => assignment.workerId !== workerId)
-          : [
-              ...current.assignments,
-              {
-                workerId,
-                hoursWorked: 1,
-                hourlyRate: workers.find((item) => item.id === workerId)?.defaultHourlyRate,
-                confirmed: current.status !== 'draft',
-              },
-            ],
+        assignments: [
+          ...current.assignments,
+          {
+            assignmentId: service?.assignments.find((assignment) => assignment.workerId === workerId)?.id,
+            workerId,
+            hoursWorked: 1,
+            hourlyRate: workers.find((item) => item.id === workerId)?.defaultHourlyRate,
+            confirmed: current.status !== 'draft',
+          },
+        ],
       }
     })
+    setWorkerToAdd('')
+  }
+
+  const removeWorker = (workerId: string) => {
+    setDraft((current) => ({
+      ...current,
+      assignments: current.assignments.filter((assignment) => assignment.workerId !== workerId),
+    }))
   }
 
   const save = () => {
@@ -121,7 +123,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
       updatedAt: timestamp,
       ...draft,
       assignments: draft.assignments.map((assignment) => ({
-        id: createEntityId('assignment'),
+        id: assignment.assignmentId ?? createEntityId('assignment'),
         serviceJobId: '',
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -131,10 +133,14 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
     navigate(`/services/${created.id}`)
   }
 
+  const canContinue =
+    (currentStep === 0 && Boolean(draft.clientId && draft.propertyId && draft.date)) ||
+    (currentStep === 1 && draft.assignments.length > 0 && draft.assignments.every((assignment) => assignment.hoursWorked > 0))
+
   return (
-    <FormFlow
+    <StepFlowScreen
       title={service ? 'Editar servicio' : 'Nuevo servicio'}
-      description="Mantenimiento local del servicio fuera del flujo rapido."
+      description="Mantenimiento local del servicio sin listas infinitas ni pasos apilados."
       sidebar={
         <div className="page-stack">
           <ServiceFormSummary
@@ -147,113 +153,192 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
         </div>
       }
     >
-      <FormFlowStep title="Contexto">
-        <div className="form-grid">
+      <div className="page-stack">
+        <StepFlowHeader
+          currentStep={currentStep}
+          steps={steps}
+          title={steps[currentStep]}
+          description={
+            currentStep === 0
+              ? 'Selecciona cliente, inmueble, fecha y estado.'
+              : currentStep === 1
+                ? 'Añade trabajadores seleccionados y define sus horas y tarifa.'
+                : 'Revisa las notas internas y guarda el servicio.'
+          }
+        />
+
+        {currentStep === 0 ? (
+          <div className="form-grid">
+            <SearchableEntitySelect
+              label="Buscar cliente"
+              entityLabel="cliente"
+              value={draft.clientId}
+              placeholder="Buscar cliente"
+              options={clients.map((client) => ({
+                id: client.id,
+                label: client.name,
+                subtitle: client.phone ?? client.email ?? 'Contacto pendiente',
+                status: client.status,
+              }))}
+              onChange={(value) =>
+                setDraft((current) => ({
+                  ...current,
+                  clientId: value,
+                  propertyId: '',
+                }))
+              }
+            />
+            <SearchableEntitySelect
+              label="Buscar inmueble"
+              entityLabel="inmueble"
+              value={draft.propertyId}
+              placeholder="Buscar inmueble"
+              options={availableProperties.map((property) => ({
+                id: property.id,
+                label: property.name,
+                subtitle: `${property.city} · ${property.address}`,
+                status: property.status,
+              }))}
+              disabled={!draft.clientId}
+              onChange={(value) => setDraft((current) => ({ ...current, propertyId: value }))}
+            />
+            <FormField
+              control="select"
+              label="Tipo"
+              value={draft.serviceType}
+              options={serviceTypeOptions}
+              onChange={(value) => setDraft((current) => ({ ...current, serviceType: value as ServiceJob['serviceType'] }))}
+            />
+            <FormField
+              control="select"
+              label="Estado"
+              value={draft.status}
+              options={statusOptions}
+              onChange={(value) => setDraft((current) => ({ ...current, status: value as ServiceJob['status'] }))}
+            />
+            <FormField type="date" label="Fecha" value={draft.date} onChange={(value) => setDraft((current) => ({ ...current, date: value }))} />
+            <FormField type="time" label="Inicio" value={draft.startTime ?? ''} onChange={(value) => setDraft((current) => ({ ...current, startTime: value }))} />
+            <FormField type="time" label="Fin" value={draft.endTime ?? ''} onChange={(value) => setDraft((current) => ({ ...current, endTime: value }))} />
+          </div>
+        ) : null}
+
+        {currentStep === 1 ? (
+          <div className="page-stack">
+            <SearchableEntitySelect
+              label="Buscar trabajador"
+              entityLabel="trabajador"
+              value={workerToAdd}
+              placeholder="Buscar trabajador"
+              options={workers.map((worker) => ({
+                id: worker.id,
+                label: worker.name,
+                subtitle: formatWorkerRoleLabel(worker.role),
+                meta: worker.phone ?? worker.email ?? 'Contacto pendiente',
+                status: worker.status,
+              }))}
+              onChange={(value) => setWorkerToAdd(value)}
+            />
+            <Button variant="secondary" onClick={() => addWorker(workerToAdd)} disabled={!workerToAdd}>
+              Añadir trabajador
+            </Button>
+
+            {draft.assignments.length === 0 ? (
+              <Card title="Trabajadores seleccionados" description="Todavia no hay trabajadores añadidos.">
+                <p className="muted-caption">Añade al menos un trabajador antes de continuar.</p>
+              </Card>
+            ) : (
+              <div className="stack-list">
+                {draft.assignments.map((assignment) => {
+                  const worker = workers.find((item) => item.id === assignment.workerId)
+                  return (
+                    <Card
+                      key={assignment.workerId}
+                      title={worker?.name ?? 'Trabajador no disponible'}
+                      description={worker ? formatWorkerRoleLabel(worker.role) : 'Sin datos'}
+                      action={
+                        <Button variant="ghost" size="sm" onClick={() => removeWorker(assignment.workerId)}>
+                          Quitar
+                        </Button>
+                      }
+                    >
+                      <div className="form-grid">
+                        <FormField
+                          type="number"
+                          min={0.5}
+                          step={0.5}
+                          label="Horas"
+                          value={assignment.hoursWorked}
+                          onChange={(value) => updateAssignment(assignment.workerId, { hoursWorked: Number(value) || 0 })}
+                        />
+                        <FormField
+                          type="number"
+                          min={0}
+                          step={0.5}
+                          label="Tarifa"
+                          value={assignment.hourlyRate ?? ''}
+                          onChange={(value) => updateAssignment(assignment.workerId, { hourlyRate: value ? Number(value) : undefined })}
+                        />
+                        <FormField
+                          type="number"
+                          min={0}
+                          step={0.5}
+                          label="Extra"
+                          value={assignment.extraAmount ?? ''}
+                          onChange={(value) => updateAssignment(assignment.workerId, { extraAmount: value ? Number(value) : undefined })}
+                        />
+                        <FormField
+                          type="number"
+                          min={0}
+                          step={0.5}
+                          label="Deduccion"
+                          value={assignment.deductions ?? ''}
+                          onChange={(value) => updateAssignment(assignment.workerId, { deductions: value ? Number(value) : undefined })}
+                        />
+                      </div>
+                    </Card>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {currentStep === 2 ? (
           <FormField
-            control="select"
-            label="Cliente"
-            value={draft.clientId}
-            options={[
-              { label: 'Selecciona cliente', value: '' },
-              ...clients.map((client) => ({ label: client.name, value: client.id })),
-            ]}
-            onChange={(value) =>
-              setDraft((current) => ({
-                ...current,
-                clientId: value,
-                propertyId: '',
-              }))
+            control="textarea"
+            label="Notas internas"
+            value={draft.notes ?? ''}
+            onChange={(value) => setDraft((current) => ({ ...current, notes: value }))}
+          />
+        ) : null}
+
+        <StepFlowFooter>
+          <FormFlowActions
+            secondaryAction={
+              currentStep > 0 ? (
+                <Button variant="secondary" onClick={() => setCurrentStep((value) => value - 1)}>
+                  Atras
+                </Button>
+              ) : (
+                <Button variant="secondary" onClick={() => navigate(service ? `/services/${service.id}` : '/services')}>
+                  Cancelar
+                </Button>
+              )
+            }
+            primaryAction={
+              currentStep < steps.length - 1 ? (
+                <Button onClick={() => setCurrentStep((value) => value + 1)} disabled={!canContinue}>
+                  Continuar
+                </Button>
+              ) : (
+                <Button onClick={save} disabled={errors.length > 0}>
+                  {service ? 'Guardar cambios' : 'Guardar'}
+                </Button>
+              )
             }
           />
-          <FormField
-            control="select"
-            label="Inmueble"
-            value={draft.propertyId}
-            options={[
-              { label: 'Selecciona inmueble', value: '' },
-              ...availableProperties.map((property) => ({ label: property.name, value: property.id })),
-            ]}
-            onChange={(value) => setDraft((current) => ({ ...current, propertyId: value }))}
-          />
-          <FormField
-            control="select"
-            label="Tipo"
-            value={draft.serviceType}
-            options={serviceTypeOptions}
-            onChange={(value) => setDraft((current) => ({ ...current, serviceType: value as ServiceJob['serviceType'] }))}
-          />
-          <FormField
-            control="select"
-            label="Estado"
-            value={draft.status}
-            options={statusOptions}
-            onChange={(value) => setDraft((current) => ({ ...current, status: value as ServiceJob['status'] }))}
-          />
-          <FormField type="date" label="Fecha" value={draft.date} onChange={(value) => setDraft((current) => ({ ...current, date: value }))} />
-          <FormField type="time" label="Inicio" value={draft.startTime ?? ''} onChange={(value) => setDraft((current) => ({ ...current, startTime: value }))} />
-          <FormField type="time" label="Fin" value={draft.endTime ?? ''} onChange={(value) => setDraft((current) => ({ ...current, endTime: value }))} />
-        </div>
-      </FormFlowStep>
-
-      <FormFlowStep title="Equipo">
-        <div className="cards-grid">
-          {workers.map((worker) => {
-            const assignment = draft.assignments.find((item) => item.workerId === worker.id)
-
-            return (
-              <div key={worker.id} className="row-card">
-                <div className="row-card__main">
-                  <div>
-                    <h4>{worker.name}</h4>
-                    <p>{worker.role}</p>
-                  </div>
-                  <Button variant={assignment ? 'primary' : 'secondary'} size="sm" onClick={() => toggleWorker(worker.id)}>
-                    {assignment ? 'Incluido' : 'Agregar'}
-                  </Button>
-                </div>
-                {assignment ? (
-                  <div className="form-grid">
-                    <FormField
-                      type="number"
-                      min={0.5}
-                      step={0.5}
-                      label="Horas"
-                      value={assignment.hoursWorked}
-                      onChange={(value) => updateAssignment(worker.id, { hoursWorked: Number(value) || 0 })}
-                    />
-                    <FormField
-                      type="number"
-                      min={0}
-                      step={0.5}
-                      label="Tarifa"
-                      value={assignment.hourlyRate ?? ''}
-                      onChange={(value) => updateAssignment(worker.id, { hourlyRate: value ? Number(value) : undefined })}
-                    />
-                  </div>
-                ) : null}
-              </div>
-            )
-          })}
-        </div>
-      </FormFlowStep>
-
-      <FormFlowStep title="Notas">
-        <FormField
-          control="textarea"
-          label="Notas internas"
-          value={draft.notes ?? ''}
-          onChange={(value) => setDraft((current) => ({ ...current, notes: value }))}
-        />
-      </FormFlowStep>
-
-      <FormFlowActions
-        secondaryAction={
-          <Button variant="secondary" onClick={() => navigate(service ? `/services/${service.id}` : '/services')}>
-            Cancelar
-          </Button>
-        }
-        primaryAction={<Button onClick={save} disabled={errors.length > 0}>{service ? 'Guardar cambios' : 'Crear servicio'}</Button>}
-      />
-    </FormFlow>
+        </StepFlowFooter>
+      </div>
+    </StepFlowScreen>
   )
 }

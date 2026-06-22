@@ -31,6 +31,10 @@ export function buildHourEntryFromAssignment(
     confirmed: assignment.confirmed,
     hoursWorked: assignment.hoursWorked,
     hourlyRate,
+    incidentNote: assignment.incidentNote,
+    excludedFromPayroll: assignment.excludedFromPayroll ?? false,
+    excludeReason: assignment.excludeReason,
+    isLocked: payrollStates?.[payrollMonth]?.status === 'locked',
   })
   const hourStatus = deriveHourStatus(
     {
@@ -39,6 +43,9 @@ export function buildHourEntryFromAssignment(
       workerId: assignment.workerId,
       hoursWorked: assignment.hoursWorked,
       hourlyRate,
+      hourStatusOverride: assignment.hourStatusOverride,
+      incidentNote: assignment.incidentNote,
+      excludedFromPayroll: assignment.excludedFromPayroll ?? false,
     },
     payrollStates?.[payrollMonth],
   )
@@ -68,6 +75,13 @@ export function buildHourEntryFromAssignment(
       deductions,
     }),
     confirmed: assignment.confirmed,
+    reviewNote: assignment.reviewNote,
+    incidentNote: assignment.incidentNote,
+    excludeReason: assignment.excludeReason,
+    excludedFromPayroll: assignment.excludedFromPayroll ?? false,
+    reviewedAt: assignment.reviewedAt,
+    reviewedBy: assignment.reviewedBy,
+    hourStatusOverride: assignment.hourStatusOverride,
     serviceStatus: service.status,
     hourStatus,
     payrollMonth,

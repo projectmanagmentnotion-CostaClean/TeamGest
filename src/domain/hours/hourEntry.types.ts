@@ -29,6 +29,13 @@ export type HourEntry = {
   deductions: number
   totalPay: number
   confirmed: boolean
+  reviewNote?: string
+  incidentNote?: string
+  excludeReason?: string
+  excludedFromPayroll: boolean
+  reviewedAt?: string
+  reviewedBy?: string
+  hourStatusOverride?: 'pending_review' | 'confirmed' | 'issue' | 'excluded'
   serviceStatus: ServiceStatus
   hourStatus: HourEntryStatus
   payrollMonth: string
@@ -52,7 +59,8 @@ export type HourEntrySummary = {
   pendingReviewCount: number
   confirmedCount: number
   issueCount: number
+  excludedCount: number
   lockedCount: number
 }
 
-export type HourReviewAction = 'confirm'
+export type HourReviewAction = 'confirm' | 'correct' | 'incident' | 'exclude' | 'restore'

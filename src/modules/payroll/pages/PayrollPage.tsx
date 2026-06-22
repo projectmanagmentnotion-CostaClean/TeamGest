@@ -5,6 +5,7 @@ import { StatusPill } from '../../../components/ui/StatusPill'
 import { StatCard } from '../../../components/ui/StatCard'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { buildHourEntries } from '../../hours/services/hourEntryBuilder'
 import { PayrollMonthSelector } from '../components/PayrollMonthSelector'
 import { PayrollSummaryCard } from '../components/PayrollSummaryCard'
 import { PayrollWorkerRow } from '../components/PayrollWorkerRow'
@@ -32,6 +33,17 @@ export function PayrollPage() {
   const totals = calculatePayrollTotals(payrollRows)
   const warnings = getPayrollWarnings(workers, services, month)
   const includedServices = getPayrollIncludedServices(services, month)
+  const reviewEntries = buildHourEntries(
+    services,
+    workers,
+    repositories.clients.listClients(),
+    repositories.properties.listProperties(),
+    { [month]: monthState },
+  ).filter(
+    (entry) =>
+      entry.payrollMonth === month &&
+      (entry.hourStatus === 'pending_review' || entry.hourStatus === 'issue' || entry.hourStatus === 'excluded'),
+  )
 
   return (
     <div className="page-stack">
@@ -64,6 +76,12 @@ export function PayrollPage() {
       <WarningBanner title="Fuente del cierre" tone="info">
         El cierre se alimenta de horas confirmadas en servicios completados, revisados o cerrados.
       </WarningBanner>
+
+      {reviewEntries.length > 0 ? (
+        <WarningBanner title="Revision pendiente antes del cierre" tone="warning">
+          Hay {reviewEntries.length} entradas con incidencia, exclusion o confirmacion pendiente en este mes. Revisa /hours/review antes de cerrar.
+        </WarningBanner>
+      ) : null}
 
       <PayrollSummaryCard
         totalPay={totals.totalPay}

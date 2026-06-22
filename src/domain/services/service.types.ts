@@ -20,6 +20,13 @@ export type ServiceAssignment = BaseEntity & {
   extraAmount?: number
   deductions?: number
   confirmed: boolean
+  hourStatusOverride?: 'pending_review' | 'confirmed' | 'issue' | 'excluded'
+  reviewNote?: string
+  incidentNote?: string
+  excludeReason?: string
+  reviewedAt?: string
+  reviewedBy?: string
+  excludedFromPayroll?: boolean
 }
 
 export type ServiceJob = BaseEntity & {

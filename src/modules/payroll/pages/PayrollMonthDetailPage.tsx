@@ -4,6 +4,7 @@ import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatusPill } from '../../../components/ui/StatusPill'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { buildHourEntries } from '../../hours/services/hourEntryBuilder'
 import { PayrollActions } from '../components/PayrollActions'
 import { PayrollAuditTrail } from '../components/PayrollAuditTrail'
 import { PayrollLockPanel } from '../components/PayrollLockPanel'
@@ -62,6 +63,11 @@ export function PayrollMonthDetailPage() {
         }
       : null
   const allWarnings = lockDriftWarning ? [lockDriftWarning, ...warnings] : warnings
+  const reviewEntries = buildHourEntries(services, workers, clients, properties, { [month]: monthState }).filter(
+    (entry) =>
+      entry.payrollMonth === month &&
+      (entry.hourStatus === 'pending_review' || entry.hourStatus === 'issue' || entry.hourStatus === 'excluded'),
+  )
 
   const addAudit = (action: string, message: string, metadata?: Record<string, string>) => {
     repositories.payroll.addPayrollAuditEntry(
@@ -115,6 +121,12 @@ export function PayrollMonthDetailPage() {
       <WarningBanner title="Fuente del cierre" tone="info">
         El cierre se alimenta de horas confirmadas en servicios completados, revisados o cerrados.
       </WarningBanner>
+
+      {reviewEntries.length > 0 ? (
+        <WarningBanner title="Entradas pendientes para este cierre" tone="warning">
+          Hay {reviewEntries.length} entradas que siguen pendientes, con incidencia o excluidas. Conviene resolverlas en /hours/review antes de marcar este mes como pagado o bloquearlo.
+        </WarningBanner>
+      ) : null}
 
       <PayrollMonthHeader month={month} state={monthState} />
       <PayrollMonthSelector selectedMonth={month} />

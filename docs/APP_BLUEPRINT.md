@@ -147,3 +147,16 @@ Block 11 combines Sprint 21 and Sprint 22 on top of the same local-first runtime
 - Payroll remains derived from confirmed assignments on completed, reviewed and closed services.
 - `HourEntry` is a derived view model only in this block.
 - Pipeline, calendar, Google Calendar and Notion integrations remain intentionally out of scope.
+
+## Block 12 status
+
+Block 12 combines Sprint 23 and Sprint 24 on top of the same local-first runtime.
+
+- Sprint 23 adds hour review actions for correction, incident marking, exclusion, restore and stronger payroll inclusion rules.
+- Sprint 24 upgrades important flows into real step-based screens with searchable selectors and capped internal lists instead of long stacked selectors.
+
+## Block 12 UX note
+
+- Hours review now persists review metadata through service assignment updates, not through a new hours namespace.
+- Quick Entry, service, property, worker and client maintenance now use contained step screens instead of endless stacked forms.
+- Worker, client and property selectors with meaningful volume now prefer searchable dropdown UX over giant lists.

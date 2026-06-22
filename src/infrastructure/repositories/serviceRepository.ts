@@ -122,10 +122,15 @@ function writeUpdatedLocalService(service: ServiceJob) {
 
 function normalizeAssignmentsForUpdate(current: ServiceJob, assignments: ServiceInput['assignments']) {
   return assignments.map((assignment) => {
-    const existingAssignment = current.assignments.find((item) => item.workerId === assignment.workerId)
+    const existingAssignment = current.assignments.find(
+      (item) =>
+        item.id === assignment.assignmentId ||
+        (!assignment.assignmentId && item.workerId === assignment.workerId),
+    )
     const timestamp = new Date().toISOString()
 
     return {
+      ...existingAssignment,
       id: existingAssignment?.id ?? createEntityId('assignment'),
       serviceJobId: current.id,
       createdAt: existingAssignment?.createdAt ?? timestamp,

@@ -4,7 +4,14 @@ import type { BadgeTone } from '../../../components/ui/Badge'
 
 type HourStatusSource = Pick<
   HourEntry,
-  'confirmed' | 'serviceStatus' | 'workerId' | 'hoursWorked' | 'hourlyRate'
+  | 'confirmed'
+  | 'serviceStatus'
+  | 'workerId'
+  | 'hoursWorked'
+  | 'hourlyRate'
+  | 'hourStatusOverride'
+  | 'incidentNote'
+  | 'excludedFromPayroll'
 >
 
 export function deriveHourStatus(entry: HourStatusSource, payrollState?: PayrollMonthState): HourEntryStatus {
@@ -12,16 +19,30 @@ export function deriveHourStatus(entry: HourStatusSource, payrollState?: Payroll
     return 'locked'
   }
 
-  if (entry.serviceStatus === 'cancelled') {
+  if (payrollState?.workerStatuses[entry.workerId] === 'paid' || payrollState?.status === 'paid') {
+    return 'paid'
+  }
+
+  if (
+    entry.excludedFromPayroll ||
+    entry.hourStatusOverride === 'excluded' ||
+    entry.serviceStatus === 'cancelled'
+  ) {
     return 'excluded'
   }
 
-  if (!entry.workerId || entry.hoursWorked <= 0 || entry.hourlyRate <= 0) {
+  if (
+    entry.hourStatusOverride === 'issue' ||
+    !entry.workerId ||
+    entry.hoursWorked <= 0 ||
+    entry.hourlyRate <= 0 ||
+    Boolean(entry.incidentNote)
+  ) {
     return 'issue'
   }
 
-  if (payrollState?.workerStatuses[entry.workerId] === 'paid' || payrollState?.status === 'paid') {
-    return 'paid'
+  if (entry.hourStatusOverride === 'confirmed') {
+    return 'confirmed'
   }
 
   if (
@@ -35,6 +56,10 @@ export function deriveHourStatus(entry: HourStatusSource, payrollState?: Payroll
     (entry.serviceStatus === 'completed' || entry.serviceStatus === 'reviewed' || entry.serviceStatus === 'closed') &&
     !entry.confirmed
   ) {
+    return 'pending_review'
+  }
+
+  if (entry.hourStatusOverride === 'pending_review') {
     return 'pending_review'
   }
 

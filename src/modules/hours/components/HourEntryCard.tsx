@@ -28,6 +28,10 @@ export function HourEntryCard({ action, entry }: HourEntryCardProps) {
         <StatusPill tone={getServiceStatusTone(entry.serviceStatus)}>
           {formatServiceStatusLabel(entry.serviceStatus)}
         </StatusPill>
+        {entry.reviewNote ? <StatusPill tone="info">Nota de revision</StatusPill> : null}
+        {entry.incidentNote ? <StatusPill tone="danger">Incidencia</StatusPill> : null}
+        {entry.excludedFromPayroll ? <StatusPill tone="neutral">Excluida</StatusPill> : null}
+        {entry.isLocked ? <StatusPill tone="blocked">Mes bloqueado</StatusPill> : null}
       </div>
 
       <div className="detail-grid">

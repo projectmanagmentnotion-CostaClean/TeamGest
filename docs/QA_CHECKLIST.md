@@ -200,3 +200,14 @@ Browser visual QA was not performed in this block.
 - Worker and property detail pages link into dedicated hours drilldowns.
 - Review queue exposes confirm-hours only when the entry is pending review and the month is not locked.
 - Existing service, payroll, backup and reset behavior remains local-first.
+
+## Block 12 QA additions
+
+- Hour correction updates the existing service assignment through repositories and keeps lock protection active.
+- Incident marking and payroll exclusion write review metadata without creating a new hours storage namespace.
+- Restoring an excluded entry returns it to review flow instead of pushing it directly into payroll.
+- Payroll excludes invalid, issue and excluded assignments even if the service status is payable.
+- Quick Entry worker and property selection no longer render giant card walls as the primary UX.
+- Property form client selection now uses a searchable dropdown instead of a full client list.
+- Service form client, property and worker selection now use searchable flows with selected-worker cards instead of full-list worker walls.
+- Major maintenance flows now render one active step at a time instead of endless stacked form screens.

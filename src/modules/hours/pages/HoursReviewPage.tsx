@@ -1,13 +1,32 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button } from '../../../components/ui/Button'
+import { MetricGrid } from '../../../components/ui/MetricGrid'
 import { PageHeader } from '../../../components/ui/PageHeader'
+import { StatCard } from '../../../components/ui/StatCard'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
+import { formatMoney } from '../../../utils/money'
+import { HourCorrectionFlow } from '../components/HourCorrectionFlow'
 import { HourEntryCard } from '../components/HourEntryCard'
+import { HourExcludeDialog } from '../components/HourExcludeDialog'
+import { HourIncidentDialog } from '../components/HourIncidentDialog'
+import { HourReviewActions } from '../components/HourReviewActions'
 import { HoursEmptyState } from '../components/HoursEmptyState'
 import { buildHourEntries } from '../services/hourEntryBuilder'
-import { confirmHourEntry } from '../services/hourMutations'
+import {
+  canConfirmHourEntry,
+  canCorrectHourEntry,
+  canExcludeHourEntry,
+  canMarkIncident,
+  canRestoreHourEntry,
+  confirmHourEntry,
+  correctHourEntry,
+  excludeHourEntry,
+  markHourEntryIncident,
+  restoreHourEntry,
+} from '../services/hourReviewActions'
+
+type ActiveReviewMode = 'correct' | 'incident' | 'exclude' | null
 
 function buildMonthStateMap(
   months: string[],
@@ -17,8 +36,9 @@ function buildMonthStateMap(
 }
 
 export function HoursReviewPage() {
-  const [, setRefreshKey] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
+  const [activeEntryId, setActiveEntryId] = useState<string | null>(null)
+  const [activeMode, setActiveMode] = useState<ActiveReviewMode>(null)
   const repositories = getRepositories()
   const workers = repositories.workers.listWorkers()
   const clients = repositories.clients.listClients()
@@ -27,19 +47,78 @@ export function HoursReviewPage() {
   const months = [...new Set(services.map((service) => service.date.slice(0, 7)))]
   const payrollStates = buildMonthStateMap(months, repositories.payroll.getPayrollMonthState)
   const entries = buildHourEntries(services, workers, clients, properties, payrollStates)
-  const reviewEntries = entries.filter(
-    (entry) =>
-      entry.hourStatus === 'pending_review' ||
-      entry.hourStatus === 'issue' ||
-      entry.hourStatus === 'excluded',
-  )
+  const pendingEntries = entries.filter((entry) => entry.hourStatus === 'pending_review')
+  const issueEntries = entries.filter((entry) => entry.hourStatus === 'issue')
+  const excludedEntries = entries.filter((entry) => entry.hourStatus === 'excluded')
+  const lockedEntries = entries.filter((entry) => entry.hourStatus === 'locked')
+  const activeEntry = activeEntryId ? entries.find((entry) => entry.id === activeEntryId) : null
+  const totalPendingHours = pendingEntries.reduce((sum, entry) => sum + entry.hoursWorked, 0)
+  const totalPendingPay = pendingEntries.reduce((sum, entry) => sum + entry.totalPay, 0)
+
+  const runAction = (result: { success: boolean; error: string | null }) => {
+    setMessage(result.error ?? 'Cambio aplicado correctamente.')
+    if (result.success) {
+      setActiveEntryId(null)
+      setActiveMode(null)
+    }
+  }
+
+  const renderGroup = (title: string, items: typeof entries) => {
+    if (items.length === 0) {
+      return null
+    }
+
+    return (
+      <section className="page-stack">
+        <div className="section-header__content">
+          <h3>{title}</h3>
+          <p>{items.length} entradas en esta seccion.</p>
+        </div>
+        <div className="stack-list">
+          {items.map((entry) => {
+            const payrollState = payrollStates[entry.payrollMonth]
+            return (
+              <HourEntryCard
+                key={entry.id}
+                entry={entry}
+                action={
+                  <HourReviewActions
+                    entry={entry}
+                    confirmPolicy={canConfirmHourEntry(entry, payrollState)}
+                    correctPolicy={canCorrectHourEntry(entry, payrollState)}
+                    incidentPolicy={canMarkIncident(entry, payrollState)}
+                    excludePolicy={canExcludeHourEntry(entry, payrollState)}
+                    restorePolicy={canRestoreHourEntry(entry, payrollState)}
+                    onConfirm={() => runAction(confirmHourEntry(entry.id))}
+                    onCorrect={() => {
+                      setActiveEntryId(entry.id)
+                      setActiveMode('correct')
+                    }}
+                    onIncident={() => {
+                      setActiveEntryId(entry.id)
+                      setActiveMode('incident')
+                    }}
+                    onExclude={() => {
+                      setActiveEntryId(entry.id)
+                      setActiveMode('exclude')
+                    }}
+                    onRestore={() => runAction(restoreHourEntry(entry.id))}
+                  />
+                }
+              />
+            )
+          })}
+        </div>
+      </section>
+    )
+  }
 
   return (
     <div className="page-stack">
       <PageHeader
         eyebrow="Horas"
-        title="Revisión de horas"
-        description="Concentra entradas pendientes, incidencias y exclusiones antes del cierre mensual."
+        title="Revision de horas"
+        description="Concentra pendientes, incidencias, exclusiones y bloqueos antes del cierre mensual."
         primaryAction={
           <Link className="button button--primary" to="/quick-entry">
             Registrar horas
@@ -53,15 +132,56 @@ export function HoursReviewPage() {
       />
 
       {message ? (
-        <WarningBanner title="Resultado de la revisión" tone="info">
+        <WarningBanner title="Resultado de la revision" tone="info">
           {message}
         </WarningBanner>
       ) : null}
 
-      {reviewEntries.length === 0 ? (
+      <MetricGrid columns={4}>
+        <StatCard label="Horas pendientes" value={`${totalPendingHours.toFixed(1)} h`} hint="Horas aun sin confirmar para cierre." tone="warning" />
+        <StatCard label="Pago pendiente" value={formatMoney(totalPendingPay)} hint="Importe asociado a entradas pendientes de revisar." tone="info" />
+        <StatCard label="Incidencias" value={issueEntries.length.toString()} hint="Entradas con problema operativo o de tarifa." tone="danger" />
+        <StatCard label="Excluidas" value={excludedEntries.length.toString()} hint="Entradas apartadas del payroll hasta restaurarlas." tone="neutral" />
+      </MetricGrid>
+
+      {activeEntry && activeMode === 'correct' ? (
+        <HourCorrectionFlow
+          entry={activeEntry}
+          onCancel={() => {
+            setActiveEntryId(null)
+            setActiveMode(null)
+          }}
+          onSave={(patch) => runAction(correctHourEntry(activeEntry.id, patch))}
+        />
+      ) : null}
+
+      {activeEntry && activeMode === 'incident' ? (
+        <HourIncidentDialog
+          onCancel={() => {
+            setActiveEntryId(null)
+            setActiveMode(null)
+          }}
+          onSave={(note) => runAction(markHourEntryIncident(activeEntry.id, note))}
+        />
+      ) : null}
+
+      {activeEntry && activeMode === 'exclude' ? (
+        <HourExcludeDialog
+          onCancel={() => {
+            setActiveEntryId(null)
+            setActiveMode(null)
+          }}
+          onSave={(reason) => runAction(excludeHourEntry(activeEntry.id, reason))}
+        />
+      ) : null}
+
+      {pendingEntries.length === 0 &&
+      issueEntries.length === 0 &&
+      excludedEntries.length === 0 &&
+      lockedEntries.length === 0 ? (
         <HoursEmptyState
-          title="Sin horas pendientes de revisión"
-          description="No hay entradas con incidencias o confirmaciones pendientes en los datos actuales."
+          title="Sin horas pendientes de revision"
+          description="No hay entradas con incidencias, exclusiones o confirmaciones pendientes en los datos actuales."
           action={
             <Link className="button button--secondary button--sm" to="/hours">
               Ver control completo
@@ -69,30 +189,12 @@ export function HoursReviewPage() {
           }
         />
       ) : (
-        <section className="stack-list">
-          {reviewEntries.map((entry) => (
-            <HourEntryCard
-              key={entry.id}
-              entry={entry}
-              action={
-                entry.hourStatus === 'pending_review' && !entry.isLocked ? (
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      const result = confirmHourEntry(entry, repositories.services)
-                      setMessage(result.error ?? 'Horas confirmadas para cierre mensual.')
-                      if (result.success) {
-                        setRefreshKey((value) => value + 1)
-                      }
-                    }}
-                  >
-                    Confirmar horas
-                  </Button>
-                ) : null
-              }
-            />
-          ))}
-        </section>
+        <>
+          {renderGroup('Pendientes de revisar', pendingEntries)}
+          {renderGroup('Con incidencia', issueEntries)}
+          {renderGroup('Excluidas', excludedEntries)}
+          {renderGroup('Bloqueadas', lockedEntries)}
+        </>
       )}
     </div>
   )

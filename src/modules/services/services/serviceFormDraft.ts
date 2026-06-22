@@ -12,12 +12,20 @@ export function createServiceFormDraft(service?: ServiceJob): ServiceInput {
     status: service?.status ?? 'scheduled',
     assignments:
       service?.assignments.map((assignment) => ({
+        assignmentId: assignment.id,
         workerId: assignment.workerId,
         hoursWorked: assignment.hoursWorked,
         hourlyRate: assignment.hourlyRate,
         extraAmount: assignment.extraAmount,
         deductions: assignment.deductions,
         confirmed: assignment.confirmed,
+        hourStatusOverride: assignment.hourStatusOverride,
+        reviewNote: assignment.reviewNote,
+        incidentNote: assignment.incidentNote,
+        excludeReason: assignment.excludeReason,
+        reviewedAt: assignment.reviewedAt,
+        reviewedBy: assignment.reviewedBy,
+        excludedFromPayroll: assignment.excludedFromPayroll,
       })) ?? [],
     notes: service?.notes ?? '',
   }

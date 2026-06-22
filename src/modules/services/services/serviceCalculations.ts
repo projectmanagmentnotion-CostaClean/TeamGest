@@ -29,7 +29,13 @@ export function getServiceConfirmedAssignments(service: ServiceJob) {
 
 type PayableAssignment = Pick<
   ServiceAssignment,
-  'hoursWorked' | 'hourlyRate' | 'extraAmount' | 'deductions'
+  | 'hoursWorked'
+  | 'hourlyRate'
+  | 'extraAmount'
+  | 'deductions'
+  | 'confirmed'
+  | 'hourStatusOverride'
+  | 'excludedFromPayroll'
 >
 
 export function calculateAssignmentPay(assignment: PayableAssignment) {
@@ -39,6 +45,21 @@ export function calculateAssignmentPay(assignment: PayableAssignment) {
   const deductions = assignment.deductions ?? 0
 
   return baseAmount + extras - deductions
+}
+
+export function isAssignmentIncludedInPayroll(
+  service: Pick<ServiceJob, 'status'>,
+  assignment: PayableAssignment,
+) {
+  return (
+    isPayrollEligibleService(service.status) &&
+    assignment.confirmed &&
+    !assignment.excludedFromPayroll &&
+    assignment.hourStatusOverride !== 'excluded' &&
+    assignment.hourStatusOverride !== 'issue' &&
+    assignment.hoursWorked > 0 &&
+    (assignment.hourlyRate ?? 0) > 0
+  )
 }
 
 export function getServiceTotalHours(service: ServiceJob) {

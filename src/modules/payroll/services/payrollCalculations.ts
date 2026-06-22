@@ -9,7 +9,7 @@ import type { WarningItem } from '../../../domain/shared/warning.types'
 import type { Worker } from '../../../domain/workers/worker.types'
 import { formatMonthLabel, getMonthKey, isPayrollEligibleService, isSameMonthKey } from '../../../utils/dates'
 import { formatMoney } from '../../../utils/money'
-import { calculateAssignmentPay } from '../../services/services/serviceCalculations'
+import { calculateAssignmentPay, isAssignmentIncludedInPayroll } from '../../services/services/serviceCalculations'
 
 export function getCurrentPayrollMonth() {
   return getMonthKey(new Date().toISOString())
@@ -36,7 +36,10 @@ export function getPayrollAssignmentsByWorker(
 ) {
   return getPayableServicesByMonth(services, month).flatMap((service) =>
     service.assignments
-      .filter((assignment) => assignment.workerId === workerId && assignment.confirmed)
+      .filter(
+        (assignment) =>
+          assignment.workerId === workerId && isAssignmentIncludedInPayroll(service, assignment),
+      )
       .map((assignment) => ({ service, assignment })),
   )
 }
@@ -86,7 +89,7 @@ export function calculatePayrollMonthSummary(
   const payableWorkerIds = new Set(
     payableServices.flatMap((service) =>
       service.assignments.filter((assignment) => assignment.confirmed).map((assignment) => assignment.workerId),
-    ),
+    )
   )
   const visibleWorkers = workers.filter(
     (worker) => activeWorkers.some((activeWorker) => activeWorker.id === worker.id) || payableWorkerIds.has(worker.id),
@@ -95,6 +98,10 @@ export function calculatePayrollMonthSummary(
   return visibleWorkers.map((worker) =>
     calculatePayrollWorkerRow(worker, services, month, storedStatuses?.[worker.id]),
   )
+}
+
+export function getPayableAssignmentsForService(service: ServiceJob) {
+  return service.assignments.filter((assignment) => isAssignmentIncludedInPayroll(service, assignment))
 }
 
 export function calculatePayrollTotals(payrollRows: PayrollSummary[]) {
@@ -122,7 +129,10 @@ export function getPayrollWorkerServiceBreakdown(
   return getPayableServicesByMonth(services, month)
     .flatMap((service) =>
       service.assignments
-        .filter((assignment) => assignment.workerId === workerId && assignment.confirmed)
+        .filter(
+          (assignment) =>
+            assignment.workerId === workerId && isAssignmentIncludedInPayroll(service, assignment),
+        )
         .map((assignment) => ({
           service,
           assignment,
@@ -141,7 +151,9 @@ export function getWorkersWithPayableActivity(
 ) {
   const activeIds = new Set(
     getPayableServicesByMonth(services, month).flatMap((service) =>
-      service.assignments.filter((assignment) => assignment.confirmed).map((assignment) => assignment.workerId),
+      service.assignments
+        .filter((assignment) => isAssignmentIncludedInPayroll(service, assignment))
+        .map((assignment) => assignment.workerId),
     ),
   )
 

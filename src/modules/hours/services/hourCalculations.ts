@@ -14,7 +14,8 @@ export function calculateHourEntrySummary(entries: HourEntry[]): HourEntrySummar
     totalPay: entries.reduce((sum, entry) => sum + entry.totalPay, 0),
     pendingReviewCount: entries.filter((entry) => entry.hourStatus === 'pending_review').length,
     confirmedCount: entries.filter((entry) => ['confirmed', 'paid', 'locked'].includes(entry.hourStatus)).length,
-    issueCount: entries.filter((entry) => entry.hourStatus === 'issue' || entry.warnings.length > 0).length,
+    issueCount: entries.filter((entry) => entry.hourStatus === 'issue').length,
+    excludedCount: entries.filter((entry) => entry.hourStatus === 'excluded').length,
     lockedCount: entries.filter((entry) => entry.hourStatus === 'locked').length,
   }
 }

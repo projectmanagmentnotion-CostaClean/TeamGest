@@ -83,3 +83,11 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Confirm-hours behavior, when available, must go through repository-safe service updates and existing lock rules.
 - Quick Entry remains service-module owned as the primary write path for worked hours.
 - Pipeline, calendar and external scheduling integrations remain out of scope.
+
+## Block 12 ownership
+
+- Assignment-level review metadata may live on `ServiceAssignment` when needed for hours review, but `HourEntry` remains derived.
+- Selectors with 5 or more meaningful options should use `SearchableEntitySelect` instead of a full static list.
+- Important create, edit and review flows should use contained step screens rather than endless stacked forms.
+- Validation must stay outside UI components even when the UI is step-based.
+- Modules must not reintroduce direct browser storage access while adding review actions or selector UX.

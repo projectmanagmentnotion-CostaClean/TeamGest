@@ -4,7 +4,16 @@ import type { WarningItem } from '../../../domain/shared/warning.types'
 export function getHourEntryWarnings(
   entry: Pick<
     HourEntry,
-    'workerName' | 'propertyName' | 'serviceStatus' | 'confirmed' | 'hoursWorked' | 'hourlyRate'
+    | 'workerName'
+    | 'propertyName'
+    | 'serviceStatus'
+    | 'confirmed'
+    | 'hoursWorked'
+    | 'hourlyRate'
+    | 'incidentNote'
+    | 'excludedFromPayroll'
+    | 'excludeReason'
+    | 'isLocked'
   >,
 ) {
   const warnings: string[] = []
@@ -25,11 +34,27 @@ export function getHourEntryWarnings(
     warnings.push('Tarifa horaria no valida.')
   }
 
+  if (entry.excludedFromPayroll) {
+    warnings.push(entry.excludeReason ? `Excluida de payroll: ${entry.excludeReason}` : 'Excluida de payroll.')
+  }
+
+  if (entry.incidentNote) {
+    warnings.push('Existe una incidencia interna registrada para esta entrada.')
+  }
+
+  if (entry.isLocked) {
+    warnings.push('El mes esta bloqueado y no admite cambios.')
+  }
+
   if (
     (entry.serviceStatus === 'completed' || entry.serviceStatus === 'reviewed' || entry.serviceStatus === 'closed') &&
     !entry.confirmed
   ) {
     warnings.push('Servicio pagable con horas pendientes de confirmar.')
+  }
+
+  if (entry.serviceStatus === 'cancelled') {
+    warnings.push('Servicio cancelado y fuera de payroll.')
   }
 
   return warnings

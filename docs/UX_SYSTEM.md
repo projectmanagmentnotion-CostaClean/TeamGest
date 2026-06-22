@@ -139,3 +139,19 @@ Worker and property detail pages should expose direct paths into derived hour re
 ## Deprioritized UX directions
 
 Pipeline boards, calendar-centric planning and external calendar or Notion integrations are intentionally deprioritized in the current product direction.
+
+## Real StepFlow standard
+
+Important create, edit and review flows should show one active step at a time with a visible progress header, clear previous and next actions, and a contained save or review footer.
+
+## Searchable dropdown standard
+
+Selectors with meaningful option volume should open a capped internal dropdown with search instead of rendering a full page-length option wall.
+
+## No infinite scroll forms
+
+Important forms should avoid endless vertical stacks. Long selectors must scroll inside the dropdown panel, not expand the whole page.
+
+## Mobile-first selector rules
+
+Searchable selectors should remain tappable, readable and capped on small screens. Internal option lists can scroll, but the surrounding page should stay stable.

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FormField } from '../../../../components/forms/FormField'
-import { FormFlow } from '../../../../components/forms/FormFlow'
 import { FormFlowActions } from '../../../../components/forms/FormFlowActions'
-import { FormFlowStep } from '../../../../components/forms/FormFlowStep'
 import { FormValidationPanel } from '../../../../components/forms/FormValidationPanel'
+import { SearchableEntitySelect } from '../../../../components/forms/SearchableEntitySelect'
+import { StepFlowFooter } from '../../../../components/forms/StepFlowFooter'
+import { StepFlowHeader } from '../../../../components/forms/StepFlowHeader'
+import { StepFlowScreen } from '../../../../components/forms/StepFlowScreen'
 import { Button } from '../../../../components/ui/Button'
 import type { Property } from '../../../../domain/properties/property.types'
 import { getRepositories } from '../../../../infrastructure/repositoryFactory'
@@ -33,11 +35,14 @@ const statusOptions = [
   { label: 'Archivado', value: 'archived' },
 ]
 
+const steps = ['Relacion comercial', 'Notas y revision']
+
 export function PropertyFormFlow({ property }: PropertyFormFlowProps) {
   const repositories = getRepositories()
   const navigate = useNavigate()
   const clients = repositories.clients.listClients().filter((item) => item.status !== 'archived')
   const [draft, setDraft] = useState(createPropertyFormDraft(property))
+  const [currentStep, setCurrentStep] = useState(0)
   const errors = validatePropertyForm(draft)
 
   const save = () => {
@@ -56,9 +61,9 @@ export function PropertyFormFlow({ property }: PropertyFormFlowProps) {
   }
 
   return (
-    <FormFlow
+    <StepFlowScreen
       title={property ? 'Editar inmueble' : 'Nuevo inmueble'}
-      description="Alta local-first del parque operativo."
+      description="Alta local-first del parque operativo con pasos cortos y buscadores."
       sidebar={
         <div className="page-stack">
           <PropertyFormSummary clients={clients} draft={draft} />
@@ -66,58 +71,95 @@ export function PropertyFormFlow({ property }: PropertyFormFlowProps) {
         </div>
       }
     >
-      <FormFlowStep title="Relacion comercial">
-        <div className="form-grid">
-          <FormField
-            control="select"
-            label="Cliente"
-            value={draft.clientId}
-            options={[
-              { label: 'Selecciona cliente', value: '' },
-              ...clients.map((client) => ({ label: client.name, value: client.id })),
-            ]}
-            onChange={(value) => setDraft((current) => ({ ...current, clientId: value }))}
-          />
-          <FormField label="Nombre" value={draft.name} onChange={(value) => setDraft((current) => ({ ...current, name: value }))} />
-          <FormField label="Direccion" value={draft.address} onChange={(value) => setDraft((current) => ({ ...current, address: value }))} />
-          <FormField label="Ciudad" value={draft.city} onChange={(value) => setDraft((current) => ({ ...current, city: value }))} />
-          <FormField label="Codigo postal" value={draft.postalCode ?? ''} onChange={(value) => setDraft((current) => ({ ...current, postalCode: value }))} />
-          <FormField
-            control="select"
-            label="Tipo"
-            value={draft.propertyType}
-            options={propertyTypeOptions}
-            onChange={(value) => setDraft((current) => ({ ...current, propertyType: value as Property['propertyType'] }))}
-          />
-          <FormField type="number" min={0} label="Habitaciones" value={draft.rooms ?? ''} onChange={(value) => setDraft((current) => ({ ...current, rooms: value ? Number(value) : undefined }))} />
-          <FormField type="number" min={0} label="Banos" value={draft.bathrooms ?? ''} onChange={(value) => setDraft((current) => ({ ...current, bathrooms: value ? Number(value) : undefined }))} />
-          <FormField
-            control="select"
-            label="Estado"
-            value={draft.status}
-            options={statusOptions}
-            onChange={(value) => setDraft((current) => ({ ...current, status: value as Property['status'] }))}
-          />
-        </div>
-      </FormFlowStep>
-
-      <FormFlowStep title="Notas">
-        <FormField
-          control="textarea"
-          label="Notas internas"
-          value={draft.notes ?? ''}
-          onChange={(value) => setDraft((current) => ({ ...current, notes: value }))}
+      <div className="page-stack">
+        <StepFlowHeader
+          currentStep={currentStep}
+          steps={steps}
+          title={steps[currentStep]}
+          description={
+            currentStep === 0
+              ? 'Vincula el inmueble al cliente correcto y completa su contexto base.'
+              : 'Añade notas internas y guarda la ficha.'
+          }
         />
-      </FormFlowStep>
 
-      <FormFlowActions
-        secondaryAction={
-          <Button variant="secondary" onClick={() => navigate(property ? `/properties/${property.id}` : '/properties')}>
-            Cancelar
-          </Button>
-        }
-        primaryAction={<Button onClick={save} disabled={errors.length > 0}>{property ? 'Guardar cambios' : 'Crear inmueble'}</Button>}
-      />
-    </FormFlow>
+        {currentStep === 0 ? (
+          <div className="form-grid">
+            <SearchableEntitySelect
+              label="Buscar cliente"
+              entityLabel="cliente"
+              value={draft.clientId}
+              placeholder="Buscar cliente"
+              options={clients.map((client) => ({
+                id: client.id,
+                label: client.name,
+                subtitle: client.phone ?? client.email ?? 'Contacto pendiente',
+                status: client.status,
+              }))}
+              onChange={(value) => setDraft((current) => ({ ...current, clientId: value }))}
+            />
+            <FormField label="Nombre" value={draft.name} onChange={(value) => setDraft((current) => ({ ...current, name: value }))} />
+            <FormField label="Direccion" value={draft.address} onChange={(value) => setDraft((current) => ({ ...current, address: value }))} />
+            <FormField label="Ciudad" value={draft.city} onChange={(value) => setDraft((current) => ({ ...current, city: value }))} />
+            <FormField label="Codigo postal" value={draft.postalCode ?? ''} onChange={(value) => setDraft((current) => ({ ...current, postalCode: value }))} />
+            <FormField
+              control="select"
+              label="Tipo"
+              value={draft.propertyType}
+              options={propertyTypeOptions}
+              onChange={(value) => setDraft((current) => ({ ...current, propertyType: value as Property['propertyType'] }))}
+            />
+            <FormField type="number" min={0} label="Habitaciones" value={draft.rooms ?? ''} onChange={(value) => setDraft((current) => ({ ...current, rooms: value ? Number(value) : undefined }))} />
+            <FormField type="number" min={0} label="Banos" value={draft.bathrooms ?? ''} onChange={(value) => setDraft((current) => ({ ...current, bathrooms: value ? Number(value) : undefined }))} />
+            <FormField
+              control="select"
+              label="Estado"
+              value={draft.status}
+              options={statusOptions}
+              onChange={(value) => setDraft((current) => ({ ...current, status: value as Property['status'] }))}
+            />
+          </div>
+        ) : null}
+
+        {currentStep === 1 ? (
+          <FormField
+            control="textarea"
+            label="Notas internas"
+            value={draft.notes ?? ''}
+            onChange={(value) => setDraft((current) => ({ ...current, notes: value }))}
+          />
+        ) : null}
+
+        <StepFlowFooter>
+          <FormFlowActions
+            secondaryAction={
+              currentStep > 0 ? (
+                <Button variant="secondary" onClick={() => setCurrentStep((value) => value - 1)}>
+                  Atras
+                </Button>
+              ) : (
+                <Button variant="secondary" onClick={() => navigate(property ? `/properties/${property.id}` : '/properties')}>
+                  Cancelar
+                </Button>
+              )
+            }
+            primaryAction={
+              currentStep < steps.length - 1 ? (
+                <Button
+                  onClick={() => setCurrentStep((value) => value + 1)}
+                  disabled={!draft.clientId || !draft.name.trim() || !draft.address.trim() || !draft.city.trim()}
+                >
+                  Continuar
+                </Button>
+              ) : (
+                <Button onClick={save} disabled={errors.length > 0}>
+                  {property ? 'Guardar cambios' : 'Guardar'}
+                </Button>
+              )
+            }
+          />
+        </StepFlowFooter>
+      </div>
+    </StepFlowScreen>
   )
 }

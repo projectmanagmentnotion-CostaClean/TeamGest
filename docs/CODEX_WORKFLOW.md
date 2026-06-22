@@ -59,3 +59,7 @@ Block 10 should be reported as CRUD hardening plus Quick Entry polish. Any code-
 ## Block 11 reporting
 
 Block 11 should be reported as hours-first audit plus Hours Control module delivery. Any limitation around derived-only hour entries, missing browser visual QA or local-only runtime must be stated explicitly.
+
+## Block 12 reporting
+
+Block 12 should be reported as hours review actions plus StepFlow Pro selector upgrade. Any limitation around shared service time fields, missing browser visual QA or local-only runtime must be stated explicitly.
