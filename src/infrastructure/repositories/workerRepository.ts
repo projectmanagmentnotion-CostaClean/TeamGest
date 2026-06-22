@@ -2,7 +2,7 @@ import type { WorkerInput } from '../../domain/workers/worker.inputs'
 import type { Worker } from '../../domain/workers/worker.types'
 import { createEntityId } from '../../utils/ids'
 import { recordAuditEvent } from '../audit/auditRepository'
-import { mockServices } from '../mock/mockServices'
+import { listAllServicesSnapshot } from './serviceRepository'
 import { mockWorkers } from '../mock/mockWorkers'
 import {
   archiveEntity,
@@ -16,23 +16,25 @@ import {
   restoreEntity,
   upsertLocalOverride,
 } from '../storage/entityLocalStore'
-import {
-  WORKERS_ARCHIVED_KEY,
-  WORKERS_CREATED_KEY,
-  WORKERS_OVERRIDES_KEY,
-} from '../storage/storageKeys'
+import { WORKERS_ARCHIVED_KEY, WORKERS_CREATED_KEY, WORKERS_OVERRIDES_KEY } from '../storage/storageKeys'
 
-function readWorkers() {
+function readAllWorkers() {
   return mergeSeedWithLocal(
     mockWorkers,
     listLocalCreated<Worker>(WORKERS_CREATED_KEY),
     listLocalOverrides<Worker>(WORKERS_OVERRIDES_KEY),
-    Object.keys(listArchivedEntities(WORKERS_ARCHIVED_KEY)),
+    [],
+  )
+}
+
+function readWorkers() {
+  return readAllWorkers().filter(
+    (worker) => !listArchivedEntities(WORKERS_ARCHIVED_KEY)[worker.id],
   )
 }
 
 function hasAssignments(workerId: string) {
-  return mockServices.some((service) =>
+  return listAllServicesSnapshot().some((service) =>
     service.assignments.some((assignment) => assignment.workerId === workerId),
   )
 }
@@ -50,7 +52,7 @@ function buildWorker(input: WorkerInput): Worker {
 export function createWorkerRepository() {
   return {
     listWorkers: () => readWorkers(),
-    getWorkerById: (id: string) => readWorkers().find((worker) => worker.id === id),
+    getWorkerById: (id: string) => readAllWorkers().find((worker) => worker.id === id),
     createWorker: (input: WorkerInput) => {
       const worker = buildWorker(input)
       createLocalRecord(WORKERS_CREATED_KEY, worker)
@@ -59,7 +61,7 @@ export function createWorkerRepository() {
         action: 'worker.created',
         entityType: 'worker',
         entityId: worker.id,
-        message: `Se creó el trabajador ${worker.name}.`,
+        message: `Se creo el trabajador ${worker.name}.`,
       })
       return worker
     },
@@ -72,7 +74,7 @@ export function createWorkerRepository() {
         },
         id,
       )
-      const current = readWorkers().find((worker) => worker.id === id)
+      const current = readAllWorkers().find((worker) => worker.id === id)
       if (!current) {
         return null
       }
@@ -84,50 +86,41 @@ export function createWorkerRepository() {
       }
 
       if (localState.isLocalCreated) {
-        const records = listLocalCreated<Worker>(WORKERS_CREATED_KEY).map((worker) =>
-          worker.id === id ? nextValue : worker,
-        )
         createLocalRecord(WORKERS_CREATED_KEY, nextValue)
-        recordAuditEvent({
-          action: 'worker.updated',
-          entityType: 'worker',
-          entityId: id,
-          message: `Se actualizó el trabajador ${nextValue.name}.`,
-        })
-        return records.find((worker) => worker.id === id) ?? nextValue
+      } else {
+        upsertLocalOverride<Worker>(WORKERS_OVERRIDES_KEY, id, {
+          ...patch,
+          updatedAt: nextValue.updatedAt,
+        } as Partial<Worker>)
       }
 
-      upsertLocalOverride<Worker>(WORKERS_OVERRIDES_KEY, id, {
-        ...patch,
-        updatedAt: nextValue.updatedAt,
-      } as Partial<Worker>)
       recordAuditEvent({
         action: 'worker.updated',
         entityType: 'worker',
         entityId: id,
-        message: `Se actualizó el trabajador ${nextValue.name}.`,
+        message: `Se actualizo el trabajador ${nextValue.name}.`,
       })
       return nextValue
     },
     archiveWorker: (id: string) => {
-      const worker = readWorkers().find((item) => item.id === id)
+      const worker = readAllWorkers().find((item) => item.id === id)
       if (!worker) {
         return false
       }
 
-      archiveEntity(WORKERS_ARCHIVED_KEY, id)
+      archiveEntity(WORKERS_ARCHIVED_KEY, id, {
+        reason: hasAssignments(id) ? 'assigned_services' : undefined,
+      })
       recordAuditEvent({
         action: 'worker.archived',
         entityType: 'worker',
         entityId: id,
-        message: `Se archivó el trabajador ${worker.name}.`,
+        message: `Se archivo el trabajador ${worker.name}.`,
       })
       return true
     },
     restoreWorker: (id: string) => {
-      const worker = [...mockWorkers, ...listLocalCreated<Worker>(WORKERS_CREATED_KEY)].find(
-        (item) => item.id === id,
-      )
+      const worker = readAllWorkers().find((item) => item.id === id)
       if (!worker) {
         return false
       }
@@ -138,7 +131,7 @@ export function createWorkerRepository() {
           action: 'worker.restored',
           entityType: 'worker',
           entityId: id,
-          message: `Se restauró el trabajador ${worker.name}.`,
+          message: `Se restauro el trabajador ${worker.name}.`,
         })
       }
       return restored
@@ -155,14 +148,14 @@ export function createWorkerRepository() {
       if (!localState.isLocalCreated) {
         return {
           allowed: false,
-          reason: 'Los trabajadores de semilla solo pueden archivarse en esta versión local.',
+          reason: 'Los trabajadores de semilla solo pueden archivarse en esta version local.',
         }
       }
 
       if (hasAssignments(id)) {
         return {
           allowed: false,
-          reason: 'Este trabajador ya tiene asignaciones. Archívalo en lugar de eliminarlo.',
+          reason: 'Este trabajador ya tiene asignaciones en servicios. Archivarlo es seguro; eliminarlo no.',
         }
       }
 
@@ -170,7 +163,7 @@ export function createWorkerRepository() {
     },
     deleteWorker: (id: string) => {
       const policy = createWorkerRepository().canDeleteWorker(id)
-      const worker = readWorkers().find((item) => item.id === id)
+      const worker = readAllWorkers().find((item) => item.id === id)
       if (!policy.allowed || !worker) {
         return false
       }
@@ -182,7 +175,7 @@ export function createWorkerRepository() {
           action: 'worker.deleted',
           entityType: 'worker',
           entityId: id,
-          message: `Se eliminó el trabajador local ${worker.name}.`,
+          message: `Se elimino el trabajador local ${worker.name}.`,
         })
       }
       return deleted

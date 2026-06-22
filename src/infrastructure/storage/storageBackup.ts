@@ -52,6 +52,13 @@ type BackupHistoryEntry = {
   schemaVersion: number
 }
 
+type LegacyTeamGestBackupPayload = {
+  appName?: unknown
+  exportedAt?: unknown
+  schemaVersion?: unknown
+  data?: Record<string, unknown>
+}
+
 function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -62,6 +69,43 @@ function readBackupHistory() {
 
 function writeBackupHistory(entries: BackupHistoryEntry[]) {
   writeJson(BACKUP_HISTORY_KEY, entries)
+}
+
+function normalizeRecord(value: unknown) {
+  return isPlainRecord(value) ? value : {}
+}
+
+function normalizeArray(value: unknown) {
+  return Array.isArray(value) ? value : []
+}
+
+function normalizeTeamGestBackupPayload(payload: LegacyTeamGestBackupPayload): TeamGestBackupPayload {
+  const data = isPlainRecord(payload.data) ? payload.data : {}
+
+  return {
+    appName: 'TeamGest',
+    exportedAt: typeof payload.exportedAt === 'string' ? payload.exportedAt : new Date().toISOString(),
+    schemaVersion: typeof payload.schemaVersion === 'number' ? payload.schemaVersion : 1,
+    data: {
+      createdServices: normalizeArray(data.createdServices),
+      serviceOverrides: normalizeRecord(data.serviceOverrides),
+      archivedServices: normalizeRecord(data.archivedServices),
+      createdWorkers: normalizeArray(data.createdWorkers),
+      workerOverrides: normalizeRecord(data.workerOverrides),
+      archivedWorkers: normalizeRecord(data.archivedWorkers),
+      createdClients: normalizeArray(data.createdClients),
+      clientOverrides: normalizeRecord(data.clientOverrides),
+      archivedClients: normalizeRecord(data.archivedClients),
+      createdProperties: normalizeArray(data.createdProperties),
+      propertyOverrides: normalizeRecord(data.propertyOverrides),
+      archivedProperties: normalizeRecord(data.archivedProperties),
+      payrollMonths: normalizeRecord(data.payrollMonths),
+      payrollAudit: normalizeRecord(data.payrollAudit),
+      appAudit: normalizeArray(data.appAudit),
+      settings: normalizeRecord(data.settings),
+      metadata: normalizeRecord(data.metadata),
+    },
+  }
 }
 
 export function buildTeamGestBackup(): TeamGestBackupPayload {
@@ -100,24 +144,13 @@ export function validateTeamGestBackup(payload: unknown): payload is TeamGestBac
     return false
   }
 
-  const candidate = payload as Partial<TeamGestBackupPayload>
+  const candidate = payload as LegacyTeamGestBackupPayload
   return (
     candidate.appName === 'TeamGest' &&
     typeof candidate.exportedAt === 'string' &&
     typeof candidate.schemaVersion === 'number' &&
     isPlainRecord(candidate.data) &&
     Array.isArray(candidate.data.createdServices) &&
-    isPlainRecord(candidate.data.serviceOverrides) &&
-    isPlainRecord(candidate.data.archivedServices) &&
-    Array.isArray(candidate.data.createdWorkers) &&
-    isPlainRecord(candidate.data.workerOverrides) &&
-    isPlainRecord(candidate.data.archivedWorkers) &&
-    Array.isArray(candidate.data.createdClients) &&
-    isPlainRecord(candidate.data.clientOverrides) &&
-    isPlainRecord(candidate.data.archivedClients) &&
-    Array.isArray(candidate.data.createdProperties) &&
-    isPlainRecord(candidate.data.propertyOverrides) &&
-    isPlainRecord(candidate.data.archivedProperties) &&
     isPlainRecord(candidate.data.payrollMonths) &&
     isPlainRecord(candidate.data.payrollAudit) &&
     Array.isArray(candidate.data.appAudit) &&
@@ -151,11 +184,27 @@ export async function parseTeamGestBackup(input: string | File) {
     throw new Error('El contenido no es un JSON valido de TeamGest.')
   }
 
-  if (!validateTeamGestBackup(parsed)) {
+  if (!isPlainRecord(parsed)) {
     throw new Error('El archivo no coincide con el formato de copia de TeamGest.')
   }
 
-  return parsed
+  const candidate = parsed as LegacyTeamGestBackupPayload
+  if (
+    candidate.appName !== 'TeamGest' ||
+    typeof candidate.exportedAt !== 'string' ||
+    typeof candidate.schemaVersion !== 'number' ||
+    !isPlainRecord(candidate.data) ||
+    !Array.isArray(candidate.data.createdServices) ||
+    !isPlainRecord(candidate.data.payrollMonths) ||
+    !isPlainRecord(candidate.data.payrollAudit) ||
+    !Array.isArray(candidate.data.appAudit) ||
+    !isPlainRecord(candidate.data.settings) ||
+    !isPlainRecord(candidate.data.metadata)
+  ) {
+    throw new Error('El archivo no coincide con el formato de copia de TeamGest.')
+  }
+
+  return normalizeTeamGestBackupPayload(candidate)
 }
 
 export function downloadTeamGestBackup(payload = buildTeamGestBackup()) {
@@ -189,29 +238,27 @@ export function downloadTeamGestBackup(payload = buildTeamGestBackup()) {
 }
 
 export function restoreTeamGestBackup(payload: TeamGestBackupPayload) {
-  if (!validateTeamGestBackup(payload)) {
-    throw new Error('La copia no supero la validacion antes de restaurarse.')
-  }
+  const normalizedPayload = normalizeTeamGestBackupPayload(payload)
 
-  writeJson(SERVICES_CREATED_KEY, payload.data.createdServices)
-  writeJson(SERVICES_OVERRIDES_KEY, payload.data.serviceOverrides)
-  writeJson(SERVICES_ARCHIVED_KEY, payload.data.archivedServices)
-  writeJson(WORKERS_CREATED_KEY, payload.data.createdWorkers)
-  writeJson(WORKERS_OVERRIDES_KEY, payload.data.workerOverrides)
-  writeJson(WORKERS_ARCHIVED_KEY, payload.data.archivedWorkers)
-  writeJson(CLIENTS_CREATED_KEY, payload.data.createdClients)
-  writeJson(CLIENTS_OVERRIDES_KEY, payload.data.clientOverrides)
-  writeJson(CLIENTS_ARCHIVED_KEY, payload.data.archivedClients)
-  writeJson(PROPERTIES_CREATED_KEY, payload.data.createdProperties)
-  writeJson(PROPERTIES_OVERRIDES_KEY, payload.data.propertyOverrides)
-  writeJson(PROPERTIES_ARCHIVED_KEY, payload.data.archivedProperties)
-  writeJson(PAYROLL_MONTHS_KEY, payload.data.payrollMonths)
-  writeJson(PAYROLL_AUDIT_KEY, payload.data.payrollAudit)
-  writeJson(APP_AUDIT_KEY, payload.data.appAudit)
-  writeJson(SETTINGS_KEY, payload.data.settings)
+  writeJson(SERVICES_CREATED_KEY, normalizedPayload.data.createdServices)
+  writeJson(SERVICES_OVERRIDES_KEY, normalizedPayload.data.serviceOverrides)
+  writeJson(SERVICES_ARCHIVED_KEY, normalizedPayload.data.archivedServices)
+  writeJson(WORKERS_CREATED_KEY, normalizedPayload.data.createdWorkers)
+  writeJson(WORKERS_OVERRIDES_KEY, normalizedPayload.data.workerOverrides)
+  writeJson(WORKERS_ARCHIVED_KEY, normalizedPayload.data.archivedWorkers)
+  writeJson(CLIENTS_CREATED_KEY, normalizedPayload.data.createdClients)
+  writeJson(CLIENTS_OVERRIDES_KEY, normalizedPayload.data.clientOverrides)
+  writeJson(CLIENTS_ARCHIVED_KEY, normalizedPayload.data.archivedClients)
+  writeJson(PROPERTIES_CREATED_KEY, normalizedPayload.data.createdProperties)
+  writeJson(PROPERTIES_OVERRIDES_KEY, normalizedPayload.data.propertyOverrides)
+  writeJson(PROPERTIES_ARCHIVED_KEY, normalizedPayload.data.archivedProperties)
+  writeJson(PAYROLL_MONTHS_KEY, normalizedPayload.data.payrollMonths)
+  writeJson(PAYROLL_AUDIT_KEY, normalizedPayload.data.payrollAudit)
+  writeJson(APP_AUDIT_KEY, normalizedPayload.data.appAudit)
+  writeJson(SETTINGS_KEY, normalizedPayload.data.settings)
   writeJson(STORAGE_METADATA_KEY, {
-    ...payload.data.metadata,
-    schemaVersion: payload.schemaVersion,
+    ...normalizedPayload.data.metadata,
+    schemaVersion: normalizedPayload.schemaVersion,
     updatedAt: new Date().toISOString(),
   })
 }

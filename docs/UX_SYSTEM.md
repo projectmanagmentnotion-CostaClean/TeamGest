@@ -111,3 +111,15 @@ Worker, client, property and service maintenance now use compact form flows with
 ## Quick Work Entry UX
 
 Quick Work Entry is the primary operational path for registering hours. It should minimize decision load, prefer one confirmed assignment and keep labor context visible while saving.
+
+## Prefilled operational actions
+
+Fast actions may prefill worker, property and date when the URL is safe and explicit. The UI should hide technical parameters and present only clean operational copy.
+
+## Payroll impact messaging
+
+Hour registration should always clarify that the entry feeds the internal monthly closure, the effective hourly rate and the estimated total pay.
+
+## Mobile-first hour registration
+
+Quick Entry should favor stacked cards, large tap targets, full-width actions and no horizontal overflow on small screens.

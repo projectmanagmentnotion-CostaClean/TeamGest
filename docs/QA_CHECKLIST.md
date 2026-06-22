@@ -2,7 +2,7 @@
 
 ## Scope
 
-Block 9 QA was a code-level validation pass over the current local-first runtime.
+Block 10 QA was a code-level validation pass over the current local-first runtime.
 
 Verified by code review plus `npm run lint` and `npm run build`:
 
@@ -24,6 +24,9 @@ Verified by code review plus `npm run lint` and `npm run build`:
 - `/services/new`
 - `/services/:id/edit`
 - `/quick-entry`
+- `/quick-entry?workerId=...`
+- `/quick-entry?propertyId=...`
+- `/quick-entry?date=YYYY-MM-DD`
 - `/payroll`
 - `/payroll/:month`
 - `/settings`
@@ -128,3 +131,58 @@ Browser visual QA was not performed in this block.
 - No browser visual QA was run in this sprint.
 - Runtime remains local-first only; no real backend, auth, or Supabase activation exists.
 - Backup export/import remains browser-local JSON handling, not enterprise backup infrastructure.
+
+## Block 10 QA additions
+
+### CRUD management QA checklist
+
+- Worker, client and property repositories now resolve visible lists separately from archived-aware `getById`.
+- Delete dependency checks now consider local-first data, not seed data only.
+- Seed records still avoid hard delete and remain immutable.
+- Local create and edit still persist through repositories only.
+
+### Dependency protection checklist
+
+- Worker hard delete remains blocked when any service assignment exists.
+- Client hard delete remains blocked when any linked property or service exists.
+- Property hard delete remains blocked when any linked service exists.
+- Service edit, cancel and hard delete remain blocked inside locked payroll months.
+- Archive and delete flows now require explicit confirmation text.
+
+### Backup, import and reset compatibility checklist
+
+- Backup payload includes CRUD namespaces for workers, clients, properties and services.
+- Import normalizes older TeamGest backups when newer CRUD namespaces are missing.
+- Reset panel exposes a dedicated reset for local CRUD entity state.
+- Full reset remains scoped to TeamGest namespace only.
+
+### Audit event checklist
+
+- CRUD mutations still write audit entries through repositories.
+- Quick Entry still writes `service.quick_entry_created`.
+- Backup export/import and reset flows still write audit entries.
+
+### Payroll compatibility checklist
+
+- Quick Entry completed work continues feeding payroll through confirmed assignments.
+- Scheduled, draft, in-progress and cancelled services remain outside payroll totals.
+- Locked month edits and deletes remain blocked from service repository mutations.
+- Payroll month detail warns when totals drift from a locked snapshot.
+
+### Quick Entry URL prefill QA
+
+- `/quick-entry?workerId=...` prefills worker when present in current local data.
+- `/quick-entry?propertyId=...` prefills property when present in current local data.
+- `/quick-entry?date=YYYY-MM-DD` prefills date only when the format is valid.
+
+### Quick Entry payroll impact QA
+
+- Summary bar shows worker, property, date, hours, rate and total pay.
+- Quick Entry warns that the record will be added to the selected monthly closure.
+- Success state exposes service, payroll month and repeat-entry actions.
+
+### Mobile Quick Entry QA
+
+- Worker and property selections use large card targets.
+- Main actions remain full width on narrow screens through shared responsive action rows.
+- Summary and success sections stack cleanly through existing responsive grids.

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { EntityArchiveDialog } from '../../../components/forms/EntityArchiveDialog'
 import { EntityDeleteDialog } from '../../../components/forms/EntityDeleteDialog'
+import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
 import { EmptyState } from '../../../components/ui/EmptyState'
 import { PageHeader } from '../../../components/ui/PageHeader'
@@ -70,9 +72,13 @@ export function ServiceDetailPage() {
         title="Ficha operativa del servicio"
         description="Contexto del servicio, asignaciones, coste laboral, estado y acciones locales."
         primaryAction={
-          <Link className={`button button--primary${!editPolicy.allowed ? ' is-disabled' : ''}`} to={editPolicy.allowed ? `/services/${service.id}/edit` : `/services/${service.id}`}>
-            Editar
-          </Link>
+          editPolicy.allowed ? (
+            <Link className="button button--primary" to={`/services/${service.id}/edit`}>
+              Editar
+            </Link>
+          ) : (
+            <Button disabled>Editar bloqueado</Button>
+          )
         }
         secondaryAction={
           <Link className="button button--secondary button--sm" to="/services">
@@ -137,42 +143,33 @@ export function ServiceDetailPage() {
         <p className="muted-caption">Referencia interna: {service.id}</p>
       </Card>
 
-      <Card title="Acciones del servicio" description="Cancelacion o restauracion local del servicio.">
-        <div className="quick-actions">
-          {service.status !== 'cancelled' ? (
-            <button
-              className="button button--secondary"
-              type="button"
-              disabled={!editPolicy.allowed}
-              onClick={() => {
-                const result = repositories.services.archiveService(service.id)
-                if (result.success) {
-                  navigate('/services')
-                } else {
-                  setMessage(result.error ?? 'No se pudo cancelar el servicio.')
-                }
-              }}
-            >
-              Cancelar servicio
-            </button>
-          ) : (
-            <button
-              className="button button--secondary"
-              type="button"
-              onClick={() => {
-                const result = repositories.services.restoreService(service.id)
-                if (result.success) {
-                  setMessage('El servicio fue restaurado a estado operativo.')
-                } else {
-                  setMessage(result.error ?? 'No se pudo restaurar el servicio.')
-                }
-              }}
-            >
-              Restaurar servicio
-            </button>
-          )}
-        </div>
-      </Card>
+      <EntityArchiveDialog
+        title={service.status === 'cancelled' ? 'Restaurar servicio' : 'Cancelar servicio'}
+        description={
+          service.status === 'cancelled'
+            ? 'El servicio volvera a un estado operativo si el mes no esta bloqueado.'
+            : 'Cancela este servicio sin borrar su rastro local ni mutar la semilla.'
+        }
+        archived={service.status === 'cancelled'}
+        onToggle={() => {
+          if (service.status === 'cancelled') {
+            const result = repositories.services.restoreService(service.id)
+            if (result.success) {
+              setMessage('El servicio fue restaurado a estado operativo.')
+            } else {
+              setMessage(result.error ?? 'No se pudo restaurar el servicio.')
+            }
+            return
+          }
+
+          const result = repositories.services.archiveService(service.id)
+          if (result.success) {
+            navigate('/services')
+          } else {
+            setMessage(result.error ?? 'No se pudo cancelar el servicio.')
+          }
+        }}
+      />
 
       <EntityDeleteDialog
         title="Eliminar servicio local"

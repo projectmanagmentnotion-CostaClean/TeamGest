@@ -51,3 +51,7 @@ Combined sprint block 8 should report QA-hardening work and data-real-readiness 
 ## Block 9 reporting
 
 Combined sprint block 9 should report entity CRUD work and Quick Work Entry work separately. Any local-only persistence or payroll-lock limitation must be stated explicitly.
+
+## Block 10 reporting
+
+Block 10 should be reported as CRUD hardening plus Quick Entry polish. Any code-level QA limitation, missing browser visual QA or local-only runtime constraint must be stated explicitly.

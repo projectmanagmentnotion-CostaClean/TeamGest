@@ -49,12 +49,15 @@ export function PayrollMonthDetailPage() {
   const blockingWarnings = getPayrollMonthBlockingWarnings(workers, services, month)
   const auditTrail = repositories.payroll.getPayrollAuditTrail(month)
   const lockDriftWarning =
-    monthState.lockedSnapshot && totals.totalServices > monthState.lockedSnapshot.totalServices
+    monthState.lockedSnapshot &&
+    (totals.totalServices !== monthState.lockedSnapshot.totalServices ||
+      Number(totals.totalHours.toFixed(2)) !== Number(monthState.lockedSnapshot.totalHours.toFixed(2)) ||
+      Number(totals.totalPay.toFixed(2)) !== Number(monthState.lockedSnapshot.totalPay.toFixed(2)))
       ? {
           level: 'warning' as const,
-          title: 'Servicios nuevos tras el bloqueo',
+          title: 'Drift detectado tras el bloqueo',
           message:
-            'Hay servicios pagables en el mes actual que no estaban incluidos cuando se bloqueo el cierre.',
+            'Los totales actuales del mes ya no coinciden con la foto bloqueada del cierre. Revisa servicios, horas y pago antes de confiar en este mes.',
           entityLabel: month,
         }
       : null

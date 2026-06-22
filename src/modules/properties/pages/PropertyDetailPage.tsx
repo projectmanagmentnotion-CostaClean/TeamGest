@@ -94,6 +94,12 @@ export function PropertyDetailPage() {
         </WarningBanner>
       ) : null}
 
+      {property.status !== 'active' ? (
+        <WarningBanner title="Inmueble no activo" tone="warning">
+          Este inmueble no esta activo. Normalmente no deberias registrar nuevas horas aqui sin revisar la operacion.
+        </WarningBanner>
+      ) : null}
+
       <PropertyProfileHeader
         client={propertyClient}
         property={property}
@@ -124,7 +130,11 @@ export function PropertyDetailPage() {
 
       <EntityArchiveDialog
         title="Archivar inmueble"
-        description="Oculta este inmueble del parque activo sin borrar su trazabilidad local."
+        description={
+          propertyServices.length > 0
+            ? `Este inmueble tiene ${propertyServices.length} servicios asociados. Archivar es seguro, pero no elimina su trazabilidad.`
+            : 'Oculta este inmueble del parque activo sin borrar su trazabilidad local.'
+        }
         onToggle={() => {
           repositories.properties.archiveProperty(property.id)
           navigate('/properties')

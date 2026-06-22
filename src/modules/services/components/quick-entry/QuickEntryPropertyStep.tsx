@@ -1,5 +1,5 @@
-import { FormField } from '../../../../components/forms/FormField'
 import type { Property } from '../../../../domain/properties/property.types'
+import { formatPropertyTypeLabel } from '../../../../utils/labels'
 
 type QuickEntryPropertyStepProps = {
   propertyId: string
@@ -13,15 +13,33 @@ export function QuickEntryPropertyStep({
   propertyId,
 }: QuickEntryPropertyStepProps) {
   return (
-    <FormField
-      control="select"
-      label="Inmueble"
-      value={propertyId}
-      options={[
-        { label: 'Selecciona inmueble', value: '' },
-        ...properties.map((property) => ({ label: `${property.name} · ${property.city}`, value: property.id })),
-      ]}
-      onChange={onChange}
-    />
+    <section className="page-stack">
+      <div className="section-header__content">
+        <h3>Inmueble</h3>
+        <p>Selecciona donde se realizo el trabajo.</p>
+      </div>
+      <div className="cards-grid">
+        {properties.map((property) => {
+          const isSelected = property.id === propertyId
+
+          return (
+            <button
+              key={property.id}
+              className={`choice-card${isSelected ? ' is-selected' : ''}`}
+              type="button"
+              onClick={() => onChange(property.id)}
+            >
+              <div className="row-card__main">
+                <div>
+                  <strong>{property.name}</strong>
+                  <p>{property.city}</p>
+                </div>
+                <span className="muted-caption">{formatPropertyTypeLabel(property.propertyType)}</span>
+              </div>
+            </button>
+          )
+        })}
+      </div>
+    </section>
   )
 }

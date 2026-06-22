@@ -24,7 +24,7 @@ The intended workflow starts with service planning, continues with worker assign
 - Supabase.
 - Authentication and role management.
 - Payments or invoicing logic.
-- Real forms, CRUD flows or persistence.
+- Server-side persistence and multi-user synchronization.
 
 ## Sprint 1 status
 
@@ -120,3 +120,16 @@ Block 9 combines Sprint 17 and Sprint 18 on top of the same local-first runtime.
 - Quick Work Entry creates a local service with one confirmed assignment.
 - Service editing and deletion respect payroll month lock state.
 - There is still no backend, auth, Supabase or payment execution.
+
+## Block 10 status
+
+Block 10 combines Sprint 19 and Sprint 20 on top of the same local-first runtime.
+
+- Sprint 19 hardens CRUD repositories, dependency protection, reset coverage and backup/import compatibility.
+- Sprint 20 promotes Quick Entry to the main operational workflow with faster access paths and clearer payroll impact messaging.
+
+## Operational priority
+
+- Quick Entry is now the fastest path to register completed work.
+- Dashboard, workers, properties and services prioritize `Registrar horas`.
+- Runtime remains local-first only. No backend, Supabase, auth or real payments were activated.

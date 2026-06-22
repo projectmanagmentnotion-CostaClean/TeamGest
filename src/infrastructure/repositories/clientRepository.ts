@@ -2,9 +2,9 @@ import type { ClientInput } from '../../domain/clients/client.inputs'
 import type { Client } from '../../domain/clients/client.types'
 import { createEntityId } from '../../utils/ids'
 import { recordAuditEvent } from '../audit/auditRepository'
+import { listAllPropertiesSnapshot } from './propertyRepository'
+import { listAllServicesSnapshot } from './serviceRepository'
 import { mockClients } from '../mock/mockClients'
-import { mockProperties } from '../mock/mockProperties'
-import { mockServices } from '../mock/mockServices'
 import {
   archiveEntity,
   createLocalRecord,
@@ -17,25 +17,25 @@ import {
   restoreEntity,
   upsertLocalOverride,
 } from '../storage/entityLocalStore'
-import {
-  CLIENTS_ARCHIVED_KEY,
-  CLIENTS_CREATED_KEY,
-  CLIENTS_OVERRIDES_KEY,
-} from '../storage/storageKeys'
+import { CLIENTS_ARCHIVED_KEY, CLIENTS_CREATED_KEY, CLIENTS_OVERRIDES_KEY } from '../storage/storageKeys'
 
-function readClients() {
+function readAllClients() {
   return mergeSeedWithLocal(
     mockClients,
     listLocalCreated<Client>(CLIENTS_CREATED_KEY),
     listLocalOverrides<Client>(CLIENTS_OVERRIDES_KEY),
-    Object.keys(listArchivedEntities(CLIENTS_ARCHIVED_KEY)),
+    [],
   )
+}
+
+function readClients() {
+  return readAllClients().filter((client) => !listArchivedEntities(CLIENTS_ARCHIVED_KEY)[client.id])
 }
 
 function hasClientDependencies(clientId: string) {
   return (
-    mockProperties.some((property) => property.clientId === clientId) ||
-    mockServices.some((service) => service.clientId === clientId)
+    listAllPropertiesSnapshot().some((property) => property.clientId === clientId) ||
+    listAllServicesSnapshot().some((service) => service.clientId === clientId)
   )
 }
 
@@ -52,7 +52,7 @@ function buildClient(input: ClientInput): Client {
 export function createClientRepository() {
   return {
     listClients: () => readClients(),
-    getClientById: (id: string) => readClients().find((client) => client.id === id),
+    getClientById: (id: string) => readAllClients().find((client) => client.id === id),
     createClient: (input: ClientInput) => {
       const client = buildClient(input)
       createLocalRecord(CLIENTS_CREATED_KEY, client)
@@ -61,7 +61,7 @@ export function createClientRepository() {
         action: 'client.created',
         entityType: 'client',
         entityId: client.id,
-        message: `Se creó el cliente ${client.name}.`,
+        message: `Se creo el cliente ${client.name}.`,
       })
       return client
     },
@@ -74,7 +74,7 @@ export function createClientRepository() {
         },
         id,
       )
-      const current = readClients().find((client) => client.id === id)
+      const current = readAllClients().find((client) => client.id === id)
       if (!current) {
         return null
       }
@@ -98,29 +98,29 @@ export function createClientRepository() {
         action: 'client.updated',
         entityType: 'client',
         entityId: id,
-        message: `Se actualizó el cliente ${nextValue.name}.`,
+        message: `Se actualizo el cliente ${nextValue.name}.`,
       })
       return nextValue
     },
     archiveClient: (id: string) => {
-      const client = readClients().find((item) => item.id === id)
+      const client = readAllClients().find((item) => item.id === id)
       if (!client) {
         return false
       }
 
-      archiveEntity(CLIENTS_ARCHIVED_KEY, id)
+      archiveEntity(CLIENTS_ARCHIVED_KEY, id, {
+        reason: hasClientDependencies(id) ? 'linked_operations' : undefined,
+      })
       recordAuditEvent({
         action: 'client.archived',
         entityType: 'client',
         entityId: id,
-        message: `Se archivó el cliente ${client.name}.`,
+        message: `Se archivo el cliente ${client.name}.`,
       })
       return true
     },
     restoreClient: (id: string) => {
-      const client = [...mockClients, ...listLocalCreated<Client>(CLIENTS_CREATED_KEY)].find(
-        (item) => item.id === id,
-      )
+      const client = readAllClients().find((item) => item.id === id)
       if (!client) {
         return false
       }
@@ -131,7 +131,7 @@ export function createClientRepository() {
           action: 'client.restored',
           entityType: 'client',
           entityId: id,
-          message: `Se restauró el cliente ${client.name}.`,
+          message: `Se restauro el cliente ${client.name}.`,
         })
       }
       return restored
@@ -148,14 +148,14 @@ export function createClientRepository() {
       if (!localState.isLocalCreated) {
         return {
           allowed: false,
-          reason: 'Los clientes de semilla solo pueden archivarse en esta versión local.',
+          reason: 'Los clientes de semilla solo pueden archivarse en esta version local.',
         }
       }
 
       if (hasClientDependencies(id)) {
         return {
           allowed: false,
-          reason: 'Este cliente tiene inmuebles o servicios asociados. Archívalo en lugar de eliminarlo.',
+          reason: 'Este cliente tiene inmuebles o servicios asociados. Archivarlo es seguro; eliminarlo no.',
         }
       }
 
@@ -163,7 +163,7 @@ export function createClientRepository() {
     },
     deleteClient: (id: string) => {
       const policy = createClientRepository().canDeleteClient(id)
-      const client = readClients().find((item) => item.id === id)
+      const client = readAllClients().find((item) => item.id === id)
       if (!policy.allowed || !client) {
         return false
       }
@@ -175,7 +175,7 @@ export function createClientRepository() {
           action: 'client.deleted',
           entityType: 'client',
           entityId: id,
-          message: `Se eliminó el cliente local ${client.name}.`,
+          message: `Se elimino el cliente local ${client.name}.`,
         })
       }
       return deleted

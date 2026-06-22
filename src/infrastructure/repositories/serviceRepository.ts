@@ -5,16 +5,20 @@ import { createEntityId } from '../../utils/ids'
 import { recordAuditEvent } from '../audit/auditRepository'
 import { mockServices } from '../mock/mockServices'
 import {
+  archiveEntity,
   createLocalRecord,
   deleteLocalRecord,
   getEntityLocalState,
+  listArchivedEntities,
   listLocalCreated,
   listLocalOverrides,
   mergeSeedWithLocal,
+  restoreEntity,
   upsertLocalOverride,
 } from '../storage/entityLocalStore'
 import { readJson } from '../storage/localStorageAdapter'
 import {
+  LEGACY_SERVICES_CREATED_KEY,
   PAYROLL_MONTHS_KEY,
   SERVICES_ARCHIVED_KEY,
   SERVICES_CREATED_KEY,
@@ -24,6 +28,15 @@ import {
 type ServiceMutationPolicy = {
   allowed: boolean
   reason?: string
+}
+
+function readLocalCreatedServices() {
+  const currentCreated = listLocalCreated<ServiceJob>(SERVICES_CREATED_KEY)
+  if (currentCreated.length > 0) {
+    return currentCreated
+  }
+
+  return readJson<ServiceJob[]>(LEGACY_SERVICES_CREATED_KEY, [])
 }
 
 function normalizeServiceForStorage(service: ServiceJob) {
@@ -40,13 +53,25 @@ function normalizeServiceForStorage(service: ServiceJob) {
   }
 }
 
-function readServices() {
+export function listAllServicesSnapshot() {
   return mergeSeedWithLocal(
     mockServices,
-    listLocalCreated<ServiceJob>(SERVICES_CREATED_KEY),
+    readLocalCreatedServices(),
     listLocalOverrides<ServiceJob>(SERVICES_OVERRIDES_KEY),
     [],
   ).sort((left, right) => right.date.localeCompare(left.date))
+}
+
+function readVisibleServices() {
+  return listAllServicesSnapshot().filter((service) => {
+    const archivedState = listArchivedEntities(SERVICES_ARCHIVED_KEY)[service.id]
+
+    if (!archivedState) {
+      return true
+    }
+
+    return service.status === 'cancelled'
+  })
 }
 
 function readPayrollStates() {
@@ -95,12 +120,27 @@ function writeUpdatedLocalService(service: ServiceJob) {
   return service
 }
 
+function normalizeAssignmentsForUpdate(current: ServiceJob, assignments: ServiceInput['assignments']) {
+  return assignments.map((assignment) => {
+    const existingAssignment = current.assignments.find((item) => item.workerId === assignment.workerId)
+    const timestamp = new Date().toISOString()
+
+    return {
+      id: existingAssignment?.id ?? createEntityId('assignment'),
+      serviceJobId: current.id,
+      createdAt: existingAssignment?.createdAt ?? timestamp,
+      updatedAt: timestamp,
+      ...assignment,
+    }
+  })
+}
+
 export function createServiceRepository() {
   return {
-    listServices: () => readServices(),
-    getServiceById: (id: string) => readServices().find((service) => service.id === id),
+    listServices: () => readVisibleServices(),
+    getServiceById: (id: string) => listAllServicesSnapshot().find((service) => service.id === id),
     canEditService: (id: string) => {
-      const service = readServices().find((item) => item.id === id)
+      const service = listAllServicesSnapshot().find((item) => item.id === id)
       if (!service) {
         return { allowed: false, reason: 'El servicio solicitado no existe.' }
       }
@@ -110,6 +150,7 @@ export function createServiceRepository() {
     createService: (service: ServiceJob, source: 'manual' | 'quick_entry' = 'manual') => {
       const normalizedService = normalizeServiceForStorage(service)
       createLocalRecord(SERVICES_CREATED_KEY, normalizedService)
+      restoreEntity(SERVICES_ARCHIVED_KEY, normalizedService.id)
       recordAuditEvent({
         action: source === 'quick_entry' ? 'service.quick_entry_created' : 'service.created',
         entityType: 'service',
@@ -127,7 +168,7 @@ export function createServiceRepository() {
       return normalizedService
     },
     updateService: (id: string, patch: Partial<ServiceInput>) => {
-      const current = readServices().find((service) => service.id === id)
+      const current = listAllServicesSnapshot().find((service) => service.id === id)
       if (!current) {
         return { service: null, error: 'El servicio solicitado no existe.' }
       }
@@ -140,21 +181,9 @@ export function createServiceRepository() {
       const nextValue = normalizeServiceForStorage({
         ...current,
         ...patch,
-        assignments:
-          patch.assignments?.map((assignment) => {
-            const existingAssignment = current.assignments.find(
-              (item) => item.workerId === assignment.workerId,
-            )
-            const timestamp = new Date().toISOString()
-
-            return {
-              id: existingAssignment?.id ?? createEntityId('assignment'),
-              serviceJobId: current.id,
-              createdAt: existingAssignment?.createdAt ?? timestamp,
-              updatedAt: timestamp,
-              ...assignment,
-            }
-          }) ?? current.assignments,
+        assignments: patch.assignments
+          ? normalizeAssignmentsForUpdate(current, patch.assignments)
+          : current.assignments,
       })
 
       writeUpdatedLocalService(nextValue)
@@ -172,7 +201,7 @@ export function createServiceRepository() {
       return { service: nextValue, error: null }
     },
     archiveService: (id: string) => {
-      const current = readServices().find((service) => service.id === id)
+      const current = listAllServicesSnapshot().find((service) => service.id === id)
       if (!current) {
         return { success: false, error: 'El servicio solicitado no existe.' }
       }
@@ -188,6 +217,7 @@ export function createServiceRepository() {
       })
 
       writeUpdatedLocalService(nextValue)
+      archiveEntity(SERVICES_ARCHIVED_KEY, id, { reason: 'cancelled' })
       recordAuditEvent({
         action: 'service.cancelled',
         entityType: 'service',
@@ -200,7 +230,7 @@ export function createServiceRepository() {
       return { success: true, error: null }
     },
     restoreService: (id: string) => {
-      const service = readServices().find((item) => item.id === id)
+      const service = listAllServicesSnapshot().find((item) => item.id === id)
       if (!service) {
         return { success: false, error: 'El servicio solicitado no existe.' }
       }
@@ -215,6 +245,7 @@ export function createServiceRepository() {
       })
 
       writeUpdatedLocalService(nextValue)
+      restoreEntity(SERVICES_ARCHIVED_KEY, id)
       recordAuditEvent({
         action: 'service.restored',
         entityType: 'service',
@@ -224,7 +255,7 @@ export function createServiceRepository() {
       return { success: true, error: null }
     },
     canDeleteService: (id: string) => {
-      const service = readServices().find((item) => item.id === id)
+      const service = listAllServicesSnapshot().find((item) => item.id === id)
       if (!service) {
         return { allowed: false, reason: 'El servicio solicitado no existe.' }
       }
@@ -241,7 +272,7 @@ export function createServiceRepository() {
       if (!localState.isLocalCreated) {
         return {
           allowed: false,
-          reason: 'Los servicios de semilla solo pueden editarse o cancelarse en esta sprint local.',
+          reason: 'Los servicios de semilla solo pueden cancelarse. El borrado duro queda reservado a servicios locales.',
         }
       }
 
@@ -258,6 +289,7 @@ export function createServiceRepository() {
         return { success: false, error: 'El servicio local ya no existe.' }
       }
 
+      restoreEntity(SERVICES_ARCHIVED_KEY, id)
       recordAuditEvent({
         action: 'service.deleted',
         entityType: 'service',

@@ -90,6 +90,12 @@ export function WorkerDetailPage() {
         </WarningBanner>
       ) : null}
 
+      {worker.status !== 'active' ? (
+        <WarningBanner title="Trabajador no activo" tone="warning">
+          Este trabajador no esta activo. Normalmente no deberias registrar nuevas horas para su nomina interna.
+        </WarningBanner>
+      ) : null}
+
       <WorkerProfileHeader
         summary={`${workerServices.length} servicios asociados y ${warnings.length} incidencias detectadas con datos actuales.`}
         worker={worker}
@@ -149,7 +155,11 @@ export function WorkerDetailPage() {
 
       <EntityArchiveDialog
         title="Archivar trabajador"
-        description="Oculta este trabajador de los listados activos sin perder auditoria local."
+        description={
+          workerServices.length > 0
+            ? `Este trabajador tiene ${workerServices.length} servicios asociados. Archivar es seguro, pero no elimina su historial.`
+            : 'Oculta este trabajador de los listados activos sin perder auditoria local.'
+        }
         onToggle={() => {
           repositories.workers.archiveWorker(worker.id)
           navigate('/workers')

@@ -99,10 +99,17 @@ export function mergeSeedWithLocal<T extends { id: string }>(
   localOverrides: Record<string, Partial<T>>,
   archivedIds: string[],
 ) {
-  const mergedSeed = seedRecords.map((record) => ({
+  const localCreatedIds = new Set(localCreated.map((record) => record.id))
+  const mergedCreated = localCreated.map((record) => ({
     ...record,
     ...(localOverrides[record.id] ?? {}),
   }))
+  const mergedSeed = seedRecords
+    .filter((record) => !localCreatedIds.has(record.id))
+    .map((record) => ({
+      ...record,
+      ...(localOverrides[record.id] ?? {}),
+    }))
 
-  return [...localCreated, ...mergedSeed].filter((record) => !archivedIds.includes(record.id))
+  return [...mergedCreated, ...mergedSeed].filter((record) => !archivedIds.includes(record.id))
 }

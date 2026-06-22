@@ -68,3 +68,10 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - UI forms stay generic; they must not embed entity-specific repository logic.
 - Pages and components must not call localStorage directly.
 - Real data must still not be added in this block.
+
+## Block 10 ownership
+
+- Quick Entry remains service-module owned even when linked from dashboard, workers or properties.
+- URL prefill params must be parsed safely and normalized before reaching UI state.
+- Payroll impact messaging must resolve through service and repository data, not hardcoded UI assumptions.
+- CRUD protections and dependency rules stay in repositories and supporting services, never in UI pages.

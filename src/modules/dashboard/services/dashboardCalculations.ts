@@ -3,6 +3,7 @@ import type { Property } from '../../../domain/properties/property.types'
 import type { ServiceJob } from '../../../domain/services/service.types'
 import type { WarningItem } from '../../../domain/shared/warning.types'
 import type { Worker } from '../../../domain/workers/worker.types'
+import type { AppAuditEntry } from '../../../infrastructure/audit/audit.types'
 import { getPayrollWarnings } from '../../payroll/services/payrollWarnings'
 import { getPropertyWarnings } from '../../properties/services/propertyWarnings'
 import { getServiceWarnings } from '../../services/services/serviceWarnings'
@@ -134,6 +135,17 @@ export function getOperationalFocus(
       hint: `${warnings.filter((warning) => warning.level !== 'success').length} alertas activas en seguimiento.`,
     },
   ]
+}
+
+export function getRecentQuickEntryServices(services: ServiceJob[], auditEntries: AppAuditEntry[]) {
+  const quickEntryIds = auditEntries
+    .filter((entry) => entry.action === 'service.quick_entry_created' && entry.entityId)
+    .map((entry) => entry.entityId as string)
+
+  return quickEntryIds
+    .map((id) => services.find((service) => service.id === id))
+    .filter((service): service is ServiceJob => Boolean(service))
+    .slice(0, 3)
 }
 
 export function calculateDashboardStats(

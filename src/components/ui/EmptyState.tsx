@@ -1,16 +1,23 @@
-import type { ReactNode } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import { Button } from './Button'
 import { Card } from './Card'
 
-type EmptyStateProps = {
+type EmptyStateProps = PropsWithChildren<{
   title: string
   description: string
   actionLabel?: string
   action?: ReactNode
   icon?: string
-}
+}>
 
-export function EmptyState({ action, actionLabel, description, icon = '+', title }: EmptyStateProps) {
+export function EmptyState({
+  action,
+  actionLabel,
+  children,
+  description,
+  icon = '+',
+  title,
+}: EmptyStateProps) {
   return (
     <Card className="empty-state">
       <div className="empty-state__content">
@@ -18,6 +25,7 @@ export function EmptyState({ action, actionLabel, description, icon = '+', title
         <div className="empty-state__copy">
           <h3>{title}</h3>
           <p>{description}</p>
+          {children ? <div>{children}</div> : null}
         </div>
         <div className="empty-state__actions">
           {action ?? null}

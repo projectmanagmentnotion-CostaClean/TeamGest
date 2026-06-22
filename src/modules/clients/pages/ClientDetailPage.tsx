@@ -122,7 +122,11 @@ export function ClientDetailPage() {
 
       <EntityArchiveDialog
         title="Archivar cliente"
-        description="Oculta este cliente de la cartera activa sin borrar trazabilidad local."
+        description={
+          clientProperties.length > 0 || clientServices.length > 0
+            ? `Este cliente mantiene ${clientProperties.length} inmuebles y ${clientServices.length} servicios asociados. Archivar es seguro, pero no elimina esas relaciones.`
+            : 'Oculta este cliente de la cartera activa sin borrar trazabilidad local.'
+        }
         onToggle={() => {
           repositories.clients.archiveClient(client.id)
           navigate('/clients')
