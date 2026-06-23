@@ -199,3 +199,12 @@ Block 15 combines Sprint 29 and Sprint 30 on top of the same local-first runtime
 - Monthly closure remains an in-app operational workflow, not an export system.
 - Paid status is still internal tracking only.
 - Export, PDF, CSV, calendar and pipeline work remain intentionally out of scope.
+
+## Block 16 status
+
+Block 16 is Sprint 31 only and focuses on final hardening, route smoke review, settings QA, data-safety QA, performance review and release-readiness documentation.
+
+- Runtime remains local-first only.
+- Backend, Supabase, auth and payments remain inactive.
+- Export, PDF, CSV, calendar and pipeline work remain intentionally out of scope.
+- QA evidence is now separated into `docs/hardening/` by topic instead of one combined note.

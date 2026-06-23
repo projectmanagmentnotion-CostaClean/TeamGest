@@ -200,3 +200,12 @@ The final local-first experience should feel controlled and sectioned:
 - registrar horas is the fastest input path
 - review surfaces group risk instead of creating endless card walls
 - cierres explain internal payment readiness worker by worker
+
+## Block 16 hardening UX
+
+The final hardening pass keeps the finished local-first product feeling stable instead of feature-heavy:
+
+- route loading should feel calm, with a simple loading state instead of blank transitions
+- settings language should sound operational, not technical or half-configured
+- mobile action rows should stack safely instead of squeezing important controls
+- release-readiness claims must stay honest when browser visual QA was not performed

@@ -844,6 +844,7 @@ a {
   place-items: center;
   text-align: center;
   min-height: 3rem;
+  min-width: 0;
   padding: 0.7rem 0.4rem;
   font-size: 0.82rem;
 }
@@ -904,17 +905,23 @@ a {
 
   .empty-state__actions,
   .action-bar__group,
+  .action-bar__aside,
   .page-header__actions,
   .searchable-select__input-row,
-  .hour-review-actions {
+  .hour-review-actions,
+  .worker-closure-actions,
+  .quick-actions {
     width: 100%;
   }
 
   .empty-state__actions > *,
   .action-bar__group > *,
+  .action-bar__aside > *,
   .page-header__actions > *,
   .searchable-select__input-row > *,
-  .hour-review-actions > * {
+  .hour-review-actions > *,
+  .worker-closure-actions > *,
+  .quick-actions > * {
     width: 100%;
   }
 }
@@ -959,6 +966,7 @@ a {
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
+  min-width: 0;
 }
 
 .worker-closure-actions .muted-caption {
@@ -1164,6 +1172,10 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+.settings-nav > * {
+  min-width: 0;
 }
 
 .settings-boolean-list {

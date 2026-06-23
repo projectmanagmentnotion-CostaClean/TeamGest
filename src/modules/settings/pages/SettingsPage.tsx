@@ -111,7 +111,7 @@ export function SettingsPage() {
               : 'Backup disponible sin recordatorio'
             : 'Sin backup reciente'
         }
-        runtimeLabel="Inactivo / planificacion"
+        runtimeLabel="Inactivo / solo planificacion"
         settingsVersion={appSettingsSnapshot.health.settingsVersion}
         storageModeLabel={overview.storageMode}
         customizedSections={appSettingsSnapshot.health.customizedSections}
@@ -280,8 +280,8 @@ export function SettingsPage() {
 
           <WarningBanner title="Notas de seguridad" tone="info">
             Los backups exportados son copias JSON locales del navegador. Sirven para continuidad
-            operativa del prototipo, pero no sustituyen backend, seguridad empresarial ni respaldo en
-            la nube.
+            operativa del prototipo, pero no sustituyen respaldo externo, seguridad empresarial ni
+            sincronizacion multiusuario.
           </WarningBanner>
         </>
       ) : null}

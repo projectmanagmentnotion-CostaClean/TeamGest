@@ -245,3 +245,13 @@ Browser visual QA was not performed in this block.
 - Hours review now accepts safe query params for month and worker scoping from closure actions.
 - Worker and service heavy flows keep StepFlow structure while adding clearer helper text and review framing.
 - No export, PDF, CSV, calendar or pipeline implementation was added.
+
+## Block 16 QA additions
+
+- Runtime boundary search confirmed no active backend, Supabase, auth, payment, `fetch`, `axios`, `import.meta.env` or `process.env` runtime switching in `src`.
+- Route graph was revalidated at code level and all live pages remain present in `src/app/routes.tsx`.
+- Route-level lazy loading was added to major pages together with a stable loading fallback.
+- Current build no longer reports the prior large main-chunk warning after route splitting.
+- Settings, import, backup and reset surfaces received wording cleanup without changing storage scope.
+- Mobile action containers now stack more safely on narrow screens through shared CSS.
+- Browser visual QA was still not performed in this block.

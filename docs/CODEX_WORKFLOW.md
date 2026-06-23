@@ -83,3 +83,11 @@ Block 14 should be reported as technical audit plus safe cleanup and settings po
 ## Block 15 reporting
 
 Block 15 should be reported as worker monthly closures plus final local app polish. The report must separate closure-model work from UX polish work, and it must explicitly state that exports, PDF, CSV, calendar and backend activation were not implemented.
+
+## Block 16 reporting
+
+Block 16 should be reported as final hardening plus document-separated QA. The report must separate runtime boundaries, route smoke QA, visual QA, mobile QA, StepFlow/forms QA, settings QA, hours/payroll QA, data-safety QA, performance review and release-readiness notes.
+
+- Any claim about visual or mobile QA must state whether it was browser-tested or code-level only.
+- Performance notes must say clearly whether lazy loading was implemented and whether the chunk warning remained.
+- Final hardening must keep scope to safe fixes, documentation and validation rather than new product modules.

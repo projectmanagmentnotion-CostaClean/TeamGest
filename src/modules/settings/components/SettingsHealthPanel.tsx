@@ -40,7 +40,7 @@ export function SettingsHealthPanel({
           <strong>{storageModeLabel}</strong>
         </div>
         <div>
-          <span className="muted-caption">Backend y auth</span>
+          <span className="muted-caption">Backend, Supabase y auth</span>
           <strong>{runtimeLabel}</strong>
         </div>
         <div>

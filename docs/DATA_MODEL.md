@@ -105,3 +105,10 @@
 - Repository result envelopes and health models are planned for future real adapters but are not yet enforced across runtime repositories.
 - Data-real mapping plans exist as documentation and planning constants only.
 - Supabase and auth are still not active runtime dependencies.
+
+## Block 16 hardening note
+
+- No new persisted entity was added in this sprint.
+- `HourEntry` remains derived only.
+- Route-level lazy loading changed page delivery cost, not the data model.
+- Backup, import, reset, settings and payroll state continue using recognized local TeamGest namespaces only.

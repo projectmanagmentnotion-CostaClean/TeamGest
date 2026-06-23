@@ -52,7 +52,7 @@ export function ImportDataPanel({ onDataChanged }: ImportDataPanelProps) {
     }
 
     const result = importTeamGestBackupPayload(preview.payload)
-    setSuccess(`Importación completada. Meses restaurados: ${result.summary.payrollMonthsCount}.`)
+    setSuccess(`Importacion completada. Meses restaurados: ${result.summary.payrollMonthsCount}.`)
     setError(null)
     setPreview(null)
     setConfirmed(false)
@@ -66,7 +66,7 @@ export function ImportDataPanel({ onDataChanged }: ImportDataPanelProps) {
       action={<Badge tone="warning">Reemplaza local</Badge>}
     >
       <label className="field">
-        <span className="field__label">Pega aquí el JSON de la copia</span>
+        <span className="field__label">Pega aqui el JSON de la copia</span>
         <textarea
           className="field-input field-textarea"
           rows={8}
@@ -100,7 +100,7 @@ export function ImportDataPanel({ onDataChanged }: ImportDataPanelProps) {
           <div className="row-card__main">
             <div>
               <h4>Resumen detectado</h4>
-              <p>{preview.summary.appName} · esquema {preview.summary.schemaVersion}</p>
+              <p>{preview.summary.appName} - esquema {preview.summary.schemaVersion}</p>
             </div>
             <Badge tone="info">Listo para importar</Badge>
           </div>
@@ -110,15 +110,15 @@ export function ImportDataPanel({ onDataChanged }: ImportDataPanelProps) {
               <strong>{preview.summary.createdServicesCount}</strong>
             </div>
             <div>
-              <span className="muted-caption">Meses de nómina</span>
+              <span className="muted-caption">Meses de nomina</span>
               <strong>{preview.summary.payrollMonthsCount}</strong>
             </div>
             <div>
-              <span className="muted-caption">Auditoría payroll</span>
+              <span className="muted-caption">Auditoria de cierres</span>
               <strong>{preview.summary.payrollAuditCount}</strong>
             </div>
             <div>
-              <span className="muted-caption">Auditoría app</span>
+              <span className="muted-caption">Auditoria app</span>
               <strong>{preview.summary.appAuditCount}</strong>
             </div>
           </div>
@@ -127,17 +127,17 @@ export function ImportDataPanel({ onDataChanged }: ImportDataPanelProps) {
 
       <label className="checkbox-row">
         <input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} />
-        <span>Entiendo que esto reemplazará datos locales compatibles.</span>
+        <span>Entiendo que esto reemplazara datos locales compatibles.</span>
       </label>
 
       {error ? (
-        <WarningBanner title="Importación no válida" tone="danger">
+        <WarningBanner title="Importacion no valida" tone="danger">
           {error}
         </WarningBanner>
       ) : null}
 
       {success ? (
-        <WarningBanner title="Importación completada" tone="success">
+        <WarningBanner title="Importacion completada" tone="success">
           {success}
         </WarningBanner>
       ) : null}

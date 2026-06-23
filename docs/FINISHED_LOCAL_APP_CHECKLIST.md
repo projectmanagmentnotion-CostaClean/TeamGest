@@ -44,3 +44,11 @@ This version is considered operationally finished for its current purpose:
 - Google Calendar sync
 - backend and Supabase activation
 - auth and multi-user permissions
+
+## Block 16 hardening status
+
+- Final hardening and release-readiness review completed in one sprint.
+- QA evidence is now separated across `docs/hardening/`.
+- Runtime still has no backend, Supabase, auth, payments, export, calendar or pipeline activation.
+- Route-level lazy loading was added to reduce eager bundle cost.
+- Browser visual QA remains a known limitation.

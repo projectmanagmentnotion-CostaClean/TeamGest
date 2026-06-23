@@ -70,8 +70,8 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
         <div className="row-card">
           <div className="row-card__main">
             <div>
-              <h4>Reset estado de nomina</h4>
-              <p>Elimina estados, bloqueos y auditoria mensual de payroll.</p>
+              <h4>Reset estado de cierres</h4>
+              <p>Elimina estados, bloqueos y auditoria mensual del cierre interno.</p>
             </div>
             <Button
               variant="secondary"
@@ -79,7 +79,7 @@ export function ResetDemoDataPanel({ onDataChanged }: ResetDemoDataPanelProps) {
                 runAction(resetPayrollLocalState, 'Estado local de cierres reiniciado.')
               }
             >
-              Reset payroll
+              Reset cierres
             </Button>
           </div>
         </div>

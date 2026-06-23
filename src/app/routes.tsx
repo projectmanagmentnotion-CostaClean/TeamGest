@@ -1,31 +1,128 @@
+import { lazy, Suspense, type ComponentType } from 'react'
 import { Navigate, useRoutes } from 'react-router-dom'
 import { AppShell } from '../components/layout/AppShell'
-import { ClientDetailPage } from '../modules/clients/pages/ClientDetailPage'
-import { ClientsPage } from '../modules/clients/pages/ClientsPage'
-import { EditClientPage } from '../modules/clients/pages/EditClientPage'
-import { NewClientPage } from '../modules/clients/pages/NewClientPage'
-import { DashboardPage } from '../modules/dashboard/pages/DashboardPage'
-import { HoursPage } from '../modules/hours/pages/HoursPage'
-import { HoursReviewPage } from '../modules/hours/pages/HoursReviewPage'
-import { PropertyHoursPage } from '../modules/hours/pages/PropertyHoursPage'
-import { WorkerHoursPage } from '../modules/hours/pages/WorkerHoursPage'
-import { PayrollMonthDetailPage } from '../modules/payroll/pages/PayrollMonthDetailPage'
-import { PayrollPage } from '../modules/payroll/pages/PayrollPage'
-import { WorkerMonthlyClosurePage } from '../modules/payroll/pages/WorkerMonthlyClosurePage'
-import { EditPropertyPage } from '../modules/properties/pages/EditPropertyPage'
-import { NewPropertyPage } from '../modules/properties/pages/NewPropertyPage'
-import { PropertiesPage } from '../modules/properties/pages/PropertiesPage'
-import { PropertyDetailPage } from '../modules/properties/pages/PropertyDetailPage'
-import { EditServicePage } from '../modules/services/pages/EditServicePage'
-import { NewServicePage } from '../modules/services/pages/NewServicePage'
-import { QuickWorkEntryPage } from '../modules/services/pages/QuickWorkEntryPage'
-import { ServiceDetailPage } from '../modules/services/pages/ServiceDetailPage'
-import { ServicesPage } from '../modules/services/pages/ServicesPage'
-import { SettingsPage } from '../modules/settings/pages/SettingsPage'
-import { EditWorkerPage } from '../modules/workers/pages/EditWorkerPage'
-import { NewWorkerPage } from '../modules/workers/pages/NewWorkerPage'
-import { WorkerDetailPage } from '../modules/workers/pages/WorkerDetailPage'
-import { WorkersPage } from '../modules/workers/pages/WorkersPage'
+
+const DashboardPage = lazy(async () =>
+  import('../modules/dashboard/pages/DashboardPage').then((module) => ({ default: module.DashboardPage })),
+)
+const QuickWorkEntryPage = lazy(async () =>
+  import('../modules/services/pages/QuickWorkEntryPage').then((module) => ({
+    default: module.QuickWorkEntryPage,
+  })),
+)
+const HoursPage = lazy(async () =>
+  import('../modules/hours/pages/HoursPage').then((module) => ({ default: module.HoursPage })),
+)
+const HoursReviewPage = lazy(async () =>
+  import('../modules/hours/pages/HoursReviewPage').then((module) => ({ default: module.HoursReviewPage })),
+)
+const WorkerHoursPage = lazy(async () =>
+  import('../modules/hours/pages/WorkerHoursPage').then((module) => ({ default: module.WorkerHoursPage })),
+)
+const PropertyHoursPage = lazy(async () =>
+  import('../modules/hours/pages/PropertyHoursPage').then((module) => ({
+    default: module.PropertyHoursPage,
+  })),
+)
+const WorkersPage = lazy(async () =>
+  import('../modules/workers/pages/WorkersPage').then((module) => ({ default: module.WorkersPage })),
+)
+const NewWorkerPage = lazy(async () =>
+  import('../modules/workers/pages/NewWorkerPage').then((module) => ({ default: module.NewWorkerPage })),
+)
+const WorkerDetailPage = lazy(async () =>
+  import('../modules/workers/pages/WorkerDetailPage').then((module) => ({
+    default: module.WorkerDetailPage,
+  })),
+)
+const EditWorkerPage = lazy(async () =>
+  import('../modules/workers/pages/EditWorkerPage').then((module) => ({ default: module.EditWorkerPage })),
+)
+const PropertiesPage = lazy(async () =>
+  import('../modules/properties/pages/PropertiesPage').then((module) => ({
+    default: module.PropertiesPage,
+  })),
+)
+const NewPropertyPage = lazy(async () =>
+  import('../modules/properties/pages/NewPropertyPage').then((module) => ({
+    default: module.NewPropertyPage,
+  })),
+)
+const PropertyDetailPage = lazy(async () =>
+  import('../modules/properties/pages/PropertyDetailPage').then((module) => ({
+    default: module.PropertyDetailPage,
+  })),
+)
+const EditPropertyPage = lazy(async () =>
+  import('../modules/properties/pages/EditPropertyPage').then((module) => ({
+    default: module.EditPropertyPage,
+  })),
+)
+const ClientsPage = lazy(async () =>
+  import('../modules/clients/pages/ClientsPage').then((module) => ({ default: module.ClientsPage })),
+)
+const NewClientPage = lazy(async () =>
+  import('../modules/clients/pages/NewClientPage').then((module) => ({ default: module.NewClientPage })),
+)
+const ClientDetailPage = lazy(async () =>
+  import('../modules/clients/pages/ClientDetailPage').then((module) => ({ default: module.ClientDetailPage })),
+)
+const EditClientPage = lazy(async () =>
+  import('../modules/clients/pages/EditClientPage').then((module) => ({ default: module.EditClientPage })),
+)
+const ServicesPage = lazy(async () =>
+  import('../modules/services/pages/ServicesPage').then((module) => ({ default: module.ServicesPage })),
+)
+const NewServicePage = lazy(async () =>
+  import('../modules/services/pages/NewServicePage').then((module) => ({ default: module.NewServicePage })),
+)
+const ServiceDetailPage = lazy(async () =>
+  import('../modules/services/pages/ServiceDetailPage').then((module) => ({
+    default: module.ServiceDetailPage,
+  })),
+)
+const EditServicePage = lazy(async () =>
+  import('../modules/services/pages/EditServicePage').then((module) => ({ default: module.EditServicePage })),
+)
+const PayrollPage = lazy(async () =>
+  import('../modules/payroll/pages/PayrollPage').then((module) => ({ default: module.PayrollPage })),
+)
+const PayrollMonthDetailPage = lazy(async () =>
+  import('../modules/payroll/pages/PayrollMonthDetailPage').then((module) => ({
+    default: module.PayrollMonthDetailPage,
+  })),
+)
+const WorkerMonthlyClosurePage = lazy(async () =>
+  import('../modules/payroll/pages/WorkerMonthlyClosurePage').then((module) => ({
+    default: module.WorkerMonthlyClosurePage,
+  })),
+)
+const SettingsPage = lazy(async () =>
+  import('../modules/settings/pages/SettingsPage').then((module) => ({ default: module.SettingsPage })),
+)
+
+function RouteLoadingFallback() {
+  return (
+    <div className="page-stack">
+      <section className="card">
+        <div className="card__body">
+          <strong>Cargando vista...</strong>
+          <p className="muted-caption">
+            Preparando el modulo solicitado en el runtime local de TeamGest.
+          </p>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function renderLazyPage(Page: ComponentType) {
+  return (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <Page />
+    </Suspense>
+  )
+}
 
 export function AppRoutes() {
   return useRoutes([
@@ -34,32 +131,32 @@ export function AppRoutes() {
       element: <AppShell />,
       children: [
         { index: true, element: <Navigate to="/dashboard" replace /> },
-        { path: 'dashboard', element: <DashboardPage /> },
-        { path: 'quick-entry', element: <QuickWorkEntryPage /> },
-        { path: 'hours', element: <HoursPage /> },
-        { path: 'hours/review', element: <HoursReviewPage /> },
-        { path: 'hours/workers/:workerId', element: <WorkerHoursPage /> },
-        { path: 'hours/properties/:propertyId', element: <PropertyHoursPage /> },
-        { path: 'workers', element: <WorkersPage /> },
-        { path: 'workers/new', element: <NewWorkerPage /> },
-        { path: 'workers/:id', element: <WorkerDetailPage /> },
-        { path: 'workers/:id/edit', element: <EditWorkerPage /> },
-        { path: 'properties', element: <PropertiesPage /> },
-        { path: 'properties/new', element: <NewPropertyPage /> },
-        { path: 'properties/:id', element: <PropertyDetailPage /> },
-        { path: 'properties/:id/edit', element: <EditPropertyPage /> },
-        { path: 'clients', element: <ClientsPage /> },
-        { path: 'clients/new', element: <NewClientPage /> },
-        { path: 'clients/:id', element: <ClientDetailPage /> },
-        { path: 'clients/:id/edit', element: <EditClientPage /> },
-        { path: 'services', element: <ServicesPage /> },
-        { path: 'services/new', element: <NewServicePage /> },
-        { path: 'services/:id', element: <ServiceDetailPage /> },
-        { path: 'services/:id/edit', element: <EditServicePage /> },
-        { path: 'payroll', element: <PayrollPage /> },
-        { path: 'payroll/:month', element: <PayrollMonthDetailPage /> },
-        { path: 'payroll/:month/workers/:workerId', element: <WorkerMonthlyClosurePage /> },
-        { path: 'settings', element: <SettingsPage /> },
+        { path: 'dashboard', element: renderLazyPage(DashboardPage) },
+        { path: 'quick-entry', element: renderLazyPage(QuickWorkEntryPage) },
+        { path: 'hours', element: renderLazyPage(HoursPage) },
+        { path: 'hours/review', element: renderLazyPage(HoursReviewPage) },
+        { path: 'hours/workers/:workerId', element: renderLazyPage(WorkerHoursPage) },
+        { path: 'hours/properties/:propertyId', element: renderLazyPage(PropertyHoursPage) },
+        { path: 'workers', element: renderLazyPage(WorkersPage) },
+        { path: 'workers/new', element: renderLazyPage(NewWorkerPage) },
+        { path: 'workers/:id', element: renderLazyPage(WorkerDetailPage) },
+        { path: 'workers/:id/edit', element: renderLazyPage(EditWorkerPage) },
+        { path: 'properties', element: renderLazyPage(PropertiesPage) },
+        { path: 'properties/new', element: renderLazyPage(NewPropertyPage) },
+        { path: 'properties/:id', element: renderLazyPage(PropertyDetailPage) },
+        { path: 'properties/:id/edit', element: renderLazyPage(EditPropertyPage) },
+        { path: 'clients', element: renderLazyPage(ClientsPage) },
+        { path: 'clients/new', element: renderLazyPage(NewClientPage) },
+        { path: 'clients/:id', element: renderLazyPage(ClientDetailPage) },
+        { path: 'clients/:id/edit', element: renderLazyPage(EditClientPage) },
+        { path: 'services', element: renderLazyPage(ServicesPage) },
+        { path: 'services/new', element: renderLazyPage(NewServicePage) },
+        { path: 'services/:id', element: renderLazyPage(ServiceDetailPage) },
+        { path: 'services/:id/edit', element: renderLazyPage(EditServicePage) },
+        { path: 'payroll', element: renderLazyPage(PayrollPage) },
+        { path: 'payroll/:month', element: renderLazyPage(PayrollMonthDetailPage) },
+        { path: 'payroll/:month/workers/:workerId', element: renderLazyPage(WorkerMonthlyClosurePage) },
+        { path: 'settings', element: renderLazyPage(SettingsPage) },
         { path: '*', element: <Navigate to="/dashboard" replace /> },
       ],
     },

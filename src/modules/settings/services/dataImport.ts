@@ -22,7 +22,7 @@ export function importTeamGestBackupPayload(payload: Awaited<ReturnType<typeof p
   markLastImportAt(importedAt)
   recordAuditEvent({
     action: 'backup.imported',
-    message: 'Se importó una copia local compatible de TeamGest.',
+    message: 'Se importo una copia local compatible de TeamGest.',
     metadata: {
       importedAt,
       previousSnapshotAt: preImportBackup.exportedAt,

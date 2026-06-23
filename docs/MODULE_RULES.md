@@ -110,3 +110,10 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Payroll owns worker monthly closure cards, readiness rules, status actions and closure detail views.
 - Hours remains the source for derived `HourEntry` review context; payroll must not create a second persisted hours entity.
 - Worker payment status changes must stay inside payroll repositories or payroll services, never inside generic UI primitives.
+
+## Block 16 ownership
+
+- Hardening work may improve loading strategy, copy clarity, responsive stacking and QA documentation without expanding product scope.
+- Route-level lazy loading belongs in the app routing layer only; it must not leak business logic into shared UI primitives.
+- QA and release-readiness documents belong in `docs/hardening/` and should stay separated by topic.
+- Final hardening must preserve local-first runtime boundaries and must not activate backend, Supabase, auth, payments, exports, calendar or pipeline work.

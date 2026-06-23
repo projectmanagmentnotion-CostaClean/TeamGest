@@ -21,12 +21,12 @@ export function BackupExportPanel({ lastBackupAt, onDataChanged }: BackupExportP
 
   return (
     <SettingsSection
-      title="Backup y exportación"
+      title="Backup y exportacion"
       description="Descarga una copia JSON con el estado local conocido por TeamGest."
       action={<Badge tone="info">JSON local</Badge>}
     >
       <p className="muted-caption">
-        Último backup: {lastBackupAt ? formatDate(lastBackupAt) : 'Todavía no registrado'}
+        Ultimo backup: {lastBackupAt ? formatDate(lastBackupAt) : 'Todavia no registrado'}
       </p>
       <div className="quick-actions">
         <Button onClick={handleExport}>Exportar copia JSON</Button>
