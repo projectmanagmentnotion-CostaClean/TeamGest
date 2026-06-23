@@ -79,3 +79,7 @@ Settings work must start with a code audit of the real storage and safety layer 
 ## Block 14 reporting
 
 Block 14 should be reported as technical audit plus safe cleanup and settings polish. The report must separate proven removals from deferred cleanup, and it must state clearly that no browser visual QA, backend activation or broad refactor was performed.
+
+## Block 15 reporting
+
+Block 15 should be reported as worker monthly closures plus final local app polish. The report must separate closure-model work from UX polish work, and it must explicitly state that exports, PDF, CSV, calendar and backend activation were not implemented.

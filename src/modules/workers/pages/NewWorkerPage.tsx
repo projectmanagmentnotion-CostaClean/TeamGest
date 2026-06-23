@@ -7,7 +7,7 @@ export function NewWorkerPage() {
       <PageHeader
         eyebrow="Trabajadores"
         title="Nuevo trabajador"
-        description="Alta local-first del equipo operativo."
+        description="Alta local-first del equipo operativo con foco en horas limpias y cierres mensuales fiables."
       />
       <WorkerFormFlow />
     </div>

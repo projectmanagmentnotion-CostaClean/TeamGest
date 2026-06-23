@@ -1,117 +1,143 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MetricGrid } from '../../../components/ui/MetricGrid'
 import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatusPill } from '../../../components/ui/StatusPill'
-import { StatCard } from '../../../components/ui/StatCard'
 import { WarningBanner } from '../../../components/ui/WarningBanner'
 import { getRepositories } from '../../../infrastructure/repositoryFactory'
 import { buildHourEntries } from '../../hours/services/hourEntryBuilder'
 import { getAppSettings } from '../../settings/services/appSettingsService'
+import { MonthlyClosureSummaryCards } from '../components/MonthlyClosureSummaryCards'
 import { PayrollMonthSelector } from '../components/PayrollMonthSelector'
-import { PayrollSummaryCard } from '../components/PayrollSummaryCard'
-import { PayrollWorkerRow } from '../components/PayrollWorkerRow'
+import { WorkerClosureCardGrid } from '../components/WorkerClosureCardGrid'
+import { buildMonthlyClosureCards, buildMonthlyClosureSummary } from '../services/monthlyClosureBuilder'
 import {
-  calculatePayrollMonthSummary,
-  calculatePayrollTotals,
-  getCurrentPayrollMonth,
-  getPayrollIncludedServices,
-  getPayrollWarningsCount,
-} from '../services/payrollCalculations'
-import { getPayrollWarnings } from '../services/payrollWarnings'
+  markWorkerClosurePaid,
+  markWorkerClosureReviewed,
+  revertWorkerClosurePaid,
+} from '../services/monthlyClosureActions'
+import { getCurrentPayrollMonth, getPayrollMonthLabel } from '../services/payrollCalculations'
+import { formatPayrollStatusLabel } from '../../../utils/labels'
 
 export function PayrollPage() {
-  const appSettings = getAppSettings()
+  const [, setRefreshKey] = useState(0)
+  const [message, setMessage] = useState<string | null>(null)
+  const settings = getAppSettings()
   const repositories = getRepositories()
   const month = getCurrentPayrollMonth()
   const workers = repositories.workers.listWorkers()
   const services = repositories.services.listServices()
+  const clients = repositories.clients.listClients()
+  const properties = repositories.properties.listProperties()
   const monthState = repositories.payroll.getPayrollMonthState(month)
-  const payrollRows = calculatePayrollMonthSummary(
-    workers,
-    services,
+  const entries = buildHourEntries(services, workers, clients, properties, { [month]: monthState })
+  const cards = buildMonthlyClosureCards({
     month,
-    monthState.workerStatuses,
-  )
-  const totals = calculatePayrollTotals(payrollRows)
-  const warnings = getPayrollWarnings(workers, services, month)
-  const includedServices = getPayrollIncludedServices(services, month)
-  const reviewEntries = buildHourEntries(
-    services,
     workers,
-    repositories.clients.listClients(),
-    repositories.properties.listProperties(),
-    { [month]: monthState },
-  ).filter(
-    (entry) =>
-      entry.payrollMonth === month &&
-      (entry.hourStatus === 'pending_review' || entry.hourStatus === 'issue' || entry.hourStatus === 'excluded'),
-  )
+    entries,
+    monthState,
+    settings,
+  })
+  const summary = buildMonthlyClosureSummary(month, cards)
+  const attentionCards = cards.filter((card) => card.pendingHours > 0 || card.issueCount > 0).slice(0, 4)
+  const readyCards = cards.filter((card) => card.readyToPay && !card.paid && !card.locked).slice(0, 4)
+
+  const refreshPage = (nextMessage: string) => {
+    setMessage(nextMessage)
+    setRefreshKey((value) => value + 1)
+  }
+
+  const handleWorkerReviewed = (workerId: string) => {
+    const worker = workers.find((item) => item.id === workerId)
+    if (!worker) {
+      return
+    }
+
+    markWorkerClosureReviewed(repositories.payroll, month, workerId, worker.name)
+    refreshPage(`${worker.name} quedo marcado como revisado.`)
+  }
+
+  const handleWorkerPaid = (workerId: string) => {
+    const worker = workers.find((item) => item.id === workerId)
+    if (!worker) {
+      return
+    }
+
+    markWorkerClosurePaid(repositories.payroll, month, workerId, worker.name)
+    refreshPage(`${worker.name} quedo marcado como pagado internamente.`)
+  }
+
+  const handleWorkerPaidRevert = (workerId: string) => {
+    const worker = workers.find((item) => item.id === workerId)
+    if (!worker) {
+      return
+    }
+
+    revertWorkerClosurePaid(repositories.payroll, month, workerId, worker.name)
+    refreshPage(`Se revirtio el estado pagado de ${worker.name}.`)
+  }
 
   return (
     <div className="page-stack">
       <PageHeader
         eyebrow="Cierres"
-        title="Seguimiento mensual"
-        description="Control mensual operativo de payroll basado en horas confirmadas y estados internos de revision."
-        meta={<StatusPill tone="info">Seguimiento interno</StatusPill>}
+        title="Seguimiento mensual por trabajador"
+        description={`Control del cierre de ${getPayrollMonthLabel(month)} con foco en horas confirmadas, incidencias y pago interno.`}
+        meta={<StatusPill tone={monthState.status === 'locked' ? 'blocked' : 'info'}>{formatPayrollStatusLabel(monthState.status)}</StatusPill>}
         primaryAction={
-          <Link className="button button--primary" to="/hours/review">
+          <Link className="button button--primary" to={`/payroll/${month}`}>
+            Abrir cierre del mes
+          </Link>
+        }
+        secondaryAction={
+          <Link className="button button--secondary button--sm" to="/hours/review">
             Revisar horas
           </Link>
         }
       />
 
-      <PayrollMonthSelector selectedMonth={month} />
-
-      <MetricGrid columns={5}>
-        <StatCard label="Total a pagar" value={new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totals.totalPay)} hint="Estimacion operativa del mes." tone="info" />
-        <StatCard label="Total horas" value={`${totals.totalHours.toFixed(1)} h`} hint="Horas confirmadas incluidas en payroll." tone="info" />
-        <StatCard label="Trabajadores con pago" value={totals.workersCount.toString()} hint="Trabajadores con actividad pagable." tone="success" />
-        <StatCard label="Servicios incluidos" value={includedServices.length.toString()} hint="Servicios completados, revisados o cerrados." tone="info" />
-        <StatCard label="Incidencias abiertas" value={getPayrollWarningsCount(warnings).toString()} hint="Alertas que requieren revision antes del cierre." tone="warning" />
-      </MetricGrid>
-
-      <WarningBanner title="Calculo operativo" tone="info">
-        Los importes son estimaciones operativas basadas en horas confirmadas. No ejecutan pagos reales.
-      </WarningBanner>
-
-      <WarningBanner title="Fuente del cierre" tone="info">
-        El cierre se alimenta de horas confirmadas en servicios completados, revisados o cerrados.
-      </WarningBanner>
-
-      {appSettings.hourReviewSettings.requireReviewBeforePayrollClose && reviewEntries.length > 0 ? (
-        <WarningBanner title="Revision pendiente antes del cierre" tone="warning">
-          Hay {reviewEntries.length} entradas con incidencia, exclusion o confirmacion pendiente en este mes. Revisa /hours/review antes de cerrar.
+      {message ? (
+        <WarningBanner title="Estado del cierre" tone="info">
+          {message}
         </WarningBanner>
       ) : null}
 
-      <PayrollSummaryCard
-        totalPay={totals.totalPay}
-        totalHours={totals.totalHours}
-        totalServices={totals.totalServices}
-        totalExtras={totals.totalExtras}
-        totalDeductions={totals.totalDeductions}
-        workersCount={totals.workersCount}
-        warningsCount={getPayrollWarningsCount(warnings)}
+      <PayrollMonthSelector selectedMonth={month} />
+
+      <MonthlyClosureSummaryCards
+        summary={summary}
+        statusLabel={formatPayrollStatusLabel(monthState.status)}
       />
 
-      <section className="stack-list">
-        {payrollRows.map((row) => (
-          <PayrollWorkerRow
-            key={row.workerId}
-            row={row}
-            worker={workers.find((worker) => worker.id === row.workerId)}
-            warningCount={getPayrollWarnings(
-              workers.filter((worker) => worker.id === row.workerId),
-              services,
-              month,
-            ).length}
-          />
-        ))}
-      </section>
+      <WarningBanner title="Pago interno" tone="info">
+        Esta vista organiza el pago interno por trabajador dentro de la app. No genera exportes ni ejecuta pagos reales.
+      </WarningBanner>
+
+      <WorkerClosureCardGrid
+        title="Requieren atencion inmediata"
+        description="Trabajadores con pendientes o incidencias visibles en el cierre actual."
+        emptyTitle="Sin bloqueos visibles"
+        emptyDescription="No hay trabajadores con pendientes o incidencias en el mes actual."
+        cards={attentionCards}
+        month={month}
+        onMarkReviewed={handleWorkerReviewed}
+        onMarkPaid={handleWorkerPaid}
+        onRevertPaid={handleWorkerPaidRevert}
+      />
+
+      <WorkerClosureCardGrid
+        title="Listos para pago interno"
+        description="Vista rapida de quienes ya pueden pasar al siguiente paso del cierre."
+        emptyTitle="Sin trabajadores listos"
+        emptyDescription="Todavia no hay trabajadores completamente listos para pago en este mes."
+        cards={readyCards}
+        month={month}
+        onMarkReviewed={handleWorkerReviewed}
+        onMarkPaid={handleWorkerPaid}
+        onRevertPaid={handleWorkerPaidRevert}
+      />
 
       <Link className="button button--secondary" to={`/payroll/${month}`}>
-        Ver detalle del mes
+        Ver cierre completo del mes
       </Link>
     </div>
   )

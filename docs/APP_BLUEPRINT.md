@@ -186,3 +186,16 @@ Block 14 combines Sprint 27 and Sprint 28 on top of the same local-first runtime
 - Quick Entry, Hours, CRUD management, payroll, backup, import, reset and audit remain active.
 - No backend, Supabase, auth, payments, pipeline or calendar work was activated.
 - Runtime boundaries remain local-first and browser-scoped.
+
+## Block 15 status
+
+Block 15 combines Sprint 29 and Sprint 30 on top of the same local-first runtime.
+
+- Sprint 29 rebuilds monthly closures around worker payment cards, readiness rules and an optional worker-by-month detail route.
+- Sprint 30 performs final operational polish so the main app surfaces feel controlled, sectioned and aligned with the real hours-and-pay workflow.
+
+## Block 15 runtime note
+
+- Monthly closure remains an in-app operational workflow, not an export system.
+- Paid status is still internal tracking only.
+- Export, PDF, CSV, calendar and pipeline work remain intentionally out of scope.

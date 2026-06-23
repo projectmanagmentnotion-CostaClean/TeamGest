@@ -4,20 +4,24 @@ import type {
   PayrollMonthState,
 } from '../../domain/payroll/payroll.types'
 import type { PayrollStatus } from '../../domain/shared/status.types'
-import { recordAuditEvent } from '../audit/auditRepository'
-import { readJson, writeJson } from '../storage/localStorageAdapter'
+import { calculatePayrollMonthSummary } from '../../modules/payroll/services/payrollCalculations'
 import {
   createInitialPayrollMonthState,
   lockMonthState,
   updateMonthStatus,
   updateWorkerStatus,
 } from '../../modules/payroll/services/payrollStorage'
-import { calculatePayrollMonthSummary } from '../../modules/payroll/services/payrollCalculations'
+import { recordAuditEvent } from '../audit/auditRepository'
+import { readJson, writeJson } from '../storage/localStorageAdapter'
 import { PAYROLL_AUDIT_KEY, PAYROLL_MONTHS_KEY } from '../storage/storageKeys'
 
 type PayrollDependencies = {
-  listWorkers: () => ReturnType<ReturnType<typeof import('./workerRepository').createWorkerRepository>['listWorkers']>
-  listServices: () => ReturnType<ReturnType<typeof import('./serviceRepository').createServiceRepository>['listServices']>
+  listWorkers: () => ReturnType<
+    ReturnType<typeof import('./workerRepository').createWorkerRepository>['listWorkers']
+  >
+  listServices: () => ReturnType<
+    ReturnType<typeof import('./serviceRepository').createServiceRepository>['listServices']
+  >
 }
 
 function readMonthStates() {
@@ -36,6 +40,22 @@ function writeAuditTrail(trail: Record<string, PayrollAuditEntry[]>) {
   writeJson(PAYROLL_AUDIT_KEY, trail)
 }
 
+function getWorkerAuditAction(previousStatus: PayrollStatus | undefined, nextStatus: PayrollStatus) {
+  if (nextStatus === 'reviewed' && previousStatus === 'paid') {
+    return 'payroll.worker_payment_reverted'
+  }
+
+  if (nextStatus === 'reviewed') {
+    return 'payroll.worker_reviewed'
+  }
+
+  if (nextStatus === 'paid') {
+    return 'payroll.worker_paid'
+  }
+
+  return 'payroll.status_updated'
+}
+
 export function createPayrollRepository(deps: PayrollDependencies) {
   return {
     getPayrollSummaryByMonth: (month: string) => {
@@ -52,14 +72,15 @@ export function createPayrollRepository(deps: PayrollDependencies) {
     },
     updatePayrollWorkerStatus: (month: string, workerId: string, status: PayrollStatus) => {
       const states = readMonthStates()
+      const previousStatus = states[month]?.workerStatuses[workerId]
       const nextState = updateWorkerStatus(states[month], month, workerId, status)
       states[month] = nextState
       writeMonthStates(states)
       recordAuditEvent({
-        action: 'payroll.status_updated',
+        action: getWorkerAuditAction(previousStatus, status),
         entityType: 'payroll-worker',
         entityId: `${month}:${workerId}`,
-        message: `El trabajador ${workerId} quedó marcado como ${status} en ${month}.`,
+        message: `El trabajador ${workerId} quedo marcado como ${status} en ${month}.`,
         metadata: {
           month,
           workerId,
@@ -77,7 +98,7 @@ export function createPayrollRepository(deps: PayrollDependencies) {
         action: 'payroll.status_updated',
         entityType: 'payroll-month',
         entityId: month,
-        message: `El cierre de ${month} se actualizó a ${status}.`,
+        message: `El cierre de ${month} se actualizo a ${status}.`,
         metadata: {
           month,
           status,

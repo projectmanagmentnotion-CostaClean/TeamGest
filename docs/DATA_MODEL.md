@@ -56,6 +56,12 @@
 - Each worker receives a monthly rollup with total services, hours, extras, deductions and estimated pay.
 - Status in the current mock repository is derived from whether the worker has payable volume in the month.
 
+## Block 15 closure note
+
+- Monthly closure cards now derive their worker-facing view from `HourEntry` plus `PayrollMonthState`.
+- Worker closure readiness remains derived, not separately persisted.
+- Worker reviewed and paid tracking still persists through payroll month state only.
+
 ## Warning logic
 
 - Service warnings validate related entities, assignments and missing rates.

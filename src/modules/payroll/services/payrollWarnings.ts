@@ -21,8 +21,8 @@ export function getPayrollServiceWarnings(service: ServiceJob, workers: Worker[]
     if (!worker) {
       warnings.push({
         level: 'danger',
-        title: 'Asignación sin trabajador',
-        message: `Existe una asignación sin trabajador válido en ${service.id}.`,
+        title: 'Asignacion sin trabajador',
+        message: `Existe una asignacion sin trabajador valido en ${service.id}.`,
         entityLabel: service.id,
       })
     }
@@ -30,8 +30,8 @@ export function getPayrollServiceWarnings(service: ServiceJob, workers: Worker[]
     if ((assignment.hourlyRate ?? 0) <= 0) {
       warnings.push({
         level: 'warning',
-        title: 'Asignación sin tarifa horaria',
-        message: `${worker?.name ?? 'Una asignación'} no tiene tarifa horaria válida.`,
+        title: 'Asignacion sin tarifa horaria',
+        message: `${worker?.name ?? 'Una asignacion'} no tiene tarifa horaria valida.`,
         entityLabel: worker?.name ?? service.id,
       })
     }
@@ -39,8 +39,8 @@ export function getPayrollServiceWarnings(service: ServiceJob, workers: Worker[]
     if (assignment.hoursWorked <= 0) {
       warnings.push({
         level: 'warning',
-        title: 'Asignación con horas no válidas',
-        message: `${worker?.name ?? 'Una asignación'} tiene horas iguales o menores que cero.`,
+        title: 'Asignacion con horas no validas',
+        message: `${worker?.name ?? 'Una asignacion'} tiene horas iguales o menores que cero.`,
         entityLabel: worker?.name ?? service.id,
       })
     }
@@ -78,7 +78,7 @@ export function getPayrollWorkerWarnings(
     warnings.push({
       level: 'danger',
       title: 'Trabajador activo sin tarifa en payroll',
-      message: `${worker.name} tiene asignaciones del mes sin tarifa horaria válida.`,
+      message: `${worker.name} tiene asignaciones del mes sin tarifa horaria valida.`,
       entityLabel: worker.name,
     })
   }
@@ -95,7 +95,7 @@ export function getPayrollWorkerWarnings(
   if (worker.status !== 'active' && assignments.length > 0) {
     warnings.push({
       level: 'warning',
-      title: 'Trabajador inactivo con impacto en nómina',
+      title: 'Trabajador inactivo con impacto en nomina',
       message: `${worker.name} figura en payroll pese a no estar activo.`,
       entityLabel: worker.name,
     })

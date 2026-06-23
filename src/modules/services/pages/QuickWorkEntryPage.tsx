@@ -95,14 +95,14 @@ export function QuickWorkEntryPage() {
           ? 'Define fecha, horario y horas trabajadas.'
           : currentStep === 3
             ? 'Revisa tarifa, extras y deducciones antes del cierre.'
-            : 'Añade una nota interna y confirma el resumen final.'
+            : 'Anade una nota interna y confirma el resumen final.'
 
   return (
     <div className="page-stack">
       <PageHeader
         eyebrow="Registro rapido"
         title="Registrar horas"
-        description="Entrada rapida para registrar horas trabajadas en una secuencia corta y revisable."
+        description="Entrada principal para registrar trabajo ya realizado en una secuencia corta y clara."
       />
 
       {errors.length > 0 && currentStep >= 2 ? (
@@ -113,13 +113,13 @@ export function QuickWorkEntryPage() {
 
       {worker && worker.status !== 'active' ? (
         <WarningBanner title="Trabajador no activo" tone="warning">
-          Este trabajador no esta activo. Normalmente no deberias registrar nuevas horas para su nomina interna.
+          Este trabajador no esta activo. Revisa antes de registrar nuevas horas para su pago interno.
         </WarningBanner>
       ) : null}
 
       {property && property.status !== 'active' ? (
         <WarningBanner title="Inmueble no activo" tone="warning">
-          Este inmueble no esta activo. Revisa antes de registrar trabajo realizado.
+          Este inmueble no esta activo. Confirma el contexto antes de registrar trabajo realizado.
         </WarningBanner>
       ) : null}
 
@@ -198,9 +198,9 @@ export function QuickWorkEntryPage() {
                 onChange={(patch) => setDraft((current) => ({ ...current, ...patch }))}
               />
               {appSettings.quickEntrySettings.showPayrollImpactMessage ? (
-              <WarningBanner title="Impacto en payroll" tone="info">
-                Se sumara al cierre mensual de {payrollMonthLabel}. Total a pagar previsto: {totalPay.toFixed(2)} EUR. Confirmado para nomina interna.
-              </WarningBanner>
+                <WarningBanner title="Impacto en cierre mensual" tone="info">
+                  Se sumara al cierre mensual de {payrollMonthLabel}. Total a pagar previsto: {totalPay.toFixed(2)} EUR.
+                </WarningBanner>
               ) : null}
             </>
           ) : null}
@@ -234,7 +234,7 @@ export function QuickWorkEntryPage() {
                     }}
                     disabled={!worker || !property || errors.length > 0}
                   >
-                    Guardar
+                    Guardar horas
                   </Button>
                 )
               }

@@ -9,6 +9,7 @@ import { StepFlowHeader } from '../../../../components/forms/StepFlowHeader'
 import { StepFlowScreen } from '../../../../components/forms/StepFlowScreen'
 import { Button } from '../../../../components/ui/Button'
 import { Card } from '../../../../components/ui/Card'
+import { WarningBanner } from '../../../../components/ui/WarningBanner'
 import type { ServiceInput } from '../../../../domain/services/service.inputs'
 import type { ServiceJob } from '../../../../domain/services/service.types'
 import { getRepositories } from '../../../../infrastructure/repositoryFactory'
@@ -135,12 +136,14 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
 
   const canContinue =
     (currentStep === 0 && Boolean(draft.clientId && draft.propertyId && draft.date)) ||
-    (currentStep === 1 && draft.assignments.length > 0 && draft.assignments.every((assignment) => assignment.hoursWorked > 0))
+    (currentStep === 1 &&
+      draft.assignments.length > 0 &&
+      draft.assignments.every((assignment) => assignment.hoursWorked > 0))
 
   return (
     <StepFlowScreen
       title={service ? 'Editar servicio' : 'Nuevo servicio'}
-      description="Mantenimiento local del servicio sin listas infinitas ni pasos apilados."
+      description="Flujo controlado para preparar un servicio completo sin listas infinitas."
       sidebar={
         <div className="page-stack">
           <ServiceFormSummary
@@ -160,10 +163,10 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
           title={steps[currentStep]}
           description={
             currentStep === 0
-              ? 'Selecciona cliente, inmueble, fecha y estado.'
+              ? 'Selecciona cliente, inmueble, fecha y estado operativo.'
               : currentStep === 1
-                ? 'Añade trabajadores seleccionados y define sus horas y tarifa.'
-                : 'Revisa las notas internas y guarda el servicio.'
+                ? 'Asigna equipo, horas y tarifa evitando paredes de selectores.'
+                : 'Revisa notas internas y valida el impacto en cierre antes de guardar.'
           }
         />
 
@@ -196,7 +199,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
               options={availableProperties.map((property) => ({
                 id: property.id,
                 label: property.name,
-                subtitle: `${property.city} · ${property.address}`,
+                subtitle: `${property.city} - ${property.address}`,
                 status: property.status,
               }))}
               disabled={!draft.clientId}
@@ -205,6 +208,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
             <FormField
               control="select"
               label="Tipo"
+              hint="Ayuda a clasificar el servicio para seguimiento interno."
               value={draft.serviceType}
               options={serviceTypeOptions}
               onChange={(value) => setDraft((current) => ({ ...current, serviceType: value as ServiceJob['serviceType'] }))}
@@ -212,18 +216,53 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
             <FormField
               control="select"
               label="Estado"
+              hint="Usa completado o revisado solo cuando el trabajo ya exista realmente."
               value={draft.status}
               options={statusOptions}
               onChange={(value) => setDraft((current) => ({ ...current, status: value as ServiceJob['status'] }))}
             />
-            <FormField type="date" label="Fecha" value={draft.date} onChange={(value) => setDraft((current) => ({ ...current, date: value }))} />
-            <FormField type="time" label="Inicio" value={draft.startTime ?? ''} onChange={(value) => setDraft((current) => ({ ...current, startTime: value }))} />
-            <FormField type="time" label="Fin" value={draft.endTime ?? ''} onChange={(value) => setDraft((current) => ({ ...current, endTime: value }))} />
+            <FormField
+              type="date"
+              label="Fecha"
+              hint="La fecha define el mes del cierre al que impacta."
+              value={draft.date}
+              onChange={(value) => setDraft((current) => ({ ...current, date: value }))}
+            />
+            <FormField
+              type="time"
+              label="Inicio"
+              hint="Opcional si quieres dejar trazado el horario."
+              value={draft.startTime ?? ''}
+              onChange={(value) => setDraft((current) => ({ ...current, startTime: value }))}
+            />
+            <FormField
+              type="time"
+              label="Fin"
+              hint="Opcional. Puede ayudar a revisar horas mas tarde."
+              value={draft.endTime ?? ''}
+              onChange={(value) => setDraft((current) => ({ ...current, endTime: value }))}
+            />
           </div>
         ) : null}
 
         {currentStep === 1 ? (
           <div className="page-stack">
+            <Card
+              title="Equipo asignado"
+              description="Selecciona trabajadores y ajusta sus horas, tarifa, extras o deducciones."
+            >
+              <div className="detail-grid">
+                <div>
+                  <span className="muted-caption">Trabajadores</span>
+                  <strong>{draft.assignments.length}</strong>
+                </div>
+                <div>
+                  <span className="muted-caption">Horas cargadas</span>
+                  <strong>{draft.assignments.reduce((sum, assignment) => sum + assignment.hoursWorked, 0).toFixed(1)} h</strong>
+                </div>
+              </div>
+            </Card>
+
             <SearchableEntitySelect
               label="Buscar trabajador"
               entityLabel="trabajador"
@@ -239,12 +278,12 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
               onChange={(value) => setWorkerToAdd(value)}
             />
             <Button variant="secondary" onClick={() => addWorker(workerToAdd)} disabled={!workerToAdd}>
-              Añadir trabajador
+              Anadir trabajador
             </Button>
 
             {draft.assignments.length === 0 ? (
-              <Card title="Trabajadores seleccionados" description="Todavia no hay trabajadores añadidos.">
-                <p className="muted-caption">Añade al menos un trabajador antes de continuar.</p>
+              <Card title="Trabajadores seleccionados" description="Todavia no hay trabajadores anadidos.">
+                <p className="muted-caption">Anade al menos un trabajador antes de continuar.</p>
               </Card>
             ) : (
               <div className="stack-list">
@@ -267,6 +306,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
                           min={0.5}
                           step={0.5}
                           label="Horas"
+                          hint="Se usaran para el calculo del pago interno."
                           value={assignment.hoursWorked}
                           onChange={(value) => updateAssignment(assignment.workerId, { hoursWorked: Number(value) || 0 })}
                         />
@@ -275,6 +315,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
                           min={0}
                           step={0.5}
                           label="Tarifa"
+                          hint="Si queda vacia, el cierre puede bloquear el pago segun ajustes."
                           value={assignment.hourlyRate ?? ''}
                           onChange={(value) => updateAssignment(assignment.workerId, { hourlyRate: value ? Number(value) : undefined })}
                         />
@@ -283,6 +324,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
                           min={0}
                           step={0.5}
                           label="Extra"
+                          hint="Importe adicional puntual."
                           value={assignment.extraAmount ?? ''}
                           onChange={(value) => updateAssignment(assignment.workerId, { extraAmount: value ? Number(value) : undefined })}
                         />
@@ -291,6 +333,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
                           min={0}
                           step={0.5}
                           label="Deduccion"
+                          hint="Descuento puntual sobre el pago estimado."
                           value={assignment.deductions ?? ''}
                           onChange={(value) => updateAssignment(assignment.workerId, { deductions: value ? Number(value) : undefined })}
                         />
@@ -304,12 +347,35 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
         ) : null}
 
         {currentStep === 2 ? (
-          <FormField
-            control="textarea"
-            label="Notas internas"
-            value={draft.notes ?? ''}
-            onChange={(value) => setDraft((current) => ({ ...current, notes: value }))}
-          />
+          <div className="page-stack">
+            <FormField
+              control="textarea"
+              label="Notas internas"
+              hint="Contexto operativo, observaciones o aclaraciones para revision posterior."
+              value={draft.notes ?? ''}
+              onChange={(value) => setDraft((current) => ({ ...current, notes: value }))}
+            />
+            <Card
+              title="Revision antes de guardar"
+              description="Comprueba que el servicio deja claro quien trabajo, cuando y con que impacto en cierre."
+            >
+              <div className="detail-grid">
+                <div>
+                  <span className="muted-caption">Equipo</span>
+                  <strong>{draft.assignments.length} asignaciones</strong>
+                </div>
+                <div>
+                  <span className="muted-caption">Horas totales</span>
+                  <strong>{draft.assignments.reduce((sum, assignment) => sum + assignment.hoursWorked, 0).toFixed(1)} h</strong>
+                </div>
+              </div>
+            </Card>
+            {['completed', 'reviewed', 'closed'].includes(draft.status) ? (
+              <WarningBanner title="Impacto en cierre mensual" tone="info">
+                Este servicio puede impactar directamente en control de horas y pago interno si sus asignaciones quedan confirmadas y validas.
+              </WarningBanner>
+            ) : null}
+          </div>
         ) : null}
 
         <StepFlowFooter>
@@ -332,7 +398,7 @@ export function ServiceFormFlow({ service }: ServiceFormFlowProps) {
                 </Button>
               ) : (
                 <Button onClick={save} disabled={errors.length > 0}>
-                  {service ? 'Guardar cambios' : 'Guardar'}
+                  {service ? 'Guardar cambios' : 'Guardar servicio'}
                 </Button>
               )
             }

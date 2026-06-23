@@ -22,7 +22,7 @@ export function QuickEntrySummaryBar({
   return (
     <Card
       title="Resumen rapido"
-      description={`Se sumara al cierre mensual de ${payrollMonthLabel}. Confirmado para nomina interna.`}
+      description={`Se sumara al cierre mensual de ${payrollMonthLabel}. Impacta solo en pago interno.`}
     >
       <div className="detail-grid detail-grid--four">
         <div>

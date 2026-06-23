@@ -104,3 +104,9 @@ Pages must not import mock data directly. Read access must go through `getReposi
 - Safe cleanup may remove only files proven unused by import search and code review.
 - Legacy service-step files must not return unless they are wired to a live route again.
 - Settings polish may improve copy, helper text and local runtime clarity, but must not add fake backend toggles or speculative controls.
+
+## Block 15 ownership
+
+- Payroll owns worker monthly closure cards, readiness rules, status actions and closure detail views.
+- Hours remains the source for derived `HourEntry` review context; payroll must not create a second persisted hours entity.
+- Worker payment status changes must stay inside payroll repositories or payroll services, never inside generic UI primitives.

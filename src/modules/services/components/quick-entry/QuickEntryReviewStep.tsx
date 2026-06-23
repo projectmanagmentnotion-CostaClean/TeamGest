@@ -11,6 +11,7 @@ export function QuickEntryReviewStep({ notes, onChange }: QuickEntryReviewStepPr
     <FormField
       control="textarea"
       label="Notas"
+      hint="Opcional. Util para dejar contexto interno antes del cierre mensual."
       value={notes}
       onChange={(value) => onChange({ notes: value })}
     />

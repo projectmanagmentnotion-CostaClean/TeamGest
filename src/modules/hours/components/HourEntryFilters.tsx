@@ -24,7 +24,7 @@ export function HourEntryFilters({
   workers,
 }: HourEntryFiltersProps) {
   return (
-    <Card title="Filtros" description="Ajusta mes, responsables y estado para centrar la revisión.">
+    <Card title="Filtros" description="Ajusta mes, responsables y estado para centrar la revision.">
       <div className="hours-filter-grid">
         <Input
           label="Mes"
@@ -66,7 +66,7 @@ export function HourEntryFilters({
           ]}
         />
         <Select
-          label="Confirmación"
+          label="Confirmacion"
           value={filters.confirmation}
           onChange={(event) =>
             onChange({ ...filters, confirmation: event.target.value as HourEntryFiltersValue['confirmation'] })

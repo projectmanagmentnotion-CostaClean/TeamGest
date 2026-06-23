@@ -187,3 +187,16 @@ Backup and import belong in the data-safety section, while destructive reset act
 ## Block 14 settings polish
 
 Settings health should explain validity, storage mode, backup coverage and inactive runtime boundaries without exposing developer jargon as if it were a real switch. User-facing copy should prefer `almacenamiento local del navegador` over raw storage API names.
+
+## Block 15 monthly closure UX
+
+Monthly closures should feel centered on people, not rows. The month view must answer who is ready to pay, who is blocked, who has pending review and what each worker should receive without relying on dense tables or export-first thinking.
+
+## Block 15 finished-state UX
+
+The final local-first experience should feel controlled and sectioned:
+
+- dashboard tells the operator what matters now
+- registrar horas is the fastest input path
+- review surfaces group risk instead of creating endless card walls
+- cierres explain internal payment readiness worker by worker

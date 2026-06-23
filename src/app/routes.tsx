@@ -11,6 +11,7 @@ import { PropertyHoursPage } from '../modules/hours/pages/PropertyHoursPage'
 import { WorkerHoursPage } from '../modules/hours/pages/WorkerHoursPage'
 import { PayrollMonthDetailPage } from '../modules/payroll/pages/PayrollMonthDetailPage'
 import { PayrollPage } from '../modules/payroll/pages/PayrollPage'
+import { WorkerMonthlyClosurePage } from '../modules/payroll/pages/WorkerMonthlyClosurePage'
 import { EditPropertyPage } from '../modules/properties/pages/EditPropertyPage'
 import { NewPropertyPage } from '../modules/properties/pages/NewPropertyPage'
 import { PropertiesPage } from '../modules/properties/pages/PropertiesPage'
@@ -57,6 +58,7 @@ export function AppRoutes() {
         { path: 'services/:id/edit', element: <EditServicePage /> },
         { path: 'payroll', element: <PayrollPage /> },
         { path: 'payroll/:month', element: <PayrollMonthDetailPage /> },
+        { path: 'payroll/:month/workers/:workerId', element: <WorkerMonthlyClosurePage /> },
         { path: 'settings', element: <SettingsPage /> },
         { path: '*', element: <Navigate to="/dashboard" replace /> },
       ],

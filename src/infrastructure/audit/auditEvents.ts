@@ -27,14 +27,17 @@ const auditActionLabels: Record<AppAuditAction, string> = {
   'hour.incident_marked': 'Incidencia en horas',
   'hour.excluded': 'Horas excluidas',
   'hour.restored': 'Horas restauradas',
-  'payroll.status_updated': 'Estado de nómina actualizado',
+  'payroll.status_updated': 'Estado de nomina actualizado',
+  'payroll.worker_reviewed': 'Trabajador revisado en cierre',
+  'payroll.worker_paid': 'Trabajador pagado internamente',
+  'payroll.worker_payment_reverted': 'Pago interno revertido',
   'payroll.locked': 'Cierre bloqueado',
   'backup.exported': 'Copia exportada',
   'backup.imported': 'Copia importada',
   'settings.updated': 'Ajustes actualizados',
   'settings.reset': 'Ajustes restaurados',
   'data.reset': 'Datos locales reiniciados',
-  'storage.migration_run': 'Migración ejecutada',
+  'storage.migration_run': 'Migracion ejecutada',
 }
 
 export function getAuditActionLabel(action: AppAuditAction) {

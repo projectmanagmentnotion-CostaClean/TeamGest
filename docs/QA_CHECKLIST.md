@@ -237,3 +237,11 @@ Browser visual QA was not performed in this block.
 - Settings health now exposes local storage mode, backup coverage and inactive runtime scope more clearly.
 - User-facing runtime copy no longer relies on raw `localStorage` wording in active settings and payroll surfaces.
 - Browser visual QA was still not performed in this block.
+
+## Block 15 QA additions
+
+- Monthly closure now derives worker payment cards from `HourEntry` plus payroll month state.
+- Worker monthly detail route now exposes confirmed, pending, issue, excluded and locked entry groups without adding a new persisted hours entity.
+- Hours review now accepts safe query params for month and worker scoping from closure actions.
+- Worker and service heavy flows keep StepFlow structure while adding clearer helper text and review framing.
+- No export, PDF, CSV, calendar or pipeline implementation was added.

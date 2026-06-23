@@ -1,15 +1,15 @@
 import type { BadgeTone } from '../components/ui/Badge'
-import type { PayrollStatus, ServiceStatus, WarningLevel } from '../domain/shared/status.types'
 import type { PropertyType } from '../domain/properties/property.types'
 import type { ServiceType } from '../domain/services/service.types'
-import type { WorkerRole } from '../domain/workers/worker.types'
 import type { EntityStatus } from '../domain/shared/entity.types'
+import type { PayrollStatus, ServiceStatus, WarningLevel } from '../domain/shared/status.types'
+import type { WorkerRole } from '../domain/workers/worker.types'
 
 const serviceTypeLabels: Record<ServiceType, string> = {
-  basic_cleaning: 'Limpieza básica',
+  basic_cleaning: 'Limpieza basica',
   deep_cleaning: 'Limpieza profunda',
   post_construction: 'Final de obra',
-  airbnb_turnover: 'Cambio turístico',
+  airbnb_turnover: 'Cambio turistico',
   gym_cleaning: 'Limpieza de gimnasio',
   office_cleaning: 'Limpieza de oficina',
   windows: 'Cristales',
@@ -24,7 +24,7 @@ const propertyTypeLabels: Record<PropertyType, string> = {
   gym: 'Gimnasio',
   commercial: 'Comercial',
   hotel: 'Hotel',
-  tourist_apartment: 'Apartamento turístico',
+  tourist_apartment: 'Apartamento turistico',
   other: 'Otro',
 }
 
@@ -52,18 +52,18 @@ const payrollStatusLabels: Record<PayrollStatus, string> = {
 }
 
 const warningLevelLabels: Record<WarningLevel, string> = {
-  danger: 'Crítico',
+  danger: 'Critico',
   blocked: 'Bloqueado',
-  warning: 'Atención',
+  warning: 'Atencion',
   info: 'Info',
   success: 'Correcto',
 }
 
 const workerRoleLabels: Record<WorkerRole, string> = {
-  supervisor: 'Supervisión',
+  supervisor: 'Supervision',
   cleaner: 'Limpieza',
   specialist: 'Especialista',
-  driver: 'Logística',
+  driver: 'Logistica',
 }
 
 export function formatServiceTypeLabel(value: ServiceType) {

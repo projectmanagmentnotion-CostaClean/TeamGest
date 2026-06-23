@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { MetricGrid } from '../../../components/ui/MetricGrid'
 import { PageHeader } from '../../../components/ui/PageHeader'
 import { StatCard } from '../../../components/ui/StatCard'
@@ -36,6 +36,7 @@ function buildMonthStateMap(
 }
 
 export function HoursReviewPage() {
+  const [searchParams] = useSearchParams()
   const [message, setMessage] = useState<string | null>(null)
   const [activeEntryId, setActiveEntryId] = useState<string | null>(null)
   const [activeMode, setActiveMode] = useState<ActiveReviewMode>(null)
@@ -47,11 +48,18 @@ export function HoursReviewPage() {
   const months = [...new Set(services.map((service) => service.date.slice(0, 7)))]
   const payrollStates = buildMonthStateMap(months, repositories.payroll.getPayrollMonthState)
   const entries = buildHourEntries(services, workers, clients, properties, payrollStates)
-  const pendingEntries = entries.filter((entry) => entry.hourStatus === 'pending_review')
-  const issueEntries = entries.filter((entry) => entry.hourStatus === 'issue')
-  const excludedEntries = entries.filter((entry) => entry.hourStatus === 'excluded')
-  const lockedEntries = entries.filter((entry) => entry.hourStatus === 'locked')
-  const activeEntry = activeEntryId ? entries.find((entry) => entry.id === activeEntryId) : null
+  const selectedMonth = searchParams.get('month')
+  const selectedWorkerId = searchParams.get('workerId')
+  const scopedEntries = entries.filter(
+    (entry) =>
+      (!selectedMonth || entry.payrollMonth === selectedMonth) &&
+      (!selectedWorkerId || entry.workerId === selectedWorkerId),
+  )
+  const pendingEntries = scopedEntries.filter((entry) => entry.hourStatus === 'pending_review')
+  const issueEntries = scopedEntries.filter((entry) => entry.hourStatus === 'issue')
+  const excludedEntries = scopedEntries.filter((entry) => entry.hourStatus === 'excluded')
+  const lockedEntries = scopedEntries.filter((entry) => entry.hourStatus === 'locked')
+  const activeEntry = activeEntryId ? scopedEntries.find((entry) => entry.id === activeEntryId) : null
   const totalPendingHours = pendingEntries.reduce((sum, entry) => sum + entry.hoursWorked, 0)
   const totalPendingPay = pendingEntries.reduce((sum, entry) => sum + entry.totalPay, 0)
 
@@ -134,6 +142,15 @@ export function HoursReviewPage() {
       {message ? (
         <WarningBanner title="Resultado de la revision" tone="info">
           {message}
+        </WarningBanner>
+      ) : null}
+
+      {selectedMonth || selectedWorkerId ? (
+        <WarningBanner title="Revision filtrada" tone="info">
+          {selectedMonth ? `Mes: ${selectedMonth}. ` : ''}
+          {selectedWorkerId
+            ? `Trabajador filtrado: ${workers.find((worker) => worker.id === selectedWorkerId)?.name ?? selectedWorkerId}.`
+            : 'Mostrando todos los trabajadores del filtro actual.'}
         </WarningBanner>
       ) : null}
 

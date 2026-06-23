@@ -81,7 +81,7 @@ export function HoursPage() {
       {visibleEntries.length === 0 ? (
         <HoursEmptyState
           title="Sin horas para este filtro"
-          description="Prueba otro mes, estado o responsable para revisar más actividad."
+          description="Prueba otro mes, estado o responsable para revisar mas actividad."
           action={
             <Link className="button button--primary" to="/quick-entry">
               Registrar horas
