@@ -8,12 +8,23 @@ type QuickEntryReviewStepProps = {
 
 export function QuickEntryReviewStep({ notes, onChange }: QuickEntryReviewStepProps) {
   return (
-    <FormField
-      control="textarea"
-      label="Notas"
-      hint="Opcional. Util para dejar contexto interno antes del cierre mensual."
-      value={notes}
-      onChange={(value) => onChange({ notes: value })}
-    />
+    <div className="page-stack">
+      <div className="row-card">
+        <div>
+          <h4>Ultima comprobacion</h4>
+          <p>
+            Revisa trabajador, inmueble, horario, tarifa y total antes de guardar. Si algo no cuadra,
+            vuelve atras y corrigelo ahora.
+          </p>
+        </div>
+      </div>
+      <FormField
+        control="textarea"
+        label="Nota interna"
+        hint="Opcional. Usala solo si ayuda a entender una correccion, una incidencia o un contexto especial."
+        value={notes}
+        onChange={(value) => onChange({ notes: value })}
+      />
+    </div>
   )
 }

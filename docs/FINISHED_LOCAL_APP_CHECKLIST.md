@@ -52,3 +52,10 @@ This version is considered operationally finished for its current purpose:
 - Runtime still has no backend, Supabase, auth, payments, export, calendar or pipeline activation.
 - Route-level lazy loading was added to reduce eager bundle cost.
 - Browser visual QA remains a known limitation.
+
+## Block 17 final polish status
+
+- Final visual and usability polish completed in one sprint.
+- Dashboard, Quick Entry, Hours, Review, Closures and Settings were audited and polished without broad refactors.
+- The local-first app is ready for internal use in its current scope.
+- Browser visual QA was still not performed; this remains a code-level and build-validated release state.

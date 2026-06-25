@@ -8,7 +8,7 @@ type HourWarningsPanelProps = {
 
 export function HourWarningsPanel({ warnings }: HourWarningsPanelProps) {
   return (
-    <Card title="Alertas del control de horas" description="Señales que afectan revisión y cierre mensual.">
+    <Card title="Alertas del control de horas" description="Senales que afectan revision, correccion o cierre mensual.">
       {warnings.length === 0 ? (
         <p className="muted-caption">Sin alertas activas en las horas visibles.</p>
       ) : (

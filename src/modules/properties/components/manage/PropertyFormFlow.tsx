@@ -79,7 +79,7 @@ export function PropertyFormFlow({ property }: PropertyFormFlowProps) {
           description={
             currentStep === 0
               ? 'Vincula el inmueble al cliente correcto y completa su contexto base.'
-              : 'Añade notas internas y guarda la ficha.'
+              : 'Anade notas utiles y revisa que la ficha quede lista para registrar horas y servicios.'
           }
         />
 

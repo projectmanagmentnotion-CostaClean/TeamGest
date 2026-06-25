@@ -65,10 +65,10 @@ export function ClientFormFlow({ client }: ClientFormFlowProps) {
           title={steps[currentStep]}
           description={
             currentStep === 0
-              ? 'Datos de contacto y estado comercial.'
+              ? 'Datos de contacto y estado comercial para relacionar inmuebles y servicios sin dudas.'
               : currentStep === 1
-                ? 'Identidad fiscal y direccion de facturacion.'
-                : 'Notas internas para seguimiento.'
+                ? 'Identidad fiscal y direccion de facturacion para referencia interna.'
+                : 'Notas breves y utiles para seguimiento interno.'
           }
         />
 

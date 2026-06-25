@@ -255,3 +255,14 @@ Browser visual QA was not performed in this block.
 - Settings, import, backup and reset surfaces received wording cleanup without changing storage scope.
 - Mobile action containers now stack more safely on narrow screens through shared CSS.
 - Browser visual QA was still not performed in this block.
+
+## Block 17 QA additions
+
+- Final route-level UI audit was documented in `docs/FINAL_VISUAL_QA_AUDIT.md` before implementation.
+- Dashboard actions now prioritize registrar horas, revisar pendientes, control de horas and cierre mensual more clearly.
+- Hours Control now opens with operational guidance instead of implementation-heavy language.
+- Hours Review now gives a clearer safe-review order and better disabled-action explanation.
+- Quick Entry review and success states now reinforce closure language instead of technical payroll wording.
+- CRUD StepFlow helper text was lightly polished without changing the underlying architecture.
+- Settings warning copy and local-data guidance remain concise and operational.
+- No backend, Supabase, auth, payment, export, calendar or pipeline implementation was added.

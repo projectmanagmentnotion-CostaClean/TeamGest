@@ -24,7 +24,7 @@ export function HourEntryFilters({
   workers,
 }: HourEntryFiltersProps) {
   return (
-    <Card title="Filtros" description="Ajusta mes, responsables y estado para centrar la revision.">
+    <Card title="Filtros del control" description="Reduce la vista por mes, responsable, inmueble o estado sin perder el foco del cierre.">
       <div className="hours-filter-grid">
         <Input
           label="Mes"

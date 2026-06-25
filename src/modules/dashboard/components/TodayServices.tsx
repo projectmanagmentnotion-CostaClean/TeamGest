@@ -25,7 +25,7 @@ export function TodayServices({ clients, properties, services }: TodayServicesPr
       <Card title="Servicios de hoy" description="No hay servicios activos para la jornada actual.">
         <EmptyState
           title="Sin servicios para hoy"
-          description="Cuando el equipo programe nuevos servicios aparecerán aquí con su estado y coste estimado."
+          description="Cuando haya servicios de hoy apareceran aqui con su estado y coste estimado."
           action={
             <Link className="button button--secondary button--sm" to="/services/new">
               Nuevo servicio

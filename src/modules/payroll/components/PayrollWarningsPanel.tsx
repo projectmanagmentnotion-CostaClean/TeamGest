@@ -11,7 +11,7 @@ type PayrollWarningsPanelProps = {
 export function PayrollWarningsPanel({ warnings }: PayrollWarningsPanelProps) {
   if (warnings.length === 0) {
     return (
-      <Card title="Alertas de payroll" description="Validaciones del mes y del cierre operativo.">
+      <Card title="Alertas del cierre" description="Validaciones del mes y del cierre operativo.">
         <EmptyState
           title="Sin incidencias activas"
           description="No se han detectado alertas relevantes para el mes seleccionado."
@@ -21,7 +21,7 @@ export function PayrollWarningsPanel({ warnings }: PayrollWarningsPanelProps) {
   }
 
   return (
-    <Card title="Alertas de payroll" description="Validaciones del mes y del cierre operativo.">
+    <Card title="Alertas del cierre" description="Validaciones del mes y del cierre operativo.">
       <div className="stack-list">
         {warnings.map((warning, index) => (
           <article key={`${warning.title}-${index}`} className="warning-item">

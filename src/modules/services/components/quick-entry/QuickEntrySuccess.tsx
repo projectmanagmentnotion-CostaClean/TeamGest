@@ -29,7 +29,7 @@ export function QuickEntrySuccess({
   return (
     <EmptyState
       title="Horas registradas"
-      description="La entrada rapida ya genero un servicio local con asignacion confirmada."
+      description="La entrada ya quedo guardada en local y lista para seguimiento desde horas y cierre mensual."
       action={
         <div className="empty-state__actions">
           <Link className="button button--primary" to={`/services/${service.id}`}>
@@ -80,7 +80,7 @@ export function QuickEntrySuccess({
           <strong>{formatMoney(totalPay)}</strong>
         </div>
         <div>
-          <span className="muted-caption">Impacto en payroll</span>
+          <span className="muted-caption">Impacto en cierre</span>
           <strong>Se sumara al cierre mensual de {payrollMonthLabel}</strong>
         </div>
       </div>

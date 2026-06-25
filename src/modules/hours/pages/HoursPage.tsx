@@ -48,7 +48,7 @@ export function HoursPage() {
       <PageHeader
         eyebrow="Horas"
         title="Control de horas"
-        description="Revisa horas trabajadas, importes por trabajador y lo que entra al cierre mensual."
+        description="Vista central para revisar horas, detectar incidencias y ver que queda listo para cierre."
         primaryAction={
           <Link className="button button--primary" to="/quick-entry">
             Registrar horas
@@ -61,8 +61,8 @@ export function HoursPage() {
         }
       />
 
-      <WarningBanner title="Modelo derivado" tone="info">
-        Este control se deriva de servicios y asignaciones existentes. No crea una entidad persistida nueva para horas en este bloque.
+      <WarningBanner title="Lectura del mes" tone="info">
+        Esta vista resume las horas ya registradas y te ayuda a detectar lo que todavia falta revisar antes del cierre.
       </WarningBanner>
 
       <HourSummaryCards summary={summary} />

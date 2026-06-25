@@ -56,7 +56,7 @@ export function DashboardPage() {
       <PageHeader
         eyebrow="Dashboard"
         title="Panel operativo"
-        description="Estado actual de la operacion, control de horas y actividad reciente para coordinar trabajo y cierres desde una sola vista."
+        description="Lo importante de hoy: registrar horas, revisar pendientes y preparar el cierre mensual desde una sola vista."
         meta={<StatusPill tone="info">{getCurrentMonthLabel()}</StatusPill>}
         primaryAction={
           <Link className="button button--primary" to="/quick-entry">
@@ -64,8 +64,8 @@ export function DashboardPage() {
           </Link>
         }
         secondaryAction={
-          <Link className="button button--secondary button--sm" to="/hours">
-            Ver control de horas
+          <Link className="button button--secondary button--sm" to="/hours/review">
+            Revisar horas pendientes
           </Link>
         }
       />
@@ -80,7 +80,7 @@ export function DashboardPage() {
         />
         <Card
           title="Control de horas"
-          description="Seguimiento mensual centrado en horas confirmadas, revision e incidencias."
+          description="Vista mensual para revisar pendientes, incidencias y horas listas para cierre."
           action={
             <Link className="button button--secondary button--sm" to="/hours">
               Ver control
@@ -102,7 +102,7 @@ export function DashboardPage() {
             </div>
           </div>
           <p className="muted-caption">
-            El registro rapido sigue siendo la entrada principal para registrar trabajo realizado.
+            Empieza por registrar horas y usa esta vista para corregir y confirmar lo que falta.
           </p>
         </Card>
       </section>

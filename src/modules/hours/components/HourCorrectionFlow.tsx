@@ -52,8 +52,13 @@ export function HourCorrectionFlow({ entry, onCancel, onSave }: HourCorrectionFl
     draft.hoursWorked * draft.hourlyRate + (draft.extraAmount ?? 0) - (draft.deductions ?? 0)
   const errors = validateHourCorrectionPatch(draft)
   const canContinue =
-    (currentStep === 0 && draft.hoursWorked > 0 && (!draft.startTime || !draft.endTime || (calculatedHours ?? 0) > 0)) ||
-    (currentStep === 1 && draft.hourlyRate > 0 && (draft.extraAmount ?? 0) >= 0 && (draft.deductions ?? 0) >= 0)
+    (currentStep === 0 &&
+      draft.hoursWorked > 0 &&
+      (!draft.startTime || !draft.endTime || (calculatedHours ?? 0) > 0)) ||
+    (currentStep === 1 &&
+      draft.hourlyRate > 0 &&
+      (draft.extraAmount ?? 0) >= 0 &&
+      (draft.deductions ?? 0) >= 0)
 
   return (
     <Card title="Corregir horas" description="Ajusta horario, tarifa y nota de revision sin salir de control de horas.">
@@ -67,7 +72,7 @@ export function HourCorrectionFlow({ entry, onCancel, onSave }: HourCorrectionFl
               ? 'Corrige horario y horas trabajadas.'
               : currentStep === 1
                 ? 'Revisa tarifa, extra y deduccion.'
-                : 'Añade una nota interna y confirma el resumen.'
+                : 'Anade una nota breve y confirma el resumen final.'
           }
         />
 

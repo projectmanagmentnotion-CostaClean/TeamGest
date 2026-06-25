@@ -10,9 +10,9 @@ type DashboardWarningsProps = {
 export function DashboardWarnings({ warnings }: DashboardWarningsProps) {
   return (
     <Card
-      title="Alertas críticas"
-      description="Priorizadas por impacto operativo para actuar primero sobre lo urgente."
-      action={<span className="section-link">Ver todos</span>}
+      title="Incidencias"
+      description="Senales priorizadas para actuar primero sobre lo que bloquea revision o cierre."
+      action={<span className="section-link">Revisar primero</span>}
     >
       <div className="stack-list">
         {warnings.slice(0, 5).map((warning, index) => (

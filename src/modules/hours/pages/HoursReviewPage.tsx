@@ -126,7 +126,7 @@ export function HoursReviewPage() {
       <PageHeader
         eyebrow="Horas"
         title="Revision de horas"
-        description="Concentra pendientes, incidencias, exclusiones y bloqueos antes del cierre mensual."
+        description="Zona segura para confirmar, corregir o excluir horas antes de cerrar el mes."
         primaryAction={
           <Link className="button button--primary" to="/quick-entry">
             Registrar horas
@@ -153,6 +153,10 @@ export function HoursReviewPage() {
             : 'Mostrando todos los trabajadores del filtro actual.'}
         </WarningBanner>
       ) : null}
+
+      <WarningBanner title="Orden recomendado" tone="info">
+        Empieza por pendientes, resuelve incidencias y deja las exclusiones solo para casos que no deben entrar al cierre.
+      </WarningBanner>
 
       <MetricGrid columns={4}>
         <StatCard label="Horas pendientes" value={`${totalPendingHours.toFixed(1)} h`} hint="Horas aun sin confirmar para cierre." tone="warning" />

@@ -81,7 +81,7 @@ export function PayrollPage() {
       <PageHeader
         eyebrow="Cierres"
         title="Seguimiento mensual por trabajador"
-        description={`Control del cierre de ${getPayrollMonthLabel(month)} con foco en horas confirmadas, incidencias y pago interno.`}
+        description={`Control del cierre de ${getPayrollMonthLabel(month)} para saber quien esta listo, quien necesita revision y cuanto queda por pagar internamente.`}
         meta={<StatusPill tone={monthState.status === 'locked' ? 'blocked' : 'info'}>{formatPayrollStatusLabel(monthState.status)}</StatusPill>}
         primaryAction={
           <Link className="button button--primary" to={`/payroll/${month}`}>
@@ -109,7 +109,7 @@ export function PayrollPage() {
       />
 
       <WarningBanner title="Pago interno" tone="info">
-        Esta vista organiza el pago interno por trabajador dentro de la app. No genera exportes ni ejecuta pagos reales.
+        Esta vista organiza el seguimiento interno por trabajador. No genera exportes ni ejecuta pagos reales.
       </WarningBanner>
 
       <WorkerClosureCardGrid
@@ -128,7 +128,7 @@ export function PayrollPage() {
         title="Listos para pago interno"
         description="Vista rapida de quienes ya pueden pasar al siguiente paso del cierre."
         emptyTitle="Sin trabajadores listos"
-        emptyDescription="Todavia no hay trabajadores completamente listos para pago en este mes."
+        emptyDescription="Todavia no hay trabajadores completamente listos para pago interno en este mes."
         cards={readyCards}
         month={month}
         onMarkReviewed={handleWorkerReviewed}
@@ -136,9 +136,11 @@ export function PayrollPage() {
         onRevertPaid={handleWorkerPaidRevert}
       />
 
-      <Link className="button button--secondary" to={`/payroll/${month}`}>
-        Ver cierre completo del mes
-      </Link>
+      <div className="quick-actions">
+        <Link className="button button--secondary" to={`/payroll/${month}`}>
+          Ver cierre completo del mes
+        </Link>
+      </div>
     </div>
   )
 }

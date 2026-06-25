@@ -95,19 +95,19 @@ export function QuickWorkEntryPage() {
           ? 'Define fecha, horario y horas trabajadas.'
           : currentStep === 3
             ? 'Revisa tarifa, extras y deducciones antes del cierre.'
-            : 'Anade una nota interna y confirma el resumen final.'
+            : 'Confirma el resumen final y deja una nota solo si aporta contexto util.'
 
   return (
     <div className="page-stack">
       <PageHeader
         eyebrow="Registro rapido"
         title="Registrar horas"
-        description="Entrada principal para registrar trabajo ya realizado en una secuencia corta y clara."
+        description="Flujo principal para cargar trabajo ya realizado en pocos pasos y dejarlo listo para revision."
       />
 
       {errors.length > 0 && currentStep >= 2 ? (
         <WarningBanner title="Revision requerida" tone="warning">
-          {errors[0]}
+          {errors[0]} Corrigelo antes de guardar para que esta entrada pueda entrar al cierre.
         </WarningBanner>
       ) : null}
 
@@ -199,7 +199,7 @@ export function QuickWorkEntryPage() {
               />
               {appSettings.quickEntrySettings.showPayrollImpactMessage ? (
                 <WarningBanner title="Impacto en cierre mensual" tone="info">
-                  Se sumara al cierre mensual de {payrollMonthLabel}. Total a pagar previsto: {totalPay.toFixed(2)} EUR.
+                  Esta entrada se sumara al cierre de {payrollMonthLabel}. Total previsto: {totalPay.toFixed(2)} EUR.
                 </WarningBanner>
               ) : null}
             </>

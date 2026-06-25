@@ -3,16 +3,16 @@ import { Card } from '../../../components/ui/Card'
 
 const actions = [
   { label: 'Registrar horas', to: '/quick-entry' },
+  { label: 'Revisar horas pendientes', to: '/hours/review' },
   { label: 'Control de horas', to: '/hours' },
-  { label: 'Abrir cierre mensual', to: '/payroll' },
-  { label: 'Crear servicio', to: '/services/new' },
-  { label: 'Ver trabajadores', to: '/workers' },
-  { label: 'Ver inmuebles', to: '/properties' },
+  { label: 'Ver cierre mensual', to: '/payroll' },
+  { label: 'Trabajadores', to: '/workers' },
+  { label: 'Ajustes y seguridad', to: '/settings' },
 ]
 
 export function QuickActions() {
   return (
-    <Card title="Acciones rapidas" description="Accesos directos para operar sin friccion.">
+    <Card title="Siguientes acciones" description="Atajos para avanzar en el flujo diario sin cambiar de contexto.">
       <div className="quick-actions">
         {actions.map((action) => (
           <Link key={action.to} className="button button--secondary" to={action.to}>

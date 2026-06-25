@@ -208,3 +208,12 @@ Block 16 is Sprint 31 only and focuses on final hardening, route smoke review, s
 - Backend, Supabase, auth and payments remain inactive.
 - Export, PDF, CSV, calendar and pipeline work remain intentionally out of scope.
 - QA evidence is now separated into `docs/hardening/` by topic instead of one combined note.
+
+## Block 17 status
+
+Block 17 is Sprint 32 only and focuses on final visual QA, usability polish and ready-to-use local delivery.
+
+- Dashboard, Quick Entry, Hours, Review, Closures and Settings were polished around the hours-first workflow.
+- StepFlow-based operational flows remain the preferred pattern for important create and correction work.
+- Runtime remains local-first only.
+- Export, PDF, CSV, calendar, pipeline, backend, Supabase, auth and real payments remain intentionally out of scope.

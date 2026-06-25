@@ -23,7 +23,7 @@ export function DataSafetyChecklist({ items, riskLevel }: DataSafetyChecklistPro
   return (
     <SettingsSection
       title="Checklist de seguridad"
-      description="Controles rápidos para reducir pérdida accidental de datos locales."
+      description="Controles rapidos para reducir perdida accidental de datos locales."
       action={<Badge tone={getRiskTone(riskLevel)}>Riesgo {riskLevel}</Badge>}
     >
       <div className="stack-list">

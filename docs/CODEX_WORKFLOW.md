@@ -91,3 +91,11 @@ Block 16 should be reported as final hardening plus document-separated QA. The r
 - Any claim about visual or mobile QA must state whether it was browser-tested or code-level only.
 - Performance notes must say clearly whether lazy loading was implemented and whether the chunk warning remained.
 - Final hardening must keep scope to safe fixes, documentation and validation rather than new product modules.
+
+## Block 17 reporting
+
+Block 17 should be reported as final visual QA plus ready-to-use polish. The report must separate audit findings from the fixes applied to dashboard, Quick Entry, hours, review, closures, CRUD flows, settings, warnings, no-infinite-scroll behavior and mobile polish.
+
+- The audit document must exist before implementation.
+- The final report must state clearly that browser visual QA was not performed if that remains true.
+- The report must state clearly that the app is still browser-local only and that export, calendar, pipeline, backend, Supabase, auth and payments were intentionally not built.

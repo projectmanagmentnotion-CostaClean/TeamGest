@@ -19,7 +19,7 @@ export function QuickEntryPriorityCard({
   return (
     <Card
       title="Registrar trabajo realizado"
-      description="Anade trabajador, inmueble, horas y tarifa en menos de un minuto."
+      description="El flujo principal para cargar horas confirmadas de forma rapida y clara."
       action={
         <Link className="button button--primary button--sm" to="/quick-entry">
           Registrar horas
@@ -27,7 +27,7 @@ export function QuickEntryPriorityCard({
       }
     >
       <p className="page-description">
-        El registro rapido es el flujo principal para trabajo ya realizado y confirmado para nomina interna.
+        Empieza aqui cuando el trabajo ya esta hecho y solo falta dejarlo listo para revision y cierre.
       </p>
       {services.length > 0 ? (
         <div className="stack-list">
@@ -59,7 +59,7 @@ export function QuickEntryPriorityCard({
         </div>
       ) : (
         <p className="muted-caption">
-          Aun no hay registros rapidos recientes disponibles en esta sesion local.
+          Aun no hay registros recientes. Cuando registres horas aqui veras las ultimas entradas listas para seguimiento.
         </p>
       )}
     </Card>

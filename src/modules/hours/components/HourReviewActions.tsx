@@ -33,6 +33,12 @@ export function HourReviewActions({
   onRestore,
   restorePolicy,
 }: HourReviewActionsProps) {
+  const blockedReason =
+    confirmPolicy.reason ??
+    correctPolicy.reason ??
+    incidentPolicy.reason ??
+    (entry.hourStatus === 'excluded' ? restorePolicy.reason : excludePolicy.reason)
+
   return (
     <div className="hour-review-actions">
       <Button size="sm" onClick={onConfirm} disabled={!confirmPolicy.allowed}>
@@ -53,10 +59,8 @@ export function HourReviewActions({
           Excluir
         </Button>
       )}
-      {!confirmPolicy.allowed || !correctPolicy.allowed || !incidentPolicy.allowed || !excludePolicy.allowed ? (
-        <span className="muted-caption">
-          {confirmPolicy.reason ?? correctPolicy.reason ?? incidentPolicy.reason ?? excludePolicy.reason ?? restorePolicy.reason}
-        </span>
+      {blockedReason ? (
+        <span className="muted-caption">No disponible: {blockedReason}</span>
       ) : null}
     </div>
   )

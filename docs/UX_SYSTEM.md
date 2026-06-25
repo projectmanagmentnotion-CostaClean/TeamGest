@@ -209,3 +209,14 @@ The final hardening pass keeps the finished local-first product feeling stable i
 - settings language should sound operational, not technical or half-configured
 - mobile action rows should stack safely instead of squeezing important controls
 - release-readiness claims must stay honest when browser visual QA was not performed
+
+## Block 17 final polish UX
+
+The ready-to-use local app should now feel operational in this order:
+
+- dashboard highlights what matters today instead of spreading equal weight everywhere
+- registrar horas stays the clearest primary action
+- control de horas explains what needs review in operational language
+- review actions sound safe, controlled and corrective
+- cierres speak in terms of readiness, pending work and internal payment tracking
+- settings explain local safety without sounding like a developer panel
