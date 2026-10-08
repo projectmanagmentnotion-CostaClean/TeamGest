@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "commandId": "TG-LOCAL-QA-FOUNDATION-20261008-01",
+  "projectId": "teamgest",
+  "workstreamId": "finish-teamgest",
+  "source": "CHATGPT_PROJECT",
+  "sourceContext": "TeamGest autonomous onboarding and local-first finish",
+  "issuedAt": "2026-10-08T10:50:00.000Z",
+  "brainVersion": 1,
+  "brainHash": "22ca03e01768c95f76559c525455f9ccd3a94291a83fe1253343228d1e219dbe",
+  "objectiveVersion": 1,
+  "objective": "Finish and professionalize TeamGest as a tested, migration-ready, local-first hours-first operations system.",
+  "why": "Close deterministic test and browser QA gaps while preserving local-first boundaries.",
+  "scope": [
+    "automated domain and migration validation tests",
+    "localhost browser route and critical-flow QA",
+    "local-first contract and security planning"
+  ],
+  "outOfScope": [
+    "main merge",
+    "production deployment",
+    "Supabase production",
+    "real-data migration",
+    "payments",
+    "calendar",
+    "pipeline"
+  ],
+  "acceptanceCriteria": [
+    "tests pass",
+    "lint, typecheck and build pass",
+    "primary routes load in isolated preview",
+    "no backend or production mutation"
+  ],
+  "allowedAutonomy": [
+    "isolated branch changes",
+    "local preview",
+    "synthetic fixtures",
+    "documentation",
+    "safe commits and branch pushes"
+  ],
+  "allowedActions": [
+    "read",
+    "modify TeamGest worktree",
+    "run tests",
+    "run build",
+    "run lint",
+    "start scoped local preview",
+    "push safe control branch"
+  ],
+  "forbiddenActions": [
+    "modify Costa Clean",
+    "stop or restart daemon",
+    "merge main",
+    "activate concurrent workers in production",
+    "use production credentials",
+    "mutate Supabase production",
+    "migrate real data"
+  ],
+  "requiredApprovals": [
+    "main merge",
+    "auth/RLS approval",
+    "Supabase activation",
+    "real-data migration"
+  ],
+  "stopConditions": [
+    "unavoidable authentication gate",
+    "destructive real-data operation",
+    "undefined business policy"
+  ],
+  "verificationRequirements": [
+    "npm test",
+    "npm run lint",
+    "npm run build",
+    "browser route smoke",
+    "migration dry-run validation"
+  ],
+  "supersedesCommandId": null,
+  "status": "READY",
+  "contentHash": "bfc053003ca42eafca761e823dfd2828a9c76409f623f9262a4824e83079b9b8"
+}
