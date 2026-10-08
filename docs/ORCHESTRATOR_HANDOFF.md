@@ -1,6 +1,6 @@
 # TeamGest — Orchestrator Handoff
 
-Documento de continuidad para cualquier agente o desarrollador que retome el proyecto. Fecha de revisión: 2026-10-08. La base de esta documentación era el commit `5100f42` (`polish: finalize ready to use local app`).
+Documento de continuidad para cualquier agente o desarrollador que retome el proyecto. Fecha de revisión: 2026-10-08. Esta revisión corresponde al commit `7ae8c93` (`docs: prepare orchestrator handoff`).
 
 ## 1. Resumen ejecutivo
 
@@ -199,6 +199,27 @@ No reemplazar los repositorios locales directamente por llamadas remotas sin una
 - `docs/hardening/00_HARDENING_INDEX.md` a `10_RELEASE_READINESS.md`: hardening final separado por áreas.
 - `docs/TECHNICAL_CLEANUP_AUDIT.md`: cleanup aplicado y diferido.
 - `docs/SUPABASE_SCHEMA_PLAN.md` y `src/infrastructure/real/`: diseño futuro, no runtime activo.
+
+## 9.1 Inventario de entrega
+
+La entrega versionada incluye:
+
+- `package.json` y `package-lock.json` para instalación reproducible.
+- `index.html`, `vite.config.ts`, `tsconfig*.json` y `eslint.config.js` para build, TypeScript, Vite y lint.
+- `public/` con favicon e iconos estáticos.
+- `src/app/` con composición, providers y routing lazy.
+- `src/components/` con shell, UI genérica, formularios y StepFlow.
+- `src/domain/` con tipos e inputs de negocio.
+- `src/infrastructure/` con mocks, repositorios locales, storage, auditoría y planificación real aislada.
+- `src/modules/` con dashboard, horas, trabajadores, clientes, inmuebles, servicios, cierres y ajustes.
+- `src/styles/` y `src/utils/` con tokens, responsive UI y utilidades puras.
+- `docs/` con blueprint, modelo de datos, reglas de módulos, UX, QA, hardening, seguridad, migración y este handoff.
+
+No forman parte de la entrega por diseño:
+
+- `node_modules/` y `dist/`, generados localmente.
+- archivos `.env`, `.local`, logs, claves, certificados y backups de datos reales.
+- datos personales o credenciales reales.
 
 ## 10. Orden recomendado para continuar
 
