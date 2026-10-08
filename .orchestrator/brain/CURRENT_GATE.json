@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "gateId": "TG2",
+  "phaseId": "TG2",
+  "title": "Browser QA and live preview",
+  "objective": "Verify the primary TeamGest routes and critical hours-first flows in the isolated localhost preview.",
+  "status": "CURRENT",
+  "dependsOn": [],
+  "acceptanceCriteria": [
+    "Primary routes load after lazy modules settle.",
+    "Quick Entry and Hours Review expose safe validation states.",
+    "Local-only settings and planning-only backend boundaries remain visible."
+  ],
+  "allowedActions": [],
+  "forbiddenActions": [],
+  "verification": [],
+  "riskClass": "LOW",
+  "requiresApproval": false,
+  "completionEvidence": [
+    "Live preview healthy at http://127.0.0.1:3008/.",
+    "Desktop route smoke passed for dashboard, quick-entry, hours, hours/review, workers, properties, clients, services, payroll and settings."
+  ]
+}

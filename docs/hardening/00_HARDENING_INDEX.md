@@ -14,6 +14,7 @@ Sprint 31 is the final hardening pass for the finished local-first app. This fol
 - `08_DATA_SAFETY_QA.md`: backup, import, reset, namespace scope and audit coverage review.
 - `09_PERFORMANCE_BUNDLE.md`: build output review and the route-level lazy loading change applied in this block.
 - `10_RELEASE_READINESS.md`: honest summary of what is ready, what is still not tested in browser, and what remains deferred.
+- `11_TEAMGEST_AUTONOMOUS_CERTIFICATION.md`: isolated-worker certification evidence, contracts and human gates.
 
 ## Validation basis
 
@@ -21,5 +22,6 @@ Sprint 31 is the final hardening pass for the finished local-first app. This fol
 - Search-based boundary audit for storage, backend and network usage
 - `npm run lint`
 - `npm run build`
+- `npm test`
 
-Browser visual QA was not performed in this sprint.
+The TeamGest worker also completed a live local browser route smoke pass on the isolated preview at port 3008. Full device-matrix visual QA remains deferred.

@@ -28,15 +28,14 @@ The app is operationally ready as a finished local-first internal tool for:
 - worker monthly closure detail
 - local data safety tooling
 
-## Critical workflows not browser-tested
+## Critical workflows still needing broader browser coverage
 
 - full visual review across real mobile devices
-- click-through smoke testing across every route in a browser session
 - long-session storage behavior in a real browser
 
 ## Known limitations
 
-- Browser visual QA was not performed in this sprint.
+- TeamGest route smoke was completed in a live local browser session; device-matrix visual QA remains deferred.
 - Runtime is still tied to the current browser unless the operator exports and restores a backup manually.
 - This release remains local-first only and should not be described as multi-user or cloud-backed.
 
@@ -44,6 +43,7 @@ The app is operationally ready as a finished local-first internal tool for:
 
 - lint: pass
 - build: pass
+- test: pass (7 tests)
 - backend/auth/payments: inactive
 - export/calendar/pipeline: not implemented
 - Block 16 performance change: route-level lazy loading applied and the prior chunk warning was removed

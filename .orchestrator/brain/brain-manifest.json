@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "projectId": "teamgest",
+  "brainVersion": 1,
+  "objectiveVersion": 1,
+  "brainHash": "22ca03e01768c95f76559c525455f9ccd3a94291a83fe1253343228d1e219dbe",
+  "productHash": "771951c668cada5daa8669c33b81738ec49bfcb4a982a72c6b55798b0331fc2c",
+  "architectureHash": "c2233930bfad567102a4955e5f94f0c1658e579ef3f128859249b8fddb5890d3",
+  "roadmapHash": "44be4f73eac16451f6ec88722c17ca69249dcb9a69a6bdbfaf02f0334f2d84e5",
+  "objectiveHash": "fd838640644e0c26e04c0b5a456f3edcf12bfa48cfabce549d0798f4e0ce4dda",
+  "decisionsHash": "109fbeabfb561e994801eb6c9ae452b68ebf7b892fc4d8e1f949cd62209f278c",
+  "securityHash": "69e0c424db42ad5e0d10ee3132f8f8d6f2a7b94e73e9daecab444696d6a90624",
+  "projectStateHash": "49b1b065e662715e4e9527937c3fa2bb4f0dcf67a7ad3b98750f8d4aab473c2e",
+  "gateHash": "44017628817820dc4020cf0360cc7d31a7e98a7866382690ad3fb435cf774bbf",
+  "canonicalContextHash": "920909bfec02cadd15796dbbdc14137fc1d683781bdd92c96588eb64b0e91a74",
+  "projectStateSchemaHash": "2ed7dd4a97bb0e6ba4af228895c6a76a7937283e0054b70413ee21225aac29fe",
+  "currentGateSchemaHash": "6682dd7c8690968073b60904dd3a3d6c6c25818d24804458af7edef535547175"
+}
