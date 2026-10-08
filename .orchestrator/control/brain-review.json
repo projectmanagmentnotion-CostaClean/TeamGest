@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "reviewId": "BR-TEAMGEST-FINISH-20261008-01",
+  "projectId": "teamgest",
+  "source": "CHATGPT_PROJECT",
+  "decision": "ACCEPT",
+  "status": "FINAL",
+  "reviewedBranch": "orchestrator/brain-review",
+  "reviewedBrainVersion": 1,
+  "reviewedObjectiveVersion": 1,
+  "reviewedCanonicalContextHash": "920909bfec02cadd15796dbbdc14137fc1d683781bdd92c96588eb64b0e91a74",
+  "reviewedCanonicalMainHead": "c901e6b02e6302da7d911ecc091505bdc03b4c6e",
+  "reviewedAt": "2026-10-08T10:51:00.000Z",
+  "acceptanceMeaning": "Accept TeamGest Brain v1 as the canonical pre-command baseline for finish-teamgest. Safe implementation evidence already present on codex/teamgest-finish must be reconciled, not repeated.",
+  "conditions": [
+    "Preserve the hours-first product direction and existing local-first behavior.",
+    "Treat codex/teamgest-finish head 3e9312cd56ad7d28f2ab25187347796365a02c07 as safe implementation evidence to reconcile before repeating work.",
+    "Do not merge main, activate Supabase production, migrate real data, or perform production mutations without the corresponding true human gate.",
+    "Keep Costa Clean execution isolated and uninterrupted."
+  ],
+  "nextRecommendedAction": "Ingest this FINAL ACCEPT automatically, validate TG-LOCAL-QA-FOUNDATION-20261008-01 against the accepted Brain, reconcile existing safe-branch evidence, and continue the same TeamGest workstream autonomously."
+}
