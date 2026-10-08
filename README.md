@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# TeamGest
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TeamGest es una aplicación operativa local-first para gestionar la operación de una empresa de limpieza: trabajadores, clientes, inmuebles, servicios, horas trabajadas y cierres mensuales por trabajador.
 
-Currently, two official plugins are available:
+> Estado actual: versión local preparada para uso interno. Los datos viven en el navegador mediante `localStorage`. No hay backend, autenticación, sincronización multiusuario ni pagos reales.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Inicio rápido
 
-## React Compiler
+Requisitos: Node.js compatible con el `package-lock.json` y npm.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Comandos de verificación:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run lint
+npm run preview
 ```
+
+La aplicación se abre normalmente en `http://localhost:5173`.
+
+## Flujo operativo principal
+
+1. `Dashboard`: prioridades, avisos y actividad.
+2. `Registrar horas`: entrada principal de horas ya trabajadas.
+3. `Control de horas`: consulta, filtros y seguimiento de incidencias.
+4. `Revisión de horas`: revisión, corrección, exclusión y validación.
+5. `Cierres`: control mensual por trabajador y estado de bloqueo.
+6. `Ajustes`: configuración, salud del almacenamiento, backup, importación, reset y auditoría.
+
+## Módulos y rutas
+
+| Área | Rutas principales |
+| --- | --- |
+| Dashboard | `/dashboard` |
+| Entrada rápida | `/quick-entry` |
+| Horas | `/hours`, `/hours/review`, `/hours/workers/:workerId`, `/hours/properties/:propertyId` |
+| Trabajadores | `/workers`, `/workers/new`, `/workers/:id`, `/workers/:id/edit` |
+| Inmuebles | `/properties`, `/properties/new`, `/properties/:id`, `/properties/:id/edit` |
+| Clientes | `/clients`, `/clients/new`, `/clients/:id`, `/clients/:id/edit` |
+| Servicios | `/services`, `/services/new`, `/services/:id`, `/services/:id/edit` |
+| Nómina/cierres | `/payroll`, `/payroll/:month`, `/payroll/:month/workers/:workerId` |
+| Ajustes | `/settings` |
+
+## Arquitectura resumida
+
+- `src/app`: composición de la aplicación, proveedores y routing.
+- `src/components`: shell, formularios y componentes UI reutilizables.
+- `src/domain`: tipos, inputs, estados y contratos de dominio.
+- `src/modules`: páginas, componentes y servicios por módulo funcional.
+- `src/infrastructure`: factoría de repositorios, repositorios locales, auditoría, mocks y plan de backend.
+- `src/utils`: fechas, dinero, etiquetas, IDs y validaciones comunes.
+- `docs`: especificaciones, auditorías, QA y planes de migración.
+
+La factoría de repositorios está en `src/infrastructure/repositoryFactory.ts`. El runtime actual crea repositorios basados en `localStorage`; la infraestructura real está documentada pero deliberadamente desactivada.
+
+## Persistencia y seguridad
+
+Las claves usan el prefijo `teamgest:` y se definen en `src/infrastructure/storage/storageKeys.ts`. La aplicación incluye migraciones de esquema, metadatos, salud del almacenamiento, backup JSON, importación, reset y auditoría local.
+
+`localStorage` no es almacenamiento seguro empresarial. No introducir datos reales sensibles ni credenciales en el repositorio. Las copias JSON deben tratarse como información operativa sensible.
+
+## Documentación de continuidad
+
+La guía principal para el siguiente agente está en [`docs/ORCHESTRATOR_HANDOFF.md`](docs/ORCHESTRATOR_HANDOFF.md). Incluye estado, mapa del código, invariantes, comandos, limitaciones, riesgos, orden de continuación y checklist de entrega.
+
+Documentos de referencia:
+
+- [`docs/READY_TO_USE_LOCAL_APP.md`](docs/READY_TO_USE_LOCAL_APP.md): alcance listo para uso local.
+- [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md): entidades y relaciones.
+- [`docs/MODULE_RULES.md`](docs/MODULE_RULES.md): límites de ownership por módulo.
+- [`docs/QA_CHECKLIST.md`](docs/QA_CHECKLIST.md): comprobaciones de QA.
+- [`docs/MIGRATION_PLAN_LOCAL_TO_REAL.md`](docs/MIGRATION_PLAN_LOCAL_TO_REAL.md): paso futuro a backend.
+- [`docs/SECURITY_PRIVACY_NOTES.md`](docs/SECURITY_PRIVACY_NOTES.md): riesgos y postura de seguridad.
+- [`docs/hardening/00_HARDENING_INDEX.md`](docs/hardening/00_HARDENING_INDEX.md): índice del hardening final.
+
+## Git
+
+La rama principal es `main` y el remoto configurado es `origin`. Antes de cerrar cualquier cambio, ejecutar build, lint, `git status`, commit y push. No subir `node_modules`, `dist`, archivos `.local`, secretos ni backups de datos.
