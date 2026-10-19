@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "commandId": "TG-LOCAL-QA-RECONCILED-20261019-01",
+  "projectId": "https-github-com-projectmanagmentnotion-costaclean-teamgest-git",
+  "workstreamId": "finish-teamgest",
+  "source": "HUMAN",
+  "sourceContext": "Draft reissue of TeamGest local QA command after canonical identity reconciliation",
+  "issuedAt": "2026-10-19T00:00:00.000Z",
+  "brainVersion": 1,
+  "brainHash": "690300c04bc69c26e6216472825c04092ac0c84330f2b442d506b1881bfde9a3",
+  "objectiveVersion": 1,
+  "objective": "Continue and certify TeamGest as a tested, migration-ready, local-first hours-first operations system within the canonical local repository.",
+  "why": "Reuse the accepted historical TeamGest scope and existing implementation evidence after reconciling the project identity without repeating or duplicating work.",
+  "scope": [
+    "reconcile existing TeamGest Brain and workstream identity",
+    "run deterministic local tests, lint and typecheck/build",
+    "run localhost route and hours-first browser QA with synthetic data",
+    "fix proven local defects and preserve local-first storage, migrations, backup/import and audit boundaries",
+    "write durable local evidence and checkpoints"
+  ],
+  "outOfScope": [
+    "push to GitHub",
+    "merge main",
+    "production deployment",
+    "Supabase or remote auth/RLS activation",
+    "real-data migration",
+    "secrets, credentials, payments, calendar and pipeline scope"
+  ],
+  "acceptanceCriteria": [
+    "canonical Brain and command identity match the registered PROJECT_ID",
+    "existing safe implementation evidence is reconciled rather than repeated",
+    "lint, typecheck, build and available deterministic tests pass",
+    "primary local routes and hours-first flows pass browser QA or are explicitly tooling-deferred",
+    "P0, P1 and blocking P2 findings are zero",
+    "no forbidden external or destructive action occurs"
+  ],
+  "allowedAutonomy": [
+    "inspect TeamGest",
+    "modify TeamGest locally",
+    "run tests and local preview",
+    "use synthetic fixtures",
+    "write documentation and durable local evidence",
+    "create local commits or checkpoints without push"
+  ],
+  "allowedActions": [
+    "read",
+    "modify TeamGest worktree",
+    "run tests",
+    "run lint",
+    "run typecheck",
+    "run build",
+    "start scoped local preview",
+    "run browser QA",
+    "write local reports and checkpoints"
+  ],
+  "forbiddenActions": [
+    "modify Costa Clean",
+    "modify Ridaos Print",
+    "modify ORCHESTOR",
+    "push GitHub",
+    "merge main",
+    "deploy Production",
+    "activate Supabase or remote auth/RLS",
+    "use production credentials or real data",
+    "print or persist secrets",
+    "incur new costs"
+  ],
+  "requiredApprovals": [
+    "canonical Brain review acceptance",
+    "StrategicCommand acceptance",
+    "main merge, push, deployment or remote-data actions if later requested"
+  ],
+  "stopConditions": [
+    "identity or control-plane drift",
+    "unavoidable login, 2FA or CAPTCHA",
+    "destructive real-data operation",
+    "undefined business or payroll policy",
+    "P0, P1 or blocking security finding"
+  ],
+  "verificationRequirements": [
+    "git identity, ancestry and diff verification",
+    "npm test when available",
+    "npm run lint",
+    "npm run build",
+    "browser route and critical-flow smoke",
+    "migration dry-run validation where applicable",
+    "durable checkpoint and final Git status"
+  ],
+  "supersedesCommandId": null,
+  "status": "READY",
+  "contentHash": "b3b2fee6cab3b0c81acddd38a806891a68baf74106a8bd109a5cac220e678b1d"
+}
