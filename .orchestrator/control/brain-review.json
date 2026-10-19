@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewId": "BR-TEAMGEST-CANONICAL-20261019-01",
   "projectId": "https-github-com-projectmanagmentnotion-costaclean-teamgest-git",
-  "source": "HUMAN",
+  "source": "CHATGPT_PROJECT",
   "decision": "ACCEPT",
   "status": "FINAL",
   "reviewedBranch": "orchestrator/brain-review",
