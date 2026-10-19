@@ -75,6 +75,6 @@
     "migration dry-run validation"
   ],
   "supersedesCommandId": null,
-  "status": "READY",
-  "contentHash": "bfc053003ca42eafca761e823dfd2828a9c76409f623f9262a4824e83079b9b8"
+  "status": "SUPERSEDED",
+  "contentHash": "21248fde055101e871eb9107f00c36ff9d3c85334ee942bf59e6ffd0255898a2"
 }
