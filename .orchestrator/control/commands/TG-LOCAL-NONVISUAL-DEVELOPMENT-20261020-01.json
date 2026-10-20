@@ -93,7 +93,7 @@
     "record durable checkpoint and final Git status"
   ],
   "supersedesCommandId": null,
-  "status": "READY",
+  "status": "SUPERSEDED",
   "allowedFilePaths": [
     "src/app/**",
     "src/components/**",
@@ -107,5 +107,5 @@
     "docs/hardening/**",
     "docs/TEAMGEST_CERTIFICATION_CHECKPOINT_2026-10-19.md"
   ],
-  "contentHash": "8eb6d7da35ff6f66b62a2ed3ca343c4d17e4c69784acb3d8c58f18822238eae2"
+  "contentHash": "535e2eed9274842f02993212616357f9b727076946fde9c3fba45e5223ab2a71"
 }

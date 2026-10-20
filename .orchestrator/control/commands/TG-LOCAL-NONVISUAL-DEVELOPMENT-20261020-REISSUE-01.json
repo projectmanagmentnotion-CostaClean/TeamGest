@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "commandId": "TG-LOCAL-NONVISUAL-DEVELOPMENT-20261020-REISSUE-01",
+  "projectId": "https-github-com-projectmanagmentnotion-costaclean-teamgest-git",
+  "workstreamId": "teamgest-nonvisual-hardening",
+  "taskDisplayName": "TeamGest non-visual hardening",
+  "baselineBranch": "main",
+  "baselineHead": "c901e6b02e6302da7d911ecc091505bdc03b4c6e",
+  "planningReferenceBranch": "orchestrator/brain-review",
+  "source": "HUMAN",
+  "sourceContext": "Canonical TeamGest Brain reissue after LF-normalized manifest reconciliation",
+  "issuedAt": "2026-10-20T14:40:00.000Z",
+  "brainVersion": 1,
+  "brainHash": "22ca03e01768c95f76559c525455f9ccd3a94291a83fe1253343228d1e219dbe",
+  "objectiveVersion": 1,
+  "objective": "Harden and advance TeamGest locally through non-visual inspection, validation and safe defect correction within the existing hours-first architecture.",
+  "why": "Continue authorized TeamGest development without relying on blocked autonomous browser QA, preserving existing work and local-first boundaries.",
+  "scope": [
+    "inspect Settings, storage, data safety and local persistence",
+    "detect functional, typing, import, route and dependency defects",
+    "run lint, typecheck, build and available deterministic tests",
+    "add focused unit tests only when required by a reproducible defect",
+    "fix reproducible local defects inside evaluated TeamGest modules",
+    "persist official Executor reports, Reviewer decisions and durable checkpoints",
+    "continue the authorized non-visual backlog when gates pass"
+  ],
+  "outOfScope": [
+    "visual QA or CUA from Executor",
+    "new visual QA runs",
+    "Production",
+    "push, merge or deployment",
+    "other projects",
+    "ORCHESTOR engine or release changes",
+    "secrets, real data, external services or new costs",
+    "package-lock.json changes unless separately approved"
+  ],
+  "acceptanceCriteria": [
+    "Settings, storage, data-safety and persistence boundaries are inspected with evidence",
+    "lint, typecheck, build and available deterministic tests pass or have documented reproducible blockers",
+    "reproducible defects in evaluated modules are fixed with focused regression coverage where appropriate",
+    "no P0, P1 or blocking P2 finding remains in the evaluated non-visual scope",
+    "Reviewer independently verifies the real Executor evidence",
+    "a durable checkpoint records the completed task and final Git status"
+  ],
+  "allowedAutonomy": [
+    "inspect TeamGest",
+    "modify only scoped TeamGest source, tests and documentation",
+    "run local lint, typecheck, build and deterministic tests",
+    "create local commits or checkpoints without push",
+    "write official reports and evidence through ORCHESTOR"
+  ],
+  "allowedActions": [
+    "read",
+    "modify TeamGest source under allowedFilePaths",
+    "run tests",
+    "run lint",
+    "run typecheck",
+    "run build",
+    "write scoped documentation and durable local evidence",
+    "create local checkpoints"
+  ],
+  "forbiddenActions": [
+    "run visual QA or CUA from Executor",
+    "modify package-lock.json",
+    "modify Costa Clean, Ridaos Print or ORCHESTOR",
+    "push GitHub",
+    "merge main",
+    "deploy Production",
+    "activate Supabase or remote auth/RLS",
+    "use secrets or real data",
+    "incur new costs"
+  ],
+  "requiredApprovals": [
+    "canonical Brain review acceptance",
+    "StrategicCommand acceptance",
+    "additional approval for any action outside this scope"
+  ],
+  "stopConditions": [
+    "Brain identity or control-plane drift",
+    "missing or conflicting command authorization",
+    "destructive or real-data operation",
+    "secret or credential access",
+    "P0, P1 or blocking security finding",
+    "required tool or test boundary unavailable"
+  ],
+  "verificationRequirements": [
+    "verify Git identity, branch, HEAD, dirty status and scoped diff",
+    "run npm test when available",
+    "run npm run lint",
+    "run npm run build with typecheck",
+    "inspect Settings, storage, data-safety and persistence paths",
+    "run independent Reviewer on durable Executor evidence",
+    "record durable checkpoint and final Git status"
+  ],
+  "supersedesCommandId": "TG-LOCAL-NONVISUAL-DEVELOPMENT-20261020-01",
+  "status": "READY",
+  "allowedFilePaths": [
+    "src/app/**",
+    "src/components/**",
+    "src/domain/**",
+    "src/infrastructure/storage/**",
+    "src/modules/settings/**",
+    "src/modules/hours/**",
+    "src/modules/services/**",
+    "src/utils/**",
+    "src/**/*.test.*",
+    "docs/hardening/**",
+    "docs/TEAMGEST_CERTIFICATION_CHECKPOINT_2026-10-19.md"
+  ],
+  "contentHash": "8cce71b7288a84f2db6277998f23e8055b0881ae782ff231af68954731f779ec"
+}
