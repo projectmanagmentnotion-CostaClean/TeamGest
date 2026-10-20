@@ -87,6 +87,6 @@
     "durable checkpoint and final Git status"
   ],
   "supersedesCommandId": null,
-  "status": "READY",
-  "contentHash": "b3b2fee6cab3b0c81acddd38a806891a68baf74106a8bd109a5cac220e678b1d"
+  "status": "SUPERSEDED",
+  "contentHash": "2f4ecaa41257dfefc38e2be6c0880f4581ae30a2bf09c905124990e64776484f"
 }
