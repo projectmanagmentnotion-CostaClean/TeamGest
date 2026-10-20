@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewId": "BR-TEAMGEST-CANONICAL-20261019-01",
+  "reviewId": "BR-TEAMGEST-CANONICAL-20261020-REISSUE-01",
   "projectId": "https-github-com-projectmanagmentnotion-costaclean-teamgest-git",
   "source": "CHATGPT_PROJECT",
   "decision": "ACCEPT",
@@ -8,15 +8,14 @@
   "reviewedBranch": "orchestrator/brain-review",
   "reviewedBrainVersion": 1,
   "reviewedObjectiveVersion": 1,
-  "reviewedCanonicalContextHash": "90ee9dda4bde2bad963e98fff350d05e9c80a5925f1602e1d4303646a53d49c5",
+  "reviewedCanonicalContextHash": "df07511d1315055e0193dabc54c7f3ae65cb68e4d90d06c9f04fb45f18a225f4",
   "reviewedCanonicalMainHead": "c901e6b02e6302da7d911ecc091505bdc03b4c6e",
-  "reviewedAt": "2026-10-19T00:00:00.000Z",
-  "acceptanceMeaning": "Draft request for a human review of the existing accepted TeamGest Brain v1 after identity reconciliation to the registered canonical PROJECT_ID.",
+  "reviewedAt": "2026-10-20T14:28:43.634Z",
+  "acceptanceMeaning": "Prepared replacement review for the historical TeamGest Brain using the canonical LF-normalized loader and embedded-schema finalization.",
   "conditions": [
-    "Preserve the hours-first local-first product direction and existing local behavior.",
-    "Reuse the finish-teamgest workstream and existing codex/teamgest-finish evidence.",
-    "Do not merge main, push GitHub, deploy, activate Supabase, migrate real data, access secrets or incur new costs.",
-    "Keep TeamGest isolated from Costa Clean, Ridaos Print and ORCHESTOR."
+    "Preserve historical Brain acceptance and blocked run.",
+    "Do not modify TeamGest application code or production.",
+    "Publish and ingest only through the official control-plane review workflow."
   ],
-  "nextRecommendedAction": "Ingest this FINAL ACCEPT through the official ORCHESTOR brain-review workflow, then validate and bind the reissued local StrategicCommand."
+  "nextRecommendedAction": "Publish the prepared Brain revision and control review to the official branches, then run brain-review ingest."
 }
